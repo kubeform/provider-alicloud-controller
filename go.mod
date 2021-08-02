@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	cloud.google.com/go v0.61.0 // indirect
-	github.com/aliyun/terraform-provider-alicloud v0.0.0-00010101000000-000000000000
+	github.com/aliyun/terraform-provider-alicloud v1.128.0
 	github.com/fatih/structs v1.1.0
 	github.com/go-logr/logr v0.4.0
 	github.com/gobuffalo/flect v0.2.3
