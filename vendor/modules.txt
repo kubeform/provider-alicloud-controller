@@ -137,7 +137,7 @@ github.com/aliyun/credentials-go/credentials/response
 github.com/aliyun/credentials-go/credentials/utils
 # github.com/aliyun/fc-go-sdk v0.0.0-20200925033337-c013428cbe21
 github.com/aliyun/fc-go-sdk
-# github.com/aliyun/terraform-provider-alicloud v0.0.0-00010101000000-000000000000 => github.com/kmodules/terraform-provider-alicloud v1.129.1-0.20210802123817-b460ae4bbc79
+# github.com/aliyun/terraform-provider-alicloud v1.128.0 => github.com/kmodules/terraform-provider-alicloud v1.129.1-0.20210802123817-b460ae4bbc79
 ## explicit
 github.com/aliyun/terraform-provider-alicloud/alicloud
 github.com/aliyun/terraform-provider-alicloud/alicloud/connectivity
