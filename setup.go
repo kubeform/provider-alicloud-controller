@@ -27,8 +27,9 @@ import (
 	"sync"
 	"time"
 
-	alicloud "github.com/equinix/terraform-provider-metal/metal"
+	alicloud "github.com/aliyun/terraform-provider-alicloud/alicloud"
 	"github.com/gobuffalo/flect"
+	tfschema "github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	auditlib "go.bytebuilders.dev/audit/lib"
 	arv1 "k8s.io/api/admissionregistration/v1"
 	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
@@ -39,39 +40,191 @@ import (
 	admissionregistrationv1 "k8s.io/client-go/kubernetes/typed/admissionregistration/v1"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/klog/v2"
-	bgpv1alpha1 "kubeform.dev/provider-alicloud-api/apis/bgp/v1alpha1"
-	connectionv1alpha1 "kubeform.dev/provider-alicloud-api/apis/connection/v1alpha1"
-	devicev1alpha1 "kubeform.dev/provider-alicloud-api/apis/device/v1alpha1"
-	gatewayv1alpha1 "kubeform.dev/provider-alicloud-api/apis/gateway/v1alpha1"
-	ipv1alpha1 "kubeform.dev/provider-alicloud-api/apis/ip/v1alpha1"
-	organizationv1alpha1 "kubeform.dev/provider-alicloud-api/apis/organization/v1alpha1"
-	portv1alpha1 "kubeform.dev/provider-alicloud-api/apis/port/v1alpha1"
-	projectv1alpha1 "kubeform.dev/provider-alicloud-api/apis/project/v1alpha1"
+	actiontrailv1alpha1 "kubeform.dev/provider-alicloud-api/apis/actiontrail/v1alpha1"
+	adbv1alpha1 "kubeform.dev/provider-alicloud-api/apis/adb/v1alpha1"
+	alidnsv1alpha1 "kubeform.dev/provider-alicloud-api/apis/alidns/v1alpha1"
+	alikafkav1alpha1 "kubeform.dev/provider-alicloud-api/apis/alikafka/v1alpha1"
+	amqpv1alpha1 "kubeform.dev/provider-alicloud-api/apis/amqp/v1alpha1"
+	apigatewayv1alpha1 "kubeform.dev/provider-alicloud-api/apis/apigateway/v1alpha1"
+	autov1alpha1 "kubeform.dev/provider-alicloud-api/apis/auto/v1alpha1"
+	brainv1alpha1 "kubeform.dev/provider-alicloud-api/apis/brain/v1alpha1"
+	casv1alpha1 "kubeform.dev/provider-alicloud-api/apis/cas/v1alpha1"
+	cassandrav1alpha1 "kubeform.dev/provider-alicloud-api/apis/cassandra/v1alpha1"
+	cdnv1alpha1 "kubeform.dev/provider-alicloud-api/apis/cdn/v1alpha1"
+	cenv1alpha1 "kubeform.dev/provider-alicloud-api/apis/cen/v1alpha1"
+	cloudv1alpha1 "kubeform.dev/provider-alicloud-api/apis/cloud/v1alpha1"
+	cmsv1alpha1 "kubeform.dev/provider-alicloud-api/apis/cms/v1alpha1"
+	commonv1alpha1 "kubeform.dev/provider-alicloud-api/apis/common/v1alpha1"
+	configv1alpha1 "kubeform.dev/provider-alicloud-api/apis/config/v1alpha1"
+	containerv1alpha1 "kubeform.dev/provider-alicloud-api/apis/container/v1alpha1"
+	copyv1alpha1 "kubeform.dev/provider-alicloud-api/apis/copy/v1alpha1"
+	crv1alpha1 "kubeform.dev/provider-alicloud-api/apis/cr/v1alpha1"
+	csv1alpha1 "kubeform.dev/provider-alicloud-api/apis/cs/v1alpha1"
+	datahubv1alpha1 "kubeform.dev/provider-alicloud-api/apis/datahub/v1alpha1"
+	dbv1alpha1 "kubeform.dev/provider-alicloud-api/apis/db/v1alpha1"
+	dcdnv1alpha1 "kubeform.dev/provider-alicloud-api/apis/dcdn/v1alpha1"
+	ddosbgpv1alpha1 "kubeform.dev/provider-alicloud-api/apis/ddosbgp/v1alpha1"
+	ddoscoov1alpha1 "kubeform.dev/provider-alicloud-api/apis/ddoscoo/v1alpha1"
+	directv1alpha1 "kubeform.dev/provider-alicloud-api/apis/direct/v1alpha1"
+	diskv1alpha1 "kubeform.dev/provider-alicloud-api/apis/disk/v1alpha1"
+	dmsv1alpha1 "kubeform.dev/provider-alicloud-api/apis/dms/v1alpha1"
+	dnsv1alpha1 "kubeform.dev/provider-alicloud-api/apis/dns/v1alpha1"
+	drdsv1alpha1 "kubeform.dev/provider-alicloud-api/apis/drds/v1alpha1"
+	eciv1alpha1 "kubeform.dev/provider-alicloud-api/apis/eci/v1alpha1"
+	ecsv1alpha1 "kubeform.dev/provider-alicloud-api/apis/ecs/v1alpha1"
+	edasv1alpha1 "kubeform.dev/provider-alicloud-api/apis/edas/v1alpha1"
+	eipv1alpha1 "kubeform.dev/provider-alicloud-api/apis/eip/v1alpha1"
+	eipanycastv1alpha1 "kubeform.dev/provider-alicloud-api/apis/eipanycast/v1alpha1"
+	elasticsearchv1alpha1 "kubeform.dev/provider-alicloud-api/apis/elasticsearch/v1alpha1"
+	emrv1alpha1 "kubeform.dev/provider-alicloud-api/apis/emr/v1alpha1"
+	essv1alpha1 "kubeform.dev/provider-alicloud-api/apis/ess/v1alpha1"
+	eventv1alpha1 "kubeform.dev/provider-alicloud-api/apis/event/v1alpha1"
+	fcv1alpha1 "kubeform.dev/provider-alicloud-api/apis/fc/v1alpha1"
+	fnfv1alpha1 "kubeform.dev/provider-alicloud-api/apis/fnf/v1alpha1"
+	forwardv1alpha1 "kubeform.dev/provider-alicloud-api/apis/forward/v1alpha1"
+	gav1alpha1 "kubeform.dev/provider-alicloud-api/apis/ga/v1alpha1"
+	gpdbv1alpha1 "kubeform.dev/provider-alicloud-api/apis/gpdb/v1alpha1"
+	havipv1alpha1 "kubeform.dev/provider-alicloud-api/apis/havip/v1alpha1"
+	hbasev1alpha1 "kubeform.dev/provider-alicloud-api/apis/hbase/v1alpha1"
+	imagev1alpha1 "kubeform.dev/provider-alicloud-api/apis/image/v1alpha1"
+	instancev1alpha1 "kubeform.dev/provider-alicloud-api/apis/instance/v1alpha1"
+	keyv1alpha1 "kubeform.dev/provider-alicloud-api/apis/key/v1alpha1"
+	kmsv1alpha1 "kubeform.dev/provider-alicloud-api/apis/kms/v1alpha1"
+	kvstorev1alpha1 "kubeform.dev/provider-alicloud-api/apis/kvstore/v1alpha1"
+	launchv1alpha1 "kubeform.dev/provider-alicloud-api/apis/launch/v1alpha1"
+	logv1alpha1 "kubeform.dev/provider-alicloud-api/apis/log/v1alpha1"
+	logtailv1alpha1 "kubeform.dev/provider-alicloud-api/apis/logtail/v1alpha1"
+	marketv1alpha1 "kubeform.dev/provider-alicloud-api/apis/market/v1alpha1"
+	maxcomputev1alpha1 "kubeform.dev/provider-alicloud-api/apis/maxcompute/v1alpha1"
+	mnsv1alpha1 "kubeform.dev/provider-alicloud-api/apis/mns/v1alpha1"
+	mongodbv1alpha1 "kubeform.dev/provider-alicloud-api/apis/mongodb/v1alpha1"
+	msev1alpha1 "kubeform.dev/provider-alicloud-api/apis/mse/v1alpha1"
+	nasv1alpha1 "kubeform.dev/provider-alicloud-api/apis/nas/v1alpha1"
+	natv1alpha1 "kubeform.dev/provider-alicloud-api/apis/nat/v1alpha1"
+	networkv1alpha1 "kubeform.dev/provider-alicloud-api/apis/network/v1alpha1"
+	onsv1alpha1 "kubeform.dev/provider-alicloud-api/apis/ons/v1alpha1"
+	oosv1alpha1 "kubeform.dev/provider-alicloud-api/apis/oos/v1alpha1"
+	ossv1alpha1 "kubeform.dev/provider-alicloud-api/apis/oss/v1alpha1"
+	otsv1alpha1 "kubeform.dev/provider-alicloud-api/apis/ots/v1alpha1"
+	polardbv1alpha1 "kubeform.dev/provider-alicloud-api/apis/polardb/v1alpha1"
+	privatelinkv1alpha1 "kubeform.dev/provider-alicloud-api/apis/privatelink/v1alpha1"
+	pvtzv1alpha1 "kubeform.dev/provider-alicloud-api/apis/pvtz/v1alpha1"
+	quotasv1alpha1 "kubeform.dev/provider-alicloud-api/apis/quotas/v1alpha1"
+	ramv1alpha1 "kubeform.dev/provider-alicloud-api/apis/ram/v1alpha1"
+	rdsv1alpha1 "kubeform.dev/provider-alicloud-api/apis/rds/v1alpha1"
 	reservedv1alpha1 "kubeform.dev/provider-alicloud-api/apis/reserved/v1alpha1"
-	spotv1alpha1 "kubeform.dev/provider-alicloud-api/apis/spot/v1alpha1"
-	sshv1alpha1 "kubeform.dev/provider-alicloud-api/apis/ssh/v1alpha1"
-	userv1alpha1 "kubeform.dev/provider-alicloud-api/apis/user/v1alpha1"
-	virtualv1alpha1 "kubeform.dev/provider-alicloud-api/apis/virtual/v1alpha1"
-	vlanv1alpha1 "kubeform.dev/provider-alicloud-api/apis/vlan/v1alpha1"
-	volumev1alpha1 "kubeform.dev/provider-alicloud-api/apis/volume/v1alpha1"
-	controllersbgp "kubeform.dev/provider-alicloud-controller/controllers/bgp"
-	controllersconnection "kubeform.dev/provider-alicloud-controller/controllers/connection"
-	controllersdevice "kubeform.dev/provider-alicloud-controller/controllers/device"
-	controllersgateway "kubeform.dev/provider-alicloud-controller/controllers/gateway"
-	controllersip "kubeform.dev/provider-alicloud-controller/controllers/ip"
-	controllersorganization "kubeform.dev/provider-alicloud-controller/controllers/organization"
-	controllersport "kubeform.dev/provider-alicloud-controller/controllers/port"
-	controllersproject "kubeform.dev/provider-alicloud-controller/controllers/project"
+	resourcev1alpha1 "kubeform.dev/provider-alicloud-api/apis/resource/v1alpha1"
+	rosv1alpha1 "kubeform.dev/provider-alicloud-api/apis/ros/v1alpha1"
+	routev1alpha1 "kubeform.dev/provider-alicloud-api/apis/route/v1alpha1"
+	routerv1alpha1 "kubeform.dev/provider-alicloud-api/apis/router/v1alpha1"
+	sagv1alpha1 "kubeform.dev/provider-alicloud-api/apis/sag/v1alpha1"
+	securityv1alpha1 "kubeform.dev/provider-alicloud-api/apis/security/v1alpha1"
+	slbv1alpha1 "kubeform.dev/provider-alicloud-api/apis/slb/v1alpha1"
+	snapshotv1alpha1 "kubeform.dev/provider-alicloud-api/apis/snapshot/v1alpha1"
+	snatv1alpha1 "kubeform.dev/provider-alicloud-api/apis/snat/v1alpha1"
+	sslv1alpha1 "kubeform.dev/provider-alicloud-api/apis/ssl/v1alpha1"
+	subnetv1alpha1 "kubeform.dev/provider-alicloud-api/apis/subnet/v1alpha1"
+	tsdbv1alpha1 "kubeform.dev/provider-alicloud-api/apis/tsdb/v1alpha1"
+	vpcv1alpha1 "kubeform.dev/provider-alicloud-api/apis/vpc/v1alpha1"
+	vpnv1alpha1 "kubeform.dev/provider-alicloud-api/apis/vpn/v1alpha1"
+	vswitchv1alpha1 "kubeform.dev/provider-alicloud-api/apis/vswitch/v1alpha1"
+	wafv1alpha1 "kubeform.dev/provider-alicloud-api/apis/waf/v1alpha1"
+	yundunv1alpha1 "kubeform.dev/provider-alicloud-api/apis/yundun/v1alpha1"
+	controllersactiontrail "kubeform.dev/provider-alicloud-controller/controllers/actiontrail"
+	controllersadb "kubeform.dev/provider-alicloud-controller/controllers/adb"
+	controllersalidns "kubeform.dev/provider-alicloud-controller/controllers/alidns"
+	controllersalikafka "kubeform.dev/provider-alicloud-controller/controllers/alikafka"
+	controllersamqp "kubeform.dev/provider-alicloud-controller/controllers/amqp"
+	controllersapigateway "kubeform.dev/provider-alicloud-controller/controllers/apigateway"
+	controllersauto "kubeform.dev/provider-alicloud-controller/controllers/auto"
+	controllersbrain "kubeform.dev/provider-alicloud-controller/controllers/brain"
+	controllerscas "kubeform.dev/provider-alicloud-controller/controllers/cas"
+	controllerscassandra "kubeform.dev/provider-alicloud-controller/controllers/cassandra"
+	controllerscdn "kubeform.dev/provider-alicloud-controller/controllers/cdn"
+	controllerscen "kubeform.dev/provider-alicloud-controller/controllers/cen"
+	controllerscloud "kubeform.dev/provider-alicloud-controller/controllers/cloud"
+	controllerscms "kubeform.dev/provider-alicloud-controller/controllers/cms"
+	controllerscommon "kubeform.dev/provider-alicloud-controller/controllers/common"
+	controllersconfig "kubeform.dev/provider-alicloud-controller/controllers/config"
+	controllerscontainer "kubeform.dev/provider-alicloud-controller/controllers/container"
+	controllerscopy "kubeform.dev/provider-alicloud-controller/controllers/copy"
+	controllerscr "kubeform.dev/provider-alicloud-controller/controllers/cr"
+	controllerscs "kubeform.dev/provider-alicloud-controller/controllers/cs"
+	controllersdatahub "kubeform.dev/provider-alicloud-controller/controllers/datahub"
+	controllersdb "kubeform.dev/provider-alicloud-controller/controllers/db"
+	controllersdcdn "kubeform.dev/provider-alicloud-controller/controllers/dcdn"
+	controllersddosbgp "kubeform.dev/provider-alicloud-controller/controllers/ddosbgp"
+	controllersddoscoo "kubeform.dev/provider-alicloud-controller/controllers/ddoscoo"
+	controllersdirect "kubeform.dev/provider-alicloud-controller/controllers/direct"
+	controllersdisk "kubeform.dev/provider-alicloud-controller/controllers/disk"
+	controllersdms "kubeform.dev/provider-alicloud-controller/controllers/dms"
+	controllersdns "kubeform.dev/provider-alicloud-controller/controllers/dns"
+	controllersdrds "kubeform.dev/provider-alicloud-controller/controllers/drds"
+	controllerseci "kubeform.dev/provider-alicloud-controller/controllers/eci"
+	controllersecs "kubeform.dev/provider-alicloud-controller/controllers/ecs"
+	controllersedas "kubeform.dev/provider-alicloud-controller/controllers/edas"
+	controllerseip "kubeform.dev/provider-alicloud-controller/controllers/eip"
+	controllerseipanycast "kubeform.dev/provider-alicloud-controller/controllers/eipanycast"
+	controllerselasticsearch "kubeform.dev/provider-alicloud-controller/controllers/elasticsearch"
+	controllersemr "kubeform.dev/provider-alicloud-controller/controllers/emr"
+	controllersess "kubeform.dev/provider-alicloud-controller/controllers/ess"
+	controllersevent "kubeform.dev/provider-alicloud-controller/controllers/event"
+	controllersfc "kubeform.dev/provider-alicloud-controller/controllers/fc"
+	controllersfnf "kubeform.dev/provider-alicloud-controller/controllers/fnf"
+	controllersforward "kubeform.dev/provider-alicloud-controller/controllers/forward"
+	controllersga "kubeform.dev/provider-alicloud-controller/controllers/ga"
+	controllersgpdb "kubeform.dev/provider-alicloud-controller/controllers/gpdb"
+	controllershavip "kubeform.dev/provider-alicloud-controller/controllers/havip"
+	controllershbase "kubeform.dev/provider-alicloud-controller/controllers/hbase"
+	controllersimage "kubeform.dev/provider-alicloud-controller/controllers/image"
+	controllersinstance "kubeform.dev/provider-alicloud-controller/controllers/instance"
+	controllerskey "kubeform.dev/provider-alicloud-controller/controllers/key"
+	controllerskms "kubeform.dev/provider-alicloud-controller/controllers/kms"
+	controllerskvstore "kubeform.dev/provider-alicloud-controller/controllers/kvstore"
+	controllerslaunch "kubeform.dev/provider-alicloud-controller/controllers/launch"
+	controllerslog "kubeform.dev/provider-alicloud-controller/controllers/log"
+	controllerslogtail "kubeform.dev/provider-alicloud-controller/controllers/logtail"
+	controllersmarket "kubeform.dev/provider-alicloud-controller/controllers/market"
+	controllersmaxcompute "kubeform.dev/provider-alicloud-controller/controllers/maxcompute"
+	controllersmns "kubeform.dev/provider-alicloud-controller/controllers/mns"
+	controllersmongodb "kubeform.dev/provider-alicloud-controller/controllers/mongodb"
+	controllersmse "kubeform.dev/provider-alicloud-controller/controllers/mse"
+	controllersnas "kubeform.dev/provider-alicloud-controller/controllers/nas"
+	controllersnat "kubeform.dev/provider-alicloud-controller/controllers/nat"
+	controllersnetwork "kubeform.dev/provider-alicloud-controller/controllers/network"
+	controllersons "kubeform.dev/provider-alicloud-controller/controllers/ons"
+	controllersoos "kubeform.dev/provider-alicloud-controller/controllers/oos"
+	controllersoss "kubeform.dev/provider-alicloud-controller/controllers/oss"
+	controllersots "kubeform.dev/provider-alicloud-controller/controllers/ots"
+	controllerspolardb "kubeform.dev/provider-alicloud-controller/controllers/polardb"
+	controllersprivatelink "kubeform.dev/provider-alicloud-controller/controllers/privatelink"
+	controllerspvtz "kubeform.dev/provider-alicloud-controller/controllers/pvtz"
+	controllersquotas "kubeform.dev/provider-alicloud-controller/controllers/quotas"
+	controllersram "kubeform.dev/provider-alicloud-controller/controllers/ram"
+	controllersrds "kubeform.dev/provider-alicloud-controller/controllers/rds"
 	controllersreserved "kubeform.dev/provider-alicloud-controller/controllers/reserved"
-	controllersspot "kubeform.dev/provider-alicloud-controller/controllers/spot"
-	controllersssh "kubeform.dev/provider-alicloud-controller/controllers/ssh"
-	controllersuser "kubeform.dev/provider-alicloud-controller/controllers/user"
-	controllersvirtual "kubeform.dev/provider-alicloud-controller/controllers/virtual"
-	controllersvlan "kubeform.dev/provider-alicloud-controller/controllers/vlan"
-	controllersvolume "kubeform.dev/provider-alicloud-controller/controllers/volume"
+	controllersresource "kubeform.dev/provider-alicloud-controller/controllers/resource"
+	controllersros "kubeform.dev/provider-alicloud-controller/controllers/ros"
+	controllersroute "kubeform.dev/provider-alicloud-controller/controllers/route"
+	controllersrouter "kubeform.dev/provider-alicloud-controller/controllers/router"
+	controllerssag "kubeform.dev/provider-alicloud-controller/controllers/sag"
+	controllerssecurity "kubeform.dev/provider-alicloud-controller/controllers/security"
+	controllersslb "kubeform.dev/provider-alicloud-controller/controllers/slb"
+	controllerssnapshot "kubeform.dev/provider-alicloud-controller/controllers/snapshot"
+	controllerssnat "kubeform.dev/provider-alicloud-controller/controllers/snat"
+	controllersssl "kubeform.dev/provider-alicloud-controller/controllers/ssl"
+	controllerssubnet "kubeform.dev/provider-alicloud-controller/controllers/subnet"
+	controllerstsdb "kubeform.dev/provider-alicloud-controller/controllers/tsdb"
+	controllersvpc "kubeform.dev/provider-alicloud-controller/controllers/vpc"
+	controllersvpn "kubeform.dev/provider-alicloud-controller/controllers/vpn"
+	controllersvswitch "kubeform.dev/provider-alicloud-controller/controllers/vswitch"
+	controllerswaf "kubeform.dev/provider-alicloud-controller/controllers/waf"
+	controllersyundun "kubeform.dev/provider-alicloud-controller/controllers/yundun"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 )
+
+var _provider = alicloud.Provider().(*tfschema.Provider)
 
 var runningControllers = struct {
 	sync.RWMutex
@@ -253,345 +406,6231 @@ func updateVWC(vwcClient *admissionregistrationv1.AdmissionregistrationV1Client,
 func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVersionKind, auditor *auditlib.EventPublisher, watchOnlyDefault bool) error {
 	switch gvk {
 	case schema.GroupVersionKind{
-		Group:   "bgp.alicloud.kubeform.com",
+		Group:   "actiontrail.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Session",
+		Kind:    "Actiontrail",
 	}:
-		if err := (&controllersbgp.SessionReconciler{
+		if err := (&controllersactiontrail.ActiontrailReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("Session"),
+			Log:              ctrl.Log.WithName("controllers").WithName("Actiontrail"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         alicloud.Provider(),
-			Resource:         alicloud.Provider().ResourcesMap["metal_bgp_session"],
-			TypeName:         "metal_bgp_session",
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_actiontrail"],
+			TypeName:         "alicloud_actiontrail",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "Session")
+			setupLog.Error(err, "unable to create controller", "controller", "Actiontrail")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "connection.alicloud.kubeform.com",
+		Group:   "actiontrail.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Trail",
+	}:
+		if err := (&controllersactiontrail.TrailReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Trail"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_actiontrail_trail"],
+			TypeName:         "alicloud_actiontrail_trail",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Trail")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "adb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Account",
+	}:
+		if err := (&controllersadb.AccountReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Account"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_adb_account"],
+			TypeName:         "alicloud_adb_account",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Account")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "adb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BackupPolicy",
+	}:
+		if err := (&controllersadb.BackupPolicyReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("BackupPolicy"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_adb_backup_policy"],
+			TypeName:         "alicloud_adb_backup_policy",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "BackupPolicy")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "adb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Cluster",
+	}:
+		if err := (&controllersadb.ClusterReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Cluster"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_adb_cluster"],
+			TypeName:         "alicloud_adb_cluster",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Cluster")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "adb.alicloud.kubeform.com",
 		Version: "v1alpha1",
 		Kind:    "Connection",
 	}:
-		if err := (&controllersconnection.ConnectionReconciler{
+		if err := (&controllersadb.ConnectionReconciler{
 			Client:           mgr.GetClient(),
 			Log:              ctrl.Log.WithName("controllers").WithName("Connection"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         alicloud.Provider(),
-			Resource:         alicloud.Provider().ResourcesMap["metal_connection"],
-			TypeName:         "metal_connection",
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_adb_connection"],
+			TypeName:         "alicloud_adb_connection",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Connection")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "device.alicloud.kubeform.com",
+		Group:   "adb.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Device",
+		Kind:    "DbCluster",
 	}:
-		if err := (&controllersdevice.DeviceReconciler{
+		if err := (&controllersadb.DbClusterReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("Device"),
+			Log:              ctrl.Log.WithName("controllers").WithName("DbCluster"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         alicloud.Provider(),
-			Resource:         alicloud.Provider().ResourcesMap["metal_device"],
-			TypeName:         "metal_device",
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_adb_db_cluster"],
+			TypeName:         "alicloud_adb_db_cluster",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "Device")
+			setupLog.Error(err, "unable to create controller", "controller", "DbCluster")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "device.alicloud.kubeform.com",
+		Group:   "alidns.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "NetworkType",
+		Kind:    "Domain",
 	}:
-		if err := (&controllersdevice.NetworkTypeReconciler{
+		if err := (&controllersalidns.DomainReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("NetworkType"),
+			Log:              ctrl.Log.WithName("controllers").WithName("Domain"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         alicloud.Provider(),
-			Resource:         alicloud.Provider().ResourcesMap["metal_device_network_type"],
-			TypeName:         "metal_device_network_type",
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_alidns_domain"],
+			TypeName:         "alicloud_alidns_domain",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "NetworkType")
+			setupLog.Error(err, "unable to create controller", "controller", "Domain")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "gateway.alicloud.kubeform.com",
+		Group:   "alidns.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Gateway",
+		Kind:    "DomainAttachment",
 	}:
-		if err := (&controllersgateway.GatewayReconciler{
+		if err := (&controllersalidns.DomainAttachmentReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("Gateway"),
+			Log:              ctrl.Log.WithName("controllers").WithName("DomainAttachment"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         alicloud.Provider(),
-			Resource:         alicloud.Provider().ResourcesMap["metal_gateway"],
-			TypeName:         "metal_gateway",
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_alidns_domain_attachment"],
+			TypeName:         "alicloud_alidns_domain_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "Gateway")
+			setupLog.Error(err, "unable to create controller", "controller", "DomainAttachment")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "ip.alicloud.kubeform.com",
+		Group:   "alidns.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Attachment",
+		Kind:    "DomainGroup",
 	}:
-		if err := (&controllersip.AttachmentReconciler{
+		if err := (&controllersalidns.DomainGroupReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("Attachment"),
+			Log:              ctrl.Log.WithName("controllers").WithName("DomainGroup"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         alicloud.Provider(),
-			Resource:         alicloud.Provider().ResourcesMap["metal_ip_attachment"],
-			TypeName:         "metal_ip_attachment",
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_alidns_domain_group"],
+			TypeName:         "alicloud_alidns_domain_group",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "Attachment")
+			setupLog.Error(err, "unable to create controller", "controller", "DomainGroup")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "organization.alicloud.kubeform.com",
+		Group:   "alidns.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Organization",
+		Kind:    "Instance",
 	}:
-		if err := (&controllersorganization.OrganizationReconciler{
+		if err := (&controllersalidns.InstanceReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("Organization"),
+			Log:              ctrl.Log.WithName("controllers").WithName("Instance"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         alicloud.Provider(),
-			Resource:         alicloud.Provider().ResourcesMap["metal_organization"],
-			TypeName:         "metal_organization",
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_alidns_instance"],
+			TypeName:         "alicloud_alidns_instance",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "Organization")
+			setupLog.Error(err, "unable to create controller", "controller", "Instance")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "port.alicloud.kubeform.com",
+		Group:   "alidns.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "VlanAttachment",
+		Kind:    "Record",
 	}:
-		if err := (&controllersport.VlanAttachmentReconciler{
+		if err := (&controllersalidns.RecordReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("VlanAttachment"),
+			Log:              ctrl.Log.WithName("controllers").WithName("Record"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         alicloud.Provider(),
-			Resource:         alicloud.Provider().ResourcesMap["metal_port_vlan_attachment"],
-			TypeName:         "metal_port_vlan_attachment",
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_alidns_record"],
+			TypeName:         "alicloud_alidns_record",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "VlanAttachment")
+			setupLog.Error(err, "unable to create controller", "controller", "Record")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "project.alicloud.kubeform.com",
+		Group:   "alikafka.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ConsumerGroup",
+	}:
+		if err := (&controllersalikafka.ConsumerGroupReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ConsumerGroup"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_alikafka_consumer_group"],
+			TypeName:         "alicloud_alikafka_consumer_group",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ConsumerGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "alikafka.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&controllersalikafka.InstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Instance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_alikafka_instance"],
+			TypeName:         "alicloud_alikafka_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "alikafka.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "SaslACL",
+	}:
+		if err := (&controllersalikafka.SaslACLReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("SaslACL"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_alikafka_sasl_acl"],
+			TypeName:         "alicloud_alikafka_sasl_acl",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "SaslACL")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "alikafka.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "SaslUser",
+	}:
+		if err := (&controllersalikafka.SaslUserReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("SaslUser"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_alikafka_sasl_user"],
+			TypeName:         "alicloud_alikafka_sasl_user",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "SaslUser")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "alikafka.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Topic",
+	}:
+		if err := (&controllersalikafka.TopicReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Topic"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_alikafka_topic"],
+			TypeName:         "alicloud_alikafka_topic",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Topic")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "amqp.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Exchange",
+	}:
+		if err := (&controllersamqp.ExchangeReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Exchange"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_amqp_exchange"],
+			TypeName:         "alicloud_amqp_exchange",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Exchange")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "amqp.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Queue",
+	}:
+		if err := (&controllersamqp.QueueReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Queue"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_amqp_queue"],
+			TypeName:         "alicloud_amqp_queue",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Queue")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "amqp.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "VirtualHost",
+	}:
+		if err := (&controllersamqp.VirtualHostReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("VirtualHost"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_amqp_virtual_host"],
+			TypeName:         "alicloud_amqp_virtual_host",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "VirtualHost")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "apigateway.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Api",
+	}:
+		if err := (&controllersapigateway.ApiReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Api"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_api_gateway_api"],
+			TypeName:         "alicloud_api_gateway_api",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Api")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "apigateway.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "App",
+	}:
+		if err := (&controllersapigateway.AppReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("App"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_api_gateway_app"],
+			TypeName:         "alicloud_api_gateway_app",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "App")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "apigateway.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AppAttachment",
+	}:
+		if err := (&controllersapigateway.AppAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("AppAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_api_gateway_app_attachment"],
+			TypeName:         "alicloud_api_gateway_app_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "AppAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "apigateway.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Group",
+	}:
+		if err := (&controllersapigateway.GroupReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Group"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_api_gateway_group"],
+			TypeName:         "alicloud_api_gateway_group",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Group")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "apigateway.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "VpcAccess",
+	}:
+		if err := (&controllersapigateway.VpcAccessReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("VpcAccess"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_api_gateway_vpc_access"],
+			TypeName:         "alicloud_api_gateway_vpc_access",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "VpcAccess")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "auto.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ProvisioningGroup",
+	}:
+		if err := (&controllersauto.ProvisioningGroupReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ProvisioningGroup"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_auto_provisioning_group"],
+			TypeName:         "alicloud_auto_provisioning_group",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ProvisioningGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "brain.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "IndustrialPidLoop",
+	}:
+		if err := (&controllersbrain.IndustrialPidLoopReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("IndustrialPidLoop"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_brain_industrial_pid_loop"],
+			TypeName:         "alicloud_brain_industrial_pid_loop",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "IndustrialPidLoop")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "brain.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "IndustrialPidOrganization",
+	}:
+		if err := (&controllersbrain.IndustrialPidOrganizationReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("IndustrialPidOrganization"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_brain_industrial_pid_organization"],
+			TypeName:         "alicloud_brain_industrial_pid_organization",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "IndustrialPidOrganization")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "brain.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "IndustrialPidProject",
+	}:
+		if err := (&controllersbrain.IndustrialPidProjectReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("IndustrialPidProject"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_brain_industrial_pid_project"],
+			TypeName:         "alicloud_brain_industrial_pid_project",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "IndustrialPidProject")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Certificate",
+	}:
+		if err := (&controllerscas.CertificateReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Certificate"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cas_certificate"],
+			TypeName:         "alicloud_cas_certificate",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Certificate")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cassandra.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BackupPlan",
+	}:
+		if err := (&controllerscassandra.BackupPlanReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("BackupPlan"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cassandra_backup_plan"],
+			TypeName:         "alicloud_cassandra_backup_plan",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "BackupPlan")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cassandra.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Cluster",
+	}:
+		if err := (&controllerscassandra.ClusterReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Cluster"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cassandra_cluster"],
+			TypeName:         "alicloud_cassandra_cluster",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Cluster")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cassandra.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DataCenter",
+	}:
+		if err := (&controllerscassandra.DataCenterReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("DataCenter"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cassandra_data_center"],
+			TypeName:         "alicloud_cassandra_data_center",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "DataCenter")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cdn.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Domain",
+	}:
+		if err := (&controllerscdn.DomainReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Domain"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cdn_domain"],
+			TypeName:         "alicloud_cdn_domain",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Domain")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cdn.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DomainConfig",
+	}:
+		if err := (&controllerscdn.DomainConfigReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("DomainConfig"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cdn_domain_config"],
+			TypeName:         "alicloud_cdn_domain_config",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "DomainConfig")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cdn.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DomainNew",
+	}:
+		if err := (&controllerscdn.DomainNewReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("DomainNew"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cdn_domain_new"],
+			TypeName:         "alicloud_cdn_domain_new",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "DomainNew")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BandwidthLimit",
+	}:
+		if err := (&controllerscen.BandwidthLimitReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("BandwidthLimit"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cen_bandwidth_limit"],
+			TypeName:         "alicloud_cen_bandwidth_limit",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "BandwidthLimit")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BandwidthPackage",
+	}:
+		if err := (&controllerscen.BandwidthPackageReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("BandwidthPackage"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cen_bandwidth_package"],
+			TypeName:         "alicloud_cen_bandwidth_package",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "BandwidthPackage")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BandwidthPackageAttachment",
+	}:
+		if err := (&controllerscen.BandwidthPackageAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("BandwidthPackageAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cen_bandwidth_package_attachment"],
+			TypeName:         "alicloud_cen_bandwidth_package_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "BandwidthPackageAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Flowlog",
+	}:
+		if err := (&controllerscen.FlowlogReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Flowlog"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cen_flowlog"],
+			TypeName:         "alicloud_cen_flowlog",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Flowlog")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&controllerscen.InstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Instance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cen_instance"],
+			TypeName:         "alicloud_cen_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "InstanceAttachment",
+	}:
+		if err := (&controllerscen.InstanceAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("InstanceAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cen_instance_attachment"],
+			TypeName:         "alicloud_cen_instance_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "InstanceAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "InstanceGrant",
+	}:
+		if err := (&controllerscen.InstanceGrantReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("InstanceGrant"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cen_instance_grant"],
+			TypeName:         "alicloud_cen_instance_grant",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "InstanceGrant")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "PrivateZone",
+	}:
+		if err := (&controllerscen.PrivateZoneReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("PrivateZone"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cen_private_zone"],
+			TypeName:         "alicloud_cen_private_zone",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "PrivateZone")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "RouteEntry",
+	}:
+		if err := (&controllerscen.RouteEntryReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("RouteEntry"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cen_route_entry"],
+			TypeName:         "alicloud_cen_route_entry",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "RouteEntry")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "RouteMap",
+	}:
+		if err := (&controllerscen.RouteMapReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("RouteMap"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cen_route_map"],
+			TypeName:         "alicloud_cen_route_map",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "RouteMap")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "RouteService",
+	}:
+		if err := (&controllerscen.RouteServiceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("RouteService"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cen_route_service"],
+			TypeName:         "alicloud_cen_route_service",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "RouteService")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "TransitRouter",
+	}:
+		if err := (&controllerscen.TransitRouterReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("TransitRouter"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cen_transit_router"],
+			TypeName:         "alicloud_cen_transit_router",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "TransitRouter")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "TransitRouterPeerAttachment",
+	}:
+		if err := (&controllerscen.TransitRouterPeerAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("TransitRouterPeerAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cen_transit_router_peer_attachment"],
+			TypeName:         "alicloud_cen_transit_router_peer_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "TransitRouterPeerAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "TransitRouterRouteEntry",
+	}:
+		if err := (&controllerscen.TransitRouterRouteEntryReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("TransitRouterRouteEntry"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cen_transit_router_route_entry"],
+			TypeName:         "alicloud_cen_transit_router_route_entry",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "TransitRouterRouteEntry")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "TransitRouterRouteTable",
+	}:
+		if err := (&controllerscen.TransitRouterRouteTableReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("TransitRouterRouteTable"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cen_transit_router_route_table"],
+			TypeName:         "alicloud_cen_transit_router_route_table",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "TransitRouterRouteTable")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "TransitRouterRouteTableAssociation",
+	}:
+		if err := (&controllerscen.TransitRouterRouteTableAssociationReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("TransitRouterRouteTableAssociation"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cen_transit_router_route_table_association"],
+			TypeName:         "alicloud_cen_transit_router_route_table_association",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "TransitRouterRouteTableAssociation")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "TransitRouterRouteTablePropagation",
+	}:
+		if err := (&controllerscen.TransitRouterRouteTablePropagationReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("TransitRouterRouteTablePropagation"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cen_transit_router_route_table_propagation"],
+			TypeName:         "alicloud_cen_transit_router_route_table_propagation",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "TransitRouterRouteTablePropagation")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "TransitRouterVbrAttachment",
+	}:
+		if err := (&controllerscen.TransitRouterVbrAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("TransitRouterVbrAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cen_transit_router_vbr_attachment"],
+			TypeName:         "alicloud_cen_transit_router_vbr_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "TransitRouterVbrAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "TransitRouterVpcAttachment",
+	}:
+		if err := (&controllerscen.TransitRouterVpcAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("TransitRouterVpcAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cen_transit_router_vpc_attachment"],
+			TypeName:         "alicloud_cen_transit_router_vpc_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "TransitRouterVpcAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "VbrHealthCheck",
+	}:
+		if err := (&controllerscen.VbrHealthCheckReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("VbrHealthCheck"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cen_vbr_health_check"],
+			TypeName:         "alicloud_cen_vbr_health_check",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "VbrHealthCheck")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cloud.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ConnectNetwork",
+	}:
+		if err := (&controllerscloud.ConnectNetworkReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ConnectNetwork"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cloud_connect_network"],
+			TypeName:         "alicloud_cloud_connect_network",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ConnectNetwork")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cloud.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ConnectNetworkAttachment",
+	}:
+		if err := (&controllerscloud.ConnectNetworkAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ConnectNetworkAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cloud_connect_network_attachment"],
+			TypeName:         "alicloud_cloud_connect_network_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ConnectNetworkAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cloud.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ConnectNetworkGrant",
+	}:
+		if err := (&controllerscloud.ConnectNetworkGrantReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ConnectNetworkGrant"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cloud_connect_network_grant"],
+			TypeName:         "alicloud_cloud_connect_network_grant",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ConnectNetworkGrant")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cloud.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "StorageGatewayStorageBundle",
+	}:
+		if err := (&controllerscloud.StorageGatewayStorageBundleReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("StorageGatewayStorageBundle"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cloud_storage_gateway_storage_bundle"],
+			TypeName:         "alicloud_cloud_storage_gateway_storage_bundle",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "StorageGatewayStorageBundle")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Alarm",
+	}:
+		if err := (&controllerscms.AlarmReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Alarm"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cms_alarm"],
+			TypeName:         "alicloud_cms_alarm",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Alarm")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AlarmContact",
+	}:
+		if err := (&controllerscms.AlarmContactReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("AlarmContact"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cms_alarm_contact"],
+			TypeName:         "alicloud_cms_alarm_contact",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "AlarmContact")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AlarmContactGroup",
+	}:
+		if err := (&controllerscms.AlarmContactGroupReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("AlarmContactGroup"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cms_alarm_contact_group"],
+			TypeName:         "alicloud_cms_alarm_contact_group",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "AlarmContactGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "GroupMetricRule",
+	}:
+		if err := (&controllerscms.GroupMetricRuleReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("GroupMetricRule"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cms_group_metric_rule"],
+			TypeName:         "alicloud_cms_group_metric_rule",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "GroupMetricRule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "MonitorGroup",
+	}:
+		if err := (&controllerscms.MonitorGroupReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("MonitorGroup"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cms_monitor_group"],
+			TypeName:         "alicloud_cms_monitor_group",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "MonitorGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "MonitorGroupInstances",
+	}:
+		if err := (&controllerscms.MonitorGroupInstancesReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("MonitorGroupInstances"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cms_monitor_group_instances"],
+			TypeName:         "alicloud_cms_monitor_group_instances",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "MonitorGroupInstances")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "SiteMonitor",
+	}:
+		if err := (&controllerscms.SiteMonitorReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("SiteMonitor"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cms_site_monitor"],
+			TypeName:         "alicloud_cms_site_monitor",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "SiteMonitor")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "common.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BandwidthPackage",
+	}:
+		if err := (&controllerscommon.BandwidthPackageReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("BandwidthPackage"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_common_bandwidth_package"],
+			TypeName:         "alicloud_common_bandwidth_package",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "BandwidthPackage")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "common.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BandwidthPackageAttachment",
+	}:
+		if err := (&controllerscommon.BandwidthPackageAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("BandwidthPackageAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_common_bandwidth_package_attachment"],
+			TypeName:         "alicloud_common_bandwidth_package_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "BandwidthPackageAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "config.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AggregateCompliancePack",
+	}:
+		if err := (&controllersconfig.AggregateCompliancePackReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("AggregateCompliancePack"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_config_aggregate_compliance_pack"],
+			TypeName:         "alicloud_config_aggregate_compliance_pack",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "AggregateCompliancePack")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "config.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AggregateConfigRule",
+	}:
+		if err := (&controllersconfig.AggregateConfigRuleReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("AggregateConfigRule"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_config_aggregate_config_rule"],
+			TypeName:         "alicloud_config_aggregate_config_rule",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "AggregateConfigRule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "config.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Aggregator",
+	}:
+		if err := (&controllersconfig.AggregatorReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Aggregator"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_config_aggregator"],
+			TypeName:         "alicloud_config_aggregator",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Aggregator")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "config.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "CompliancePack",
+	}:
+		if err := (&controllersconfig.CompliancePackReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("CompliancePack"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_config_compliance_pack"],
+			TypeName:         "alicloud_config_compliance_pack",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "CompliancePack")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "config.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ConfigurationRecorder",
+	}:
+		if err := (&controllersconfig.ConfigurationRecorderReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ConfigurationRecorder"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_config_configuration_recorder"],
+			TypeName:         "alicloud_config_configuration_recorder",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ConfigurationRecorder")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "config.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DeliveryChannel",
+	}:
+		if err := (&controllersconfig.DeliveryChannelReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("DeliveryChannel"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_config_delivery_channel"],
+			TypeName:         "alicloud_config_delivery_channel",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "DeliveryChannel")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "config.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Rule",
+	}:
+		if err := (&controllersconfig.RuleReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Rule"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_config_rule"],
+			TypeName:         "alicloud_config_rule",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Rule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "container.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Cluster",
+	}:
+		if err := (&controllerscontainer.ClusterReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Cluster"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_container_cluster"],
+			TypeName:         "alicloud_container_cluster",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Cluster")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "copy.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Image",
+	}:
+		if err := (&controllerscopy.ImageReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Image"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_copy_image"],
+			TypeName:         "alicloud_copy_image",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Image")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cr.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "EeInstance",
+	}:
+		if err := (&controllerscr.EeInstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("EeInstance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cr_ee_instance"],
+			TypeName:         "alicloud_cr_ee_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "EeInstance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cr.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "EeNamespace",
+	}:
+		if err := (&controllerscr.EeNamespaceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("EeNamespace"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cr_ee_namespace"],
+			TypeName:         "alicloud_cr_ee_namespace",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "EeNamespace")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cr.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "EeRepo",
+	}:
+		if err := (&controllerscr.EeRepoReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("EeRepo"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cr_ee_repo"],
+			TypeName:         "alicloud_cr_ee_repo",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "EeRepo")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cr.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "EeSyncRule",
+	}:
+		if err := (&controllerscr.EeSyncRuleReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("EeSyncRule"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cr_ee_sync_rule"],
+			TypeName:         "alicloud_cr_ee_sync_rule",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "EeSyncRule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cr.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Namespace",
+	}:
+		if err := (&controllerscr.NamespaceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Namespace"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cr_namespace"],
+			TypeName:         "alicloud_cr_namespace",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Namespace")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cr.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Repo",
+	}:
+		if err := (&controllerscr.RepoReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Repo"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cr_repo"],
+			TypeName:         "alicloud_cr_repo",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Repo")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Application",
+	}:
+		if err := (&controllerscs.ApplicationReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Application"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cs_application"],
+			TypeName:         "alicloud_cs_application",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Application")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AutoscalingConfig",
+	}:
+		if err := (&controllerscs.AutoscalingConfigReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("AutoscalingConfig"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cs_autoscaling_config"],
+			TypeName:         "alicloud_cs_autoscaling_config",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "AutoscalingConfig")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "EdgeKubernetes",
+	}:
+		if err := (&controllerscs.EdgeKubernetesReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("EdgeKubernetes"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cs_edge_kubernetes"],
+			TypeName:         "alicloud_cs_edge_kubernetes",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "EdgeKubernetes")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Kubernetes",
+	}:
+		if err := (&controllerscs.KubernetesReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Kubernetes"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cs_kubernetes"],
+			TypeName:         "alicloud_cs_kubernetes",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Kubernetes")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "KubernetesAutoscaler",
+	}:
+		if err := (&controllerscs.KubernetesAutoscalerReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("KubernetesAutoscaler"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cs_kubernetes_autoscaler"],
+			TypeName:         "alicloud_cs_kubernetes_autoscaler",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "KubernetesAutoscaler")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "KubernetesNodePool",
+	}:
+		if err := (&controllerscs.KubernetesNodePoolReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("KubernetesNodePool"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cs_kubernetes_node_pool"],
+			TypeName:         "alicloud_cs_kubernetes_node_pool",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "KubernetesNodePool")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "KubernetesPermissions",
+	}:
+		if err := (&controllerscs.KubernetesPermissionsReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("KubernetesPermissions"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cs_kubernetes_permissions"],
+			TypeName:         "alicloud_cs_kubernetes_permissions",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "KubernetesPermissions")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagedKubernetes",
+	}:
+		if err := (&controllerscs.ManagedKubernetesReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ManagedKubernetes"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cs_managed_kubernetes"],
+			TypeName:         "alicloud_cs_managed_kubernetes",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ManagedKubernetes")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ServerlessKubernetes",
+	}:
+		if err := (&controllerscs.ServerlessKubernetesReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ServerlessKubernetes"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cs_serverless_kubernetes"],
+			TypeName:         "alicloud_cs_serverless_kubernetes",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ServerlessKubernetes")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Swarm",
+	}:
+		if err := (&controllerscs.SwarmReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Swarm"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_cs_swarm"],
+			TypeName:         "alicloud_cs_swarm",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Swarm")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "datahub.alicloud.kubeform.com",
 		Version: "v1alpha1",
 		Kind:    "Project",
 	}:
-		if err := (&controllersproject.ProjectReconciler{
+		if err := (&controllersdatahub.ProjectReconciler{
 			Client:           mgr.GetClient(),
 			Log:              ctrl.Log.WithName("controllers").WithName("Project"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         alicloud.Provider(),
-			Resource:         alicloud.Provider().ResourcesMap["metal_project"],
-			TypeName:         "metal_project",
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_datahub_project"],
+			TypeName:         "alicloud_datahub_project",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Project")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "project.alicloud.kubeform.com",
+		Group:   "datahub.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "ApiKey",
+		Kind:    "Subscription",
 	}:
-		if err := (&controllersproject.ApiKeyReconciler{
+		if err := (&controllersdatahub.SubscriptionReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("ApiKey"),
+			Log:              ctrl.Log.WithName("controllers").WithName("Subscription"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         alicloud.Provider(),
-			Resource:         alicloud.Provider().ResourcesMap["metal_project_api_key"],
-			TypeName:         "metal_project_api_key",
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_datahub_subscription"],
+			TypeName:         "alicloud_datahub_subscription",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "ApiKey")
+			setupLog.Error(err, "unable to create controller", "controller", "Subscription")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "project.alicloud.kubeform.com",
+		Group:   "datahub.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "SshKey",
+		Kind:    "Topic",
 	}:
-		if err := (&controllersproject.SshKeyReconciler{
+		if err := (&controllersdatahub.TopicReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("SshKey"),
+			Log:              ctrl.Log.WithName("controllers").WithName("Topic"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         alicloud.Provider(),
-			Resource:         alicloud.Provider().ResourcesMap["metal_project_ssh_key"],
-			TypeName:         "metal_project_ssh_key",
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_datahub_topic"],
+			TypeName:         "alicloud_datahub_topic",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "SshKey")
+			setupLog.Error(err, "unable to create controller", "controller", "Topic")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "reserved.alicloud.kubeform.com",
+		Group:   "db.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "IpBlock",
+		Kind:    "Account",
 	}:
-		if err := (&controllersreserved.IpBlockReconciler{
+		if err := (&controllersdb.AccountReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("IpBlock"),
+			Log:              ctrl.Log.WithName("controllers").WithName("Account"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         alicloud.Provider(),
-			Resource:         alicloud.Provider().ResourcesMap["metal_reserved_ip_block"],
-			TypeName:         "metal_reserved_ip_block",
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_db_account"],
+			TypeName:         "alicloud_db_account",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "IpBlock")
+			setupLog.Error(err, "unable to create controller", "controller", "Account")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "spot.alicloud.kubeform.com",
+		Group:   "db.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "MarketRequest",
+		Kind:    "AccountPrivilege",
 	}:
-		if err := (&controllersspot.MarketRequestReconciler{
+		if err := (&controllersdb.AccountPrivilegeReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("MarketRequest"),
+			Log:              ctrl.Log.WithName("controllers").WithName("AccountPrivilege"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         alicloud.Provider(),
-			Resource:         alicloud.Provider().ResourcesMap["metal_spot_market_request"],
-			TypeName:         "metal_spot_market_request",
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_db_account_privilege"],
+			TypeName:         "alicloud_db_account_privilege",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "MarketRequest")
+			setupLog.Error(err, "unable to create controller", "controller", "AccountPrivilege")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "ssh.alicloud.kubeform.com",
+		Group:   "db.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BackupPolicy",
+	}:
+		if err := (&controllersdb.BackupPolicyReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("BackupPolicy"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_db_backup_policy"],
+			TypeName:         "alicloud_db_backup_policy",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "BackupPolicy")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "db.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Connection",
+	}:
+		if err := (&controllersdb.ConnectionReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Connection"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_db_connection"],
+			TypeName:         "alicloud_db_connection",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Connection")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "db.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Database",
+	}:
+		if err := (&controllersdb.DatabaseReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Database"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_db_database"],
+			TypeName:         "alicloud_db_database",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Database")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "db.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&controllersdb.InstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Instance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_db_instance"],
+			TypeName:         "alicloud_db_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "db.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ReadWriteSplittingConnection",
+	}:
+		if err := (&controllersdb.ReadWriteSplittingConnectionReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ReadWriteSplittingConnection"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_db_read_write_splitting_connection"],
+			TypeName:         "alicloud_db_read_write_splitting_connection",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ReadWriteSplittingConnection")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "db.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ReadonlyInstance",
+	}:
+		if err := (&controllersdb.ReadonlyInstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ReadonlyInstance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_db_readonly_instance"],
+			TypeName:         "alicloud_db_readonly_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ReadonlyInstance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "dcdn.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Domain",
+	}:
+		if err := (&controllersdcdn.DomainReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Domain"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_dcdn_domain"],
+			TypeName:         "alicloud_dcdn_domain",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Domain")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ddosbgp.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&controllersddosbgp.InstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Instance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ddosbgp_instance"],
+			TypeName:         "alicloud_ddosbgp_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ddoscoo.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DomainResource",
+	}:
+		if err := (&controllersddoscoo.DomainResourceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("DomainResource"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ddoscoo_domain_resource"],
+			TypeName:         "alicloud_ddoscoo_domain_resource",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "DomainResource")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ddoscoo.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&controllersddoscoo.InstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Instance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ddoscoo_instance"],
+			TypeName:         "alicloud_ddoscoo_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ddoscoo.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Port",
+	}:
+		if err := (&controllersddoscoo.PortReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Port"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ddoscoo_port"],
+			TypeName:         "alicloud_ddoscoo_port",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Port")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ddoscoo.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "SchedulerRule",
+	}:
+		if err := (&controllersddoscoo.SchedulerRuleReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("SchedulerRule"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ddoscoo_scheduler_rule"],
+			TypeName:         "alicloud_ddoscoo_scheduler_rule",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "SchedulerRule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "direct.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "MailReceivers",
+	}:
+		if err := (&controllersdirect.MailReceiversReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("MailReceivers"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_direct_mail_receivers"],
+			TypeName:         "alicloud_direct_mail_receivers",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "MailReceivers")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "disk.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Disk",
+	}:
+		if err := (&controllersdisk.DiskReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Disk"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_disk"],
+			TypeName:         "alicloud_disk",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Disk")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "disk.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Attachment",
+	}:
+		if err := (&controllersdisk.AttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Attachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_disk_attachment"],
+			TypeName:         "alicloud_disk_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Attachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "dms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "EnterpriseInstance",
+	}:
+		if err := (&controllersdms.EnterpriseInstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("EnterpriseInstance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_dms_enterprise_instance"],
+			TypeName:         "alicloud_dms_enterprise_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "EnterpriseInstance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "dms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "EnterpriseUser",
+	}:
+		if err := (&controllersdms.EnterpriseUserReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("EnterpriseUser"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_dms_enterprise_user"],
+			TypeName:         "alicloud_dms_enterprise_user",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "EnterpriseUser")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "dns.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Dns",
+	}:
+		if err := (&controllersdns.DnsReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Dns"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_dns"],
+			TypeName:         "alicloud_dns",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Dns")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "dns.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Domain",
+	}:
+		if err := (&controllersdns.DomainReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Domain"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_dns_domain"],
+			TypeName:         "alicloud_dns_domain",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Domain")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "dns.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DomainAttachment",
+	}:
+		if err := (&controllersdns.DomainAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("DomainAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_dns_domain_attachment"],
+			TypeName:         "alicloud_dns_domain_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "DomainAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "dns.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Group",
+	}:
+		if err := (&controllersdns.GroupReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Group"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_dns_group"],
+			TypeName:         "alicloud_dns_group",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Group")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "dns.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&controllersdns.InstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Instance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_dns_instance"],
+			TypeName:         "alicloud_dns_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "dns.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Record",
+	}:
+		if err := (&controllersdns.RecordReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Record"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_dns_record"],
+			TypeName:         "alicloud_dns_record",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Record")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "drds.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&controllersdrds.InstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Instance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_drds_instance"],
+			TypeName:         "alicloud_drds_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "eci.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ContainerGroup",
+	}:
+		if err := (&controllerseci.ContainerGroupReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ContainerGroup"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_eci_container_group"],
+			TypeName:         "alicloud_eci_container_group",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ContainerGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "eci.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ImageCache",
+	}:
+		if err := (&controllerseci.ImageCacheReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ImageCache"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_eci_image_cache"],
+			TypeName:         "alicloud_eci_image_cache",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ImageCache")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "eci.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "OpenapiImageCache",
+	}:
+		if err := (&controllerseci.OpenapiImageCacheReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("OpenapiImageCache"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_eci_openapi_image_cache"],
+			TypeName:         "alicloud_eci_openapi_image_cache",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "OpenapiImageCache")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AutoSnapshotPolicy",
+	}:
+		if err := (&controllersecs.AutoSnapshotPolicyReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("AutoSnapshotPolicy"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ecs_auto_snapshot_policy"],
+			TypeName:         "alicloud_ecs_auto_snapshot_policy",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "AutoSnapshotPolicy")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AutoSnapshotPolicyAttachment",
+	}:
+		if err := (&controllersecs.AutoSnapshotPolicyAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("AutoSnapshotPolicyAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ecs_auto_snapshot_policy_attachment"],
+			TypeName:         "alicloud_ecs_auto_snapshot_policy_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "AutoSnapshotPolicyAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Command",
+	}:
+		if err := (&controllersecs.CommandReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Command"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ecs_command"],
+			TypeName:         "alicloud_ecs_command",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Command")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DedicatedHost",
+	}:
+		if err := (&controllersecs.DedicatedHostReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("DedicatedHost"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ecs_dedicated_host"],
+			TypeName:         "alicloud_ecs_dedicated_host",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "DedicatedHost")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Disk",
+	}:
+		if err := (&controllersecs.DiskReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Disk"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ecs_disk"],
+			TypeName:         "alicloud_ecs_disk",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Disk")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DiskAttachment",
+	}:
+		if err := (&controllersecs.DiskAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("DiskAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ecs_disk_attachment"],
+			TypeName:         "alicloud_ecs_disk_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "DiskAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "HpcCluster",
+	}:
+		if err := (&controllersecs.HpcClusterReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("HpcCluster"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ecs_hpc_cluster"],
+			TypeName:         "alicloud_ecs_hpc_cluster",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "HpcCluster")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "KeyPair",
+	}:
+		if err := (&controllersecs.KeyPairReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("KeyPair"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ecs_key_pair"],
+			TypeName:         "alicloud_ecs_key_pair",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "KeyPair")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "KeyPairAttachment",
+	}:
+		if err := (&controllersecs.KeyPairAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("KeyPairAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ecs_key_pair_attachment"],
+			TypeName:         "alicloud_ecs_key_pair_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "KeyPairAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "LaunchTemplate",
+	}:
+		if err := (&controllersecs.LaunchTemplateReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("LaunchTemplate"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ecs_launch_template"],
+			TypeName:         "alicloud_ecs_launch_template",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "LaunchTemplate")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "NetworkInterface",
+	}:
+		if err := (&controllersecs.NetworkInterfaceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("NetworkInterface"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ecs_network_interface"],
+			TypeName:         "alicloud_ecs_network_interface",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "NetworkInterface")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "NetworkInterfaceAttachment",
+	}:
+		if err := (&controllersecs.NetworkInterfaceAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("NetworkInterfaceAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ecs_network_interface_attachment"],
+			TypeName:         "alicloud_ecs_network_interface_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "NetworkInterfaceAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Snapshot",
+	}:
+		if err := (&controllersecs.SnapshotReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Snapshot"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ecs_snapshot"],
+			TypeName:         "alicloud_ecs_snapshot",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Snapshot")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "edas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Application",
+	}:
+		if err := (&controllersedas.ApplicationReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Application"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_edas_application"],
+			TypeName:         "alicloud_edas_application",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Application")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "edas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ApplicationDeployment",
+	}:
+		if err := (&controllersedas.ApplicationDeploymentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ApplicationDeployment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_edas_application_deployment"],
+			TypeName:         "alicloud_edas_application_deployment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ApplicationDeployment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "edas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ApplicationScale",
+	}:
+		if err := (&controllersedas.ApplicationScaleReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ApplicationScale"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_edas_application_scale"],
+			TypeName:         "alicloud_edas_application_scale",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ApplicationScale")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "edas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Cluster",
+	}:
+		if err := (&controllersedas.ClusterReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Cluster"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_edas_cluster"],
+			TypeName:         "alicloud_edas_cluster",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Cluster")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "edas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DeployGroup",
+	}:
+		if err := (&controllersedas.DeployGroupReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("DeployGroup"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_edas_deploy_group"],
+			TypeName:         "alicloud_edas_deploy_group",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "DeployGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "edas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "InstanceClusterAttachment",
+	}:
+		if err := (&controllersedas.InstanceClusterAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("InstanceClusterAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_edas_instance_cluster_attachment"],
+			TypeName:         "alicloud_edas_instance_cluster_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "InstanceClusterAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "edas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "K8sApplication",
+	}:
+		if err := (&controllersedas.K8sApplicationReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("K8sApplication"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_edas_k8s_application"],
+			TypeName:         "alicloud_edas_k8s_application",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "K8sApplication")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "edas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "K8sCluster",
+	}:
+		if err := (&controllersedas.K8sClusterReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("K8sCluster"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_edas_k8s_cluster"],
+			TypeName:         "alicloud_edas_k8s_cluster",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "K8sCluster")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "edas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "SlbAttachment",
+	}:
+		if err := (&controllersedas.SlbAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("SlbAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_edas_slb_attachment"],
+			TypeName:         "alicloud_edas_slb_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "SlbAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "eip.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Eip",
+	}:
+		if err := (&controllerseip.EipReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Eip"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_eip"],
+			TypeName:         "alicloud_eip",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Eip")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "eip.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Address",
+	}:
+		if err := (&controllerseip.AddressReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Address"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_eip_address"],
+			TypeName:         "alicloud_eip_address",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Address")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "eip.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Association",
+	}:
+		if err := (&controllerseip.AssociationReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Association"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_eip_association"],
+			TypeName:         "alicloud_eip_association",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Association")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "eipanycast.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AnycastEipAddress",
+	}:
+		if err := (&controllerseipanycast.AnycastEipAddressReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("AnycastEipAddress"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_eipanycast_anycast_eip_address"],
+			TypeName:         "alicloud_eipanycast_anycast_eip_address",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "AnycastEipAddress")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "eipanycast.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AnycastEipAddressAttachment",
+	}:
+		if err := (&controllerseipanycast.AnycastEipAddressAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("AnycastEipAddressAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_eipanycast_anycast_eip_address_attachment"],
+			TypeName:         "alicloud_eipanycast_anycast_eip_address_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "AnycastEipAddressAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "elasticsearch.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&controllerselasticsearch.InstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Instance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_elasticsearch_instance"],
+			TypeName:         "alicloud_elasticsearch_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "emr.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Cluster",
+	}:
+		if err := (&controllersemr.ClusterReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Cluster"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_emr_cluster"],
+			TypeName:         "alicloud_emr_cluster",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Cluster")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ess.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Alarm",
+	}:
+		if err := (&controllersess.AlarmReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Alarm"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ess_alarm"],
+			TypeName:         "alicloud_ess_alarm",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Alarm")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ess.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Attachment",
+	}:
+		if err := (&controllersess.AttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Attachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ess_attachment"],
+			TypeName:         "alicloud_ess_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Attachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ess.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "LifecycleHook",
+	}:
+		if err := (&controllersess.LifecycleHookReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("LifecycleHook"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ess_lifecycle_hook"],
+			TypeName:         "alicloud_ess_lifecycle_hook",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "LifecycleHook")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ess.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Notification",
+	}:
+		if err := (&controllersess.NotificationReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Notification"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ess_notification"],
+			TypeName:         "alicloud_ess_notification",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Notification")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ess.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ScalingConfiguration",
+	}:
+		if err := (&controllersess.ScalingConfigurationReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ScalingConfiguration"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ess_scaling_configuration"],
+			TypeName:         "alicloud_ess_scaling_configuration",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ScalingConfiguration")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ess.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ScalingGroup",
+	}:
+		if err := (&controllersess.ScalingGroupReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ScalingGroup"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ess_scaling_group"],
+			TypeName:         "alicloud_ess_scaling_group",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ScalingGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ess.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ScalingRule",
+	}:
+		if err := (&controllersess.ScalingRuleReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ScalingRule"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ess_scaling_rule"],
+			TypeName:         "alicloud_ess_scaling_rule",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ScalingRule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ess.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ScalinggroupVserverGroups",
+	}:
+		if err := (&controllersess.ScalinggroupVserverGroupsReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ScalinggroupVserverGroups"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ess_scalinggroup_vserver_groups"],
+			TypeName:         "alicloud_ess_scalinggroup_vserver_groups",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ScalinggroupVserverGroups")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ess.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Schedule",
+	}:
+		if err := (&controllersess.ScheduleReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Schedule"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ess_schedule"],
+			TypeName:         "alicloud_ess_schedule",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Schedule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ess.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ScheduledTask",
+	}:
+		if err := (&controllersess.ScheduledTaskReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ScheduledTask"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ess_scheduled_task"],
+			TypeName:         "alicloud_ess_scheduled_task",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ScheduledTask")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "event.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BridgeEventBus",
+	}:
+		if err := (&controllersevent.BridgeEventBusReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("BridgeEventBus"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_event_bridge_event_bus"],
+			TypeName:         "alicloud_event_bridge_event_bus",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "BridgeEventBus")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "event.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BridgeSchemaGroup",
+	}:
+		if err := (&controllersevent.BridgeSchemaGroupReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("BridgeSchemaGroup"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_event_bridge_schema_group"],
+			TypeName:         "alicloud_event_bridge_schema_group",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "BridgeSchemaGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "fc.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Alias",
+	}:
+		if err := (&controllersfc.AliasReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Alias"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_fc_alias"],
+			TypeName:         "alicloud_fc_alias",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Alias")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "fc.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "CustomDomain",
+	}:
+		if err := (&controllersfc.CustomDomainReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("CustomDomain"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_fc_custom_domain"],
+			TypeName:         "alicloud_fc_custom_domain",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "CustomDomain")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "fc.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Function",
+	}:
+		if err := (&controllersfc.FunctionReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Function"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_fc_function"],
+			TypeName:         "alicloud_fc_function",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Function")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "fc.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "FunctionAsyncInvokeConfig",
+	}:
+		if err := (&controllersfc.FunctionAsyncInvokeConfigReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("FunctionAsyncInvokeConfig"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_fc_function_async_invoke_config"],
+			TypeName:         "alicloud_fc_function_async_invoke_config",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "FunctionAsyncInvokeConfig")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "fc.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Service",
+	}:
+		if err := (&controllersfc.ServiceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Service"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_fc_service"],
+			TypeName:         "alicloud_fc_service",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Service")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "fc.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Trigger",
+	}:
+		if err := (&controllersfc.TriggerReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Trigger"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_fc_trigger"],
+			TypeName:         "alicloud_fc_trigger",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Trigger")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "fnf.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Flow",
+	}:
+		if err := (&controllersfnf.FlowReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Flow"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_fnf_flow"],
+			TypeName:         "alicloud_fnf_flow",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Flow")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "fnf.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Schedule",
+	}:
+		if err := (&controllersfnf.ScheduleReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Schedule"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_fnf_schedule"],
+			TypeName:         "alicloud_fnf_schedule",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Schedule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "forward.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Entry",
+	}:
+		if err := (&controllersforward.EntryReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Entry"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_forward_entry"],
+			TypeName:         "alicloud_forward_entry",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Entry")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ga.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Accelerator",
+	}:
+		if err := (&controllersga.AcceleratorReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Accelerator"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ga_accelerator"],
+			TypeName:         "alicloud_ga_accelerator",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Accelerator")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ga.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BandwidthPackage",
+	}:
+		if err := (&controllersga.BandwidthPackageReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("BandwidthPackage"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ga_bandwidth_package"],
+			TypeName:         "alicloud_ga_bandwidth_package",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "BandwidthPackage")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ga.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BandwidthPackageAttachment",
+	}:
+		if err := (&controllersga.BandwidthPackageAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("BandwidthPackageAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ga_bandwidth_package_attachment"],
+			TypeName:         "alicloud_ga_bandwidth_package_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "BandwidthPackageAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ga.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "EndpointGroup",
+	}:
+		if err := (&controllersga.EndpointGroupReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("EndpointGroup"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ga_endpoint_group"],
+			TypeName:         "alicloud_ga_endpoint_group",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "EndpointGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ga.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ForwardingRule",
+	}:
+		if err := (&controllersga.ForwardingRuleReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ForwardingRule"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ga_forwarding_rule"],
+			TypeName:         "alicloud_ga_forwarding_rule",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ForwardingRule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ga.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "IpSet",
+	}:
+		if err := (&controllersga.IpSetReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("IpSet"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ga_ip_set"],
+			TypeName:         "alicloud_ga_ip_set",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "IpSet")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ga.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Listener",
+	}:
+		if err := (&controllersga.ListenerReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Listener"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ga_listener"],
+			TypeName:         "alicloud_ga_listener",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Listener")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "gpdb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Connection",
+	}:
+		if err := (&controllersgpdb.ConnectionReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Connection"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_gpdb_connection"],
+			TypeName:         "alicloud_gpdb_connection",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Connection")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "gpdb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ElasticInstance",
+	}:
+		if err := (&controllersgpdb.ElasticInstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ElasticInstance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_gpdb_elastic_instance"],
+			TypeName:         "alicloud_gpdb_elastic_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ElasticInstance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "gpdb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&controllersgpdb.InstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Instance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_gpdb_instance"],
+			TypeName:         "alicloud_gpdb_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "havip.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Havip",
+	}:
+		if err := (&controllershavip.HavipReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Havip"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_havip"],
+			TypeName:         "alicloud_havip",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Havip")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "havip.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Attachment",
+	}:
+		if err := (&controllershavip.AttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Attachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_havip_attachment"],
+			TypeName:         "alicloud_havip_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Attachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "hbase.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&controllershbase.InstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Instance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_hbase_instance"],
+			TypeName:         "alicloud_hbase_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "image.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Image",
+	}:
+		if err := (&controllersimage.ImageReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Image"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_image"],
+			TypeName:         "alicloud_image",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Image")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "image.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Copy",
+	}:
+		if err := (&controllersimage.CopyReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Copy"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_image_copy"],
+			TypeName:         "alicloud_image_copy",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Copy")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "image.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Export",
+	}:
+		if err := (&controllersimage.ExportReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Export"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_image_export"],
+			TypeName:         "alicloud_image_export",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Export")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "image.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Import",
+	}:
+		if err := (&controllersimage.ImportReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Import"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_image_import"],
+			TypeName:         "alicloud_image_import",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Import")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "image.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "SharePermission",
+	}:
+		if err := (&controllersimage.SharePermissionReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("SharePermission"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_image_share_permission"],
+			TypeName:         "alicloud_image_share_permission",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "SharePermission")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "instance.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&controllersinstance.InstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Instance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_instance"],
+			TypeName:         "alicloud_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "key.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Pair",
+	}:
+		if err := (&controllerskey.PairReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Pair"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_key_pair"],
+			TypeName:         "alicloud_key_pair",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Pair")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "key.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "PairAttachment",
+	}:
+		if err := (&controllerskey.PairAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("PairAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_key_pair_attachment"],
+			TypeName:         "alicloud_key_pair_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "PairAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "kms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Alias",
+	}:
+		if err := (&controllerskms.AliasReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Alias"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_kms_alias"],
+			TypeName:         "alicloud_kms_alias",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Alias")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "kms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Ciphertext",
+	}:
+		if err := (&controllerskms.CiphertextReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Ciphertext"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_kms_ciphertext"],
+			TypeName:         "alicloud_kms_ciphertext",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Ciphertext")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "kms.alicloud.kubeform.com",
 		Version: "v1alpha1",
 		Kind:    "Key",
 	}:
-		if err := (&controllersssh.KeyReconciler{
+		if err := (&controllerskms.KeyReconciler{
 			Client:           mgr.GetClient(),
 			Log:              ctrl.Log.WithName("controllers").WithName("Key"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         alicloud.Provider(),
-			Resource:         alicloud.Provider().ResourcesMap["metal_ssh_key"],
-			TypeName:         "metal_ssh_key",
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_kms_key"],
+			TypeName:         "alicloud_kms_key",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Key")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "user.alicloud.kubeform.com",
+		Group:   "kms.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "ApiKey",
+		Kind:    "KeyVersion",
 	}:
-		if err := (&controllersuser.ApiKeyReconciler{
+		if err := (&controllerskms.KeyVersionReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("ApiKey"),
+			Log:              ctrl.Log.WithName("controllers").WithName("KeyVersion"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         alicloud.Provider(),
-			Resource:         alicloud.Provider().ResourcesMap["metal_user_api_key"],
-			TypeName:         "metal_user_api_key",
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_kms_key_version"],
+			TypeName:         "alicloud_kms_key_version",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "ApiKey")
+			setupLog.Error(err, "unable to create controller", "controller", "KeyVersion")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "virtual.alicloud.kubeform.com",
+		Group:   "kms.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Circuit",
+		Kind:    "Secret",
 	}:
-		if err := (&controllersvirtual.CircuitReconciler{
+		if err := (&controllerskms.SecretReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("Circuit"),
+			Log:              ctrl.Log.WithName("controllers").WithName("Secret"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         alicloud.Provider(),
-			Resource:         alicloud.Provider().ResourcesMap["metal_virtual_circuit"],
-			TypeName:         "metal_virtual_circuit",
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_kms_secret"],
+			TypeName:         "alicloud_kms_secret",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "Circuit")
+			setupLog.Error(err, "unable to create controller", "controller", "Secret")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "vlan.alicloud.kubeform.com",
+		Group:   "kvstore.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Vlan",
+		Kind:    "Account",
 	}:
-		if err := (&controllersvlan.VlanReconciler{
+		if err := (&controllerskvstore.AccountReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("Vlan"),
+			Log:              ctrl.Log.WithName("controllers").WithName("Account"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         alicloud.Provider(),
-			Resource:         alicloud.Provider().ResourcesMap["metal_vlan"],
-			TypeName:         "metal_vlan",
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_kvstore_account"],
+			TypeName:         "alicloud_kvstore_account",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "Vlan")
+			setupLog.Error(err, "unable to create controller", "controller", "Account")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "volume.alicloud.kubeform.com",
+		Group:   "kvstore.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Volume",
+		Kind:    "BackupPolicy",
 	}:
-		if err := (&controllersvolume.VolumeReconciler{
+		if err := (&controllerskvstore.BackupPolicyReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("Volume"),
+			Log:              ctrl.Log.WithName("controllers").WithName("BackupPolicy"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         alicloud.Provider(),
-			Resource:         alicloud.Provider().ResourcesMap["metal_volume"],
-			TypeName:         "metal_volume",
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_kvstore_backup_policy"],
+			TypeName:         "alicloud_kvstore_backup_policy",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "Volume")
+			setupLog.Error(err, "unable to create controller", "controller", "BackupPolicy")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "volume.alicloud.kubeform.com",
+		Group:   "kvstore.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Connection",
+	}:
+		if err := (&controllerskvstore.ConnectionReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Connection"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_kvstore_connection"],
+			TypeName:         "alicloud_kvstore_connection",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Connection")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "kvstore.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&controllerskvstore.InstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Instance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_kvstore_instance"],
+			TypeName:         "alicloud_kvstore_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "launch.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Template",
+	}:
+		if err := (&controllerslaunch.TemplateReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Template"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_launch_template"],
+			TypeName:         "alicloud_launch_template",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Template")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "log.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Alert",
+	}:
+		if err := (&controllerslog.AlertReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Alert"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_log_alert"],
+			TypeName:         "alicloud_log_alert",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Alert")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "log.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Audit",
+	}:
+		if err := (&controllerslog.AuditReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Audit"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_log_audit"],
+			TypeName:         "alicloud_log_audit",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Audit")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "log.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Dashboard",
+	}:
+		if err := (&controllerslog.DashboardReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Dashboard"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_log_dashboard"],
+			TypeName:         "alicloud_log_dashboard",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Dashboard")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "log.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Etl",
+	}:
+		if err := (&controllerslog.EtlReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Etl"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_log_etl"],
+			TypeName:         "alicloud_log_etl",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Etl")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "log.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "MachineGroup",
+	}:
+		if err := (&controllerslog.MachineGroupReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("MachineGroup"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_log_machine_group"],
+			TypeName:         "alicloud_log_machine_group",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "MachineGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "log.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "OssShipper",
+	}:
+		if err := (&controllerslog.OssShipperReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("OssShipper"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_log_oss_shipper"],
+			TypeName:         "alicloud_log_oss_shipper",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "OssShipper")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "log.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Project",
+	}:
+		if err := (&controllerslog.ProjectReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Project"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_log_project"],
+			TypeName:         "alicloud_log_project",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Project")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "log.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Store",
+	}:
+		if err := (&controllerslog.StoreReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Store"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_log_store"],
+			TypeName:         "alicloud_log_store",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Store")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "log.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "StoreIndex",
+	}:
+		if err := (&controllerslog.StoreIndexReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("StoreIndex"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_log_store_index"],
+			TypeName:         "alicloud_log_store_index",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "StoreIndex")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "logtail.alicloud.kubeform.com",
 		Version: "v1alpha1",
 		Kind:    "Attachment",
 	}:
-		if err := (&controllersvolume.AttachmentReconciler{
+		if err := (&controllerslogtail.AttachmentReconciler{
 			Client:           mgr.GetClient(),
 			Log:              ctrl.Log.WithName("controllers").WithName("Attachment"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         alicloud.Provider(),
-			Resource:         alicloud.Provider().ResourcesMap["metal_volume_attachment"],
-			TypeName:         "metal_volume_attachment",
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_logtail_attachment"],
+			TypeName:         "alicloud_logtail_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Attachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "logtail.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Config",
+	}:
+		if err := (&controllerslogtail.ConfigReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Config"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_logtail_config"],
+			TypeName:         "alicloud_logtail_config",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Config")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "market.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Order",
+	}:
+		if err := (&controllersmarket.OrderReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Order"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_market_order"],
+			TypeName:         "alicloud_market_order",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Order")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "maxcompute.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Project",
+	}:
+		if err := (&controllersmaxcompute.ProjectReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Project"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_maxcompute_project"],
+			TypeName:         "alicloud_maxcompute_project",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Project")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "mns.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Queue",
+	}:
+		if err := (&controllersmns.QueueReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Queue"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_mns_queue"],
+			TypeName:         "alicloud_mns_queue",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Queue")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "mns.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Topic",
+	}:
+		if err := (&controllersmns.TopicReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Topic"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_mns_topic"],
+			TypeName:         "alicloud_mns_topic",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Topic")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "mns.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "TopicSubscription",
+	}:
+		if err := (&controllersmns.TopicSubscriptionReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("TopicSubscription"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_mns_topic_subscription"],
+			TypeName:         "alicloud_mns_topic_subscription",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "TopicSubscription")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "mongodb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&controllersmongodb.InstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Instance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_mongodb_instance"],
+			TypeName:         "alicloud_mongodb_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "mongodb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ShardingInstance",
+	}:
+		if err := (&controllersmongodb.ShardingInstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ShardingInstance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_mongodb_sharding_instance"],
+			TypeName:         "alicloud_mongodb_sharding_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ShardingInstance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "mse.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Cluster",
+	}:
+		if err := (&controllersmse.ClusterReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Cluster"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_mse_cluster"],
+			TypeName:         "alicloud_mse_cluster",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Cluster")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "nas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AccessGroup",
+	}:
+		if err := (&controllersnas.AccessGroupReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("AccessGroup"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_nas_access_group"],
+			TypeName:         "alicloud_nas_access_group",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "AccessGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "nas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AccessRule",
+	}:
+		if err := (&controllersnas.AccessRuleReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("AccessRule"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_nas_access_rule"],
+			TypeName:         "alicloud_nas_access_rule",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "AccessRule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "nas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "FileSystem",
+	}:
+		if err := (&controllersnas.FileSystemReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("FileSystem"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_nas_file_system"],
+			TypeName:         "alicloud_nas_file_system",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "FileSystem")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "nas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "MountTarget",
+	}:
+		if err := (&controllersnas.MountTargetReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("MountTarget"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_nas_mount_target"],
+			TypeName:         "alicloud_nas_mount_target",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "MountTarget")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "nat.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Gateway",
+	}:
+		if err := (&controllersnat.GatewayReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Gateway"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_nat_gateway"],
+			TypeName:         "alicloud_nat_gateway",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Gateway")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "network.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Acl",
+	}:
+		if err := (&controllersnetwork.AclReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Acl"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_network_acl"],
+			TypeName:         "alicloud_network_acl",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Acl")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "network.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AclAttachment",
+	}:
+		if err := (&controllersnetwork.AclAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("AclAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_network_acl_attachment"],
+			TypeName:         "alicloud_network_acl_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "AclAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "network.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AclEntries",
+	}:
+		if err := (&controllersnetwork.AclEntriesReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("AclEntries"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_network_acl_entries"],
+			TypeName:         "alicloud_network_acl_entries",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "AclEntries")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "network.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Interface",
+	}:
+		if err := (&controllersnetwork.InterfaceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Interface"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_network_interface"],
+			TypeName:         "alicloud_network_interface",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Interface")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "network.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "InterfaceAttachment",
+	}:
+		if err := (&controllersnetwork.InterfaceAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("InterfaceAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_network_interface_attachment"],
+			TypeName:         "alicloud_network_interface_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "InterfaceAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ons.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Group",
+	}:
+		if err := (&controllersons.GroupReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Group"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ons_group"],
+			TypeName:         "alicloud_ons_group",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Group")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ons.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&controllersons.InstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Instance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ons_instance"],
+			TypeName:         "alicloud_ons_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ons.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Topic",
+	}:
+		if err := (&controllersons.TopicReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Topic"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ons_topic"],
+			TypeName:         "alicloud_ons_topic",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Topic")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "oos.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Execution",
+	}:
+		if err := (&controllersoos.ExecutionReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Execution"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_oos_execution"],
+			TypeName:         "alicloud_oos_execution",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Execution")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "oos.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Template",
+	}:
+		if err := (&controllersoos.TemplateReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Template"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_oos_template"],
+			TypeName:         "alicloud_oos_template",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Template")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "oss.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Bucket",
+	}:
+		if err := (&controllersoss.BucketReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Bucket"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_oss_bucket"],
+			TypeName:         "alicloud_oss_bucket",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Bucket")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "oss.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BucketObject",
+	}:
+		if err := (&controllersoss.BucketObjectReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("BucketObject"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_oss_bucket_object"],
+			TypeName:         "alicloud_oss_bucket_object",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "BucketObject")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ots.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&controllersots.InstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Instance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ots_instance"],
+			TypeName:         "alicloud_ots_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ots.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "InstanceAttachment",
+	}:
+		if err := (&controllersots.InstanceAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("InstanceAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ots_instance_attachment"],
+			TypeName:         "alicloud_ots_instance_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "InstanceAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ots.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Table",
+	}:
+		if err := (&controllersots.TableReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Table"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ots_table"],
+			TypeName:         "alicloud_ots_table",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Table")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "polardb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Account",
+	}:
+		if err := (&controllerspolardb.AccountReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Account"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_polardb_account"],
+			TypeName:         "alicloud_polardb_account",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Account")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "polardb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AccountPrivilege",
+	}:
+		if err := (&controllerspolardb.AccountPrivilegeReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("AccountPrivilege"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_polardb_account_privilege"],
+			TypeName:         "alicloud_polardb_account_privilege",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "AccountPrivilege")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "polardb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BackupPolicy",
+	}:
+		if err := (&controllerspolardb.BackupPolicyReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("BackupPolicy"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_polardb_backup_policy"],
+			TypeName:         "alicloud_polardb_backup_policy",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "BackupPolicy")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "polardb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Cluster",
+	}:
+		if err := (&controllerspolardb.ClusterReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Cluster"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_polardb_cluster"],
+			TypeName:         "alicloud_polardb_cluster",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Cluster")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "polardb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Database",
+	}:
+		if err := (&controllerspolardb.DatabaseReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Database"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_polardb_database"],
+			TypeName:         "alicloud_polardb_database",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Database")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "polardb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Endpoint",
+	}:
+		if err := (&controllerspolardb.EndpointReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Endpoint"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_polardb_endpoint"],
+			TypeName:         "alicloud_polardb_endpoint",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Endpoint")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "polardb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "EndpointAddress",
+	}:
+		if err := (&controllerspolardb.EndpointAddressReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("EndpointAddress"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_polardb_endpoint_address"],
+			TypeName:         "alicloud_polardb_endpoint_address",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "EndpointAddress")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "privatelink.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "VpcEndpoint",
+	}:
+		if err := (&controllersprivatelink.VpcEndpointReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("VpcEndpoint"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_privatelink_vpc_endpoint"],
+			TypeName:         "alicloud_privatelink_vpc_endpoint",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "VpcEndpoint")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "privatelink.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "VpcEndpointConnection",
+	}:
+		if err := (&controllersprivatelink.VpcEndpointConnectionReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("VpcEndpointConnection"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_privatelink_vpc_endpoint_connection"],
+			TypeName:         "alicloud_privatelink_vpc_endpoint_connection",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "VpcEndpointConnection")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "privatelink.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "VpcEndpointService",
+	}:
+		if err := (&controllersprivatelink.VpcEndpointServiceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("VpcEndpointService"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_privatelink_vpc_endpoint_service"],
+			TypeName:         "alicloud_privatelink_vpc_endpoint_service",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "VpcEndpointService")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "privatelink.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "VpcEndpointServiceResource",
+	}:
+		if err := (&controllersprivatelink.VpcEndpointServiceResourceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("VpcEndpointServiceResource"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_privatelink_vpc_endpoint_service_resource"],
+			TypeName:         "alicloud_privatelink_vpc_endpoint_service_resource",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "VpcEndpointServiceResource")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "privatelink.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "VpcEndpointServiceUser",
+	}:
+		if err := (&controllersprivatelink.VpcEndpointServiceUserReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("VpcEndpointServiceUser"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_privatelink_vpc_endpoint_service_user"],
+			TypeName:         "alicloud_privatelink_vpc_endpoint_service_user",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "VpcEndpointServiceUser")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "privatelink.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "VpcEndpointZone",
+	}:
+		if err := (&controllersprivatelink.VpcEndpointZoneReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("VpcEndpointZone"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_privatelink_vpc_endpoint_zone"],
+			TypeName:         "alicloud_privatelink_vpc_endpoint_zone",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "VpcEndpointZone")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "pvtz.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Zone",
+	}:
+		if err := (&controllerspvtz.ZoneReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Zone"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_pvtz_zone"],
+			TypeName:         "alicloud_pvtz_zone",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Zone")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "pvtz.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ZoneAttachment",
+	}:
+		if err := (&controllerspvtz.ZoneAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ZoneAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_pvtz_zone_attachment"],
+			TypeName:         "alicloud_pvtz_zone_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ZoneAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "pvtz.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ZoneRecord",
+	}:
+		if err := (&controllerspvtz.ZoneRecordReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ZoneRecord"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_pvtz_zone_record"],
+			TypeName:         "alicloud_pvtz_zone_record",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ZoneRecord")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "quotas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ApplicationInfo",
+	}:
+		if err := (&controllersquotas.ApplicationInfoReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ApplicationInfo"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_quotas_application_info"],
+			TypeName:         "alicloud_quotas_application_info",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ApplicationInfo")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "quotas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "QuotaAlarm",
+	}:
+		if err := (&controllersquotas.QuotaAlarmReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("QuotaAlarm"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_quotas_quota_alarm"],
+			TypeName:         "alicloud_quotas_quota_alarm",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "QuotaAlarm")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "quotas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "QuotaApplication",
+	}:
+		if err := (&controllersquotas.QuotaApplicationReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("QuotaApplication"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_quotas_quota_application"],
+			TypeName:         "alicloud_quotas_quota_application",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "QuotaApplication")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AccessKey",
+	}:
+		if err := (&controllersram.AccessKeyReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("AccessKey"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ram_access_key"],
+			TypeName:         "alicloud_ram_access_key",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "AccessKey")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AccountAlias",
+	}:
+		if err := (&controllersram.AccountAliasReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("AccountAlias"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ram_account_alias"],
+			TypeName:         "alicloud_ram_account_alias",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "AccountAlias")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AccountPasswordPolicy",
+	}:
+		if err := (&controllersram.AccountPasswordPolicyReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("AccountPasswordPolicy"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ram_account_password_policy"],
+			TypeName:         "alicloud_ram_account_password_policy",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "AccountPasswordPolicy")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Alias",
+	}:
+		if err := (&controllersram.AliasReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Alias"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ram_alias"],
+			TypeName:         "alicloud_ram_alias",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Alias")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Group",
+	}:
+		if err := (&controllersram.GroupReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Group"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ram_group"],
+			TypeName:         "alicloud_ram_group",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Group")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "GroupMembership",
+	}:
+		if err := (&controllersram.GroupMembershipReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("GroupMembership"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ram_group_membership"],
+			TypeName:         "alicloud_ram_group_membership",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "GroupMembership")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "GroupPolicyAttachment",
+	}:
+		if err := (&controllersram.GroupPolicyAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("GroupPolicyAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ram_group_policy_attachment"],
+			TypeName:         "alicloud_ram_group_policy_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "GroupPolicyAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "LoginProfile",
+	}:
+		if err := (&controllersram.LoginProfileReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("LoginProfile"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ram_login_profile"],
+			TypeName:         "alicloud_ram_login_profile",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "LoginProfile")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Policy",
+	}:
+		if err := (&controllersram.PolicyReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Policy"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ram_policy"],
+			TypeName:         "alicloud_ram_policy",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Policy")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Role",
+	}:
+		if err := (&controllersram.RoleReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Role"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ram_role"],
+			TypeName:         "alicloud_ram_role",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Role")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "RoleAttachment",
+	}:
+		if err := (&controllersram.RoleAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("RoleAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ram_role_attachment"],
+			TypeName:         "alicloud_ram_role_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "RoleAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "RolePolicyAttachment",
+	}:
+		if err := (&controllersram.RolePolicyAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("RolePolicyAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ram_role_policy_attachment"],
+			TypeName:         "alicloud_ram_role_policy_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "RolePolicyAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "SamlProvider",
+	}:
+		if err := (&controllersram.SamlProviderReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("SamlProvider"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ram_saml_provider"],
+			TypeName:         "alicloud_ram_saml_provider",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "SamlProvider")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "User",
+	}:
+		if err := (&controllersram.UserReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("User"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ram_user"],
+			TypeName:         "alicloud_ram_user",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "User")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "UserPolicyAttachment",
+	}:
+		if err := (&controllersram.UserPolicyAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("UserPolicyAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ram_user_policy_attachment"],
+			TypeName:         "alicloud_ram_user_policy_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "UserPolicyAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "rds.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Account",
+	}:
+		if err := (&controllersrds.AccountReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Account"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_rds_account"],
+			TypeName:         "alicloud_rds_account",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Account")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "rds.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ParameterGroup",
+	}:
+		if err := (&controllersrds.ParameterGroupReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ParameterGroup"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_rds_parameter_group"],
+			TypeName:         "alicloud_rds_parameter_group",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ParameterGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "reserved.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&controllersreserved.InstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Instance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_reserved_instance"],
+			TypeName:         "alicloud_reserved_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "resource.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagerAccount",
+	}:
+		if err := (&controllersresource.ManagerAccountReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ManagerAccount"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_resource_manager_account"],
+			TypeName:         "alicloud_resource_manager_account",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ManagerAccount")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "resource.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagerControlPolicy",
+	}:
+		if err := (&controllersresource.ManagerControlPolicyReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ManagerControlPolicy"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_resource_manager_control_policy"],
+			TypeName:         "alicloud_resource_manager_control_policy",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ManagerControlPolicy")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "resource.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagerControlPolicyAttachment",
+	}:
+		if err := (&controllersresource.ManagerControlPolicyAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ManagerControlPolicyAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_resource_manager_control_policy_attachment"],
+			TypeName:         "alicloud_resource_manager_control_policy_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ManagerControlPolicyAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "resource.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagerFolder",
+	}:
+		if err := (&controllersresource.ManagerFolderReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ManagerFolder"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_resource_manager_folder"],
+			TypeName:         "alicloud_resource_manager_folder",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ManagerFolder")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "resource.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagerHandshake",
+	}:
+		if err := (&controllersresource.ManagerHandshakeReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ManagerHandshake"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_resource_manager_handshake"],
+			TypeName:         "alicloud_resource_manager_handshake",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ManagerHandshake")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "resource.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagerPolicy",
+	}:
+		if err := (&controllersresource.ManagerPolicyReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ManagerPolicy"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_resource_manager_policy"],
+			TypeName:         "alicloud_resource_manager_policy",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ManagerPolicy")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "resource.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagerPolicyAttachment",
+	}:
+		if err := (&controllersresource.ManagerPolicyAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ManagerPolicyAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_resource_manager_policy_attachment"],
+			TypeName:         "alicloud_resource_manager_policy_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ManagerPolicyAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "resource.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagerPolicyVersion",
+	}:
+		if err := (&controllersresource.ManagerPolicyVersionReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ManagerPolicyVersion"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_resource_manager_policy_version"],
+			TypeName:         "alicloud_resource_manager_policy_version",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ManagerPolicyVersion")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "resource.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagerResourceDirectory",
+	}:
+		if err := (&controllersresource.ManagerResourceDirectoryReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ManagerResourceDirectory"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_resource_manager_resource_directory"],
+			TypeName:         "alicloud_resource_manager_resource_directory",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ManagerResourceDirectory")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "resource.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagerResourceGroup",
+	}:
+		if err := (&controllersresource.ManagerResourceGroupReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ManagerResourceGroup"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_resource_manager_resource_group"],
+			TypeName:         "alicloud_resource_manager_resource_group",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ManagerResourceGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "resource.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagerResourceShare",
+	}:
+		if err := (&controllersresource.ManagerResourceShareReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ManagerResourceShare"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_resource_manager_resource_share"],
+			TypeName:         "alicloud_resource_manager_resource_share",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ManagerResourceShare")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "resource.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagerRole",
+	}:
+		if err := (&controllersresource.ManagerRoleReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ManagerRole"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_resource_manager_role"],
+			TypeName:         "alicloud_resource_manager_role",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ManagerRole")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "resource.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagerSharedResource",
+	}:
+		if err := (&controllersresource.ManagerSharedResourceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ManagerSharedResource"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_resource_manager_shared_resource"],
+			TypeName:         "alicloud_resource_manager_shared_resource",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ManagerSharedResource")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "resource.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagerSharedTarget",
+	}:
+		if err := (&controllersresource.ManagerSharedTargetReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ManagerSharedTarget"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_resource_manager_shared_target"],
+			TypeName:         "alicloud_resource_manager_shared_target",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ManagerSharedTarget")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ros.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ChangeSet",
+	}:
+		if err := (&controllersros.ChangeSetReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ChangeSet"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ros_change_set"],
+			TypeName:         "alicloud_ros_change_set",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ChangeSet")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ros.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Stack",
+	}:
+		if err := (&controllersros.StackReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Stack"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ros_stack"],
+			TypeName:         "alicloud_ros_stack",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Stack")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ros.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "StackGroup",
+	}:
+		if err := (&controllersros.StackGroupReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("StackGroup"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ros_stack_group"],
+			TypeName:         "alicloud_ros_stack_group",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "StackGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ros.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Template",
+	}:
+		if err := (&controllersros.TemplateReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Template"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ros_template"],
+			TypeName:         "alicloud_ros_template",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Template")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "route.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Entry",
+	}:
+		if err := (&controllersroute.EntryReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Entry"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_route_entry"],
+			TypeName:         "alicloud_route_entry",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Entry")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "route.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Table",
+	}:
+		if err := (&controllersroute.TableReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Table"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_route_table"],
+			TypeName:         "alicloud_route_table",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Table")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "route.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "TableAttachment",
+	}:
+		if err := (&controllersroute.TableAttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("TableAttachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_route_table_attachment"],
+			TypeName:         "alicloud_route_table_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "TableAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "router.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Interface",
+	}:
+		if err := (&controllersrouter.InterfaceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Interface"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_router_interface"],
+			TypeName:         "alicloud_router_interface",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Interface")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "router.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "InterfaceConnection",
+	}:
+		if err := (&controllersrouter.InterfaceConnectionReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("InterfaceConnection"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_router_interface_connection"],
+			TypeName:         "alicloud_router_interface_connection",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "InterfaceConnection")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "sag.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Acl",
+	}:
+		if err := (&controllerssag.AclReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Acl"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_sag_acl"],
+			TypeName:         "alicloud_sag_acl",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Acl")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "sag.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AclRule",
+	}:
+		if err := (&controllerssag.AclRuleReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("AclRule"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_sag_acl_rule"],
+			TypeName:         "alicloud_sag_acl_rule",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "AclRule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "sag.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ClientUser",
+	}:
+		if err := (&controllerssag.ClientUserReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ClientUser"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_sag_client_user"],
+			TypeName:         "alicloud_sag_client_user",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ClientUser")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "sag.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DnatEntry",
+	}:
+		if err := (&controllerssag.DnatEntryReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("DnatEntry"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_sag_dnat_entry"],
+			TypeName:         "alicloud_sag_dnat_entry",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "DnatEntry")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "sag.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Qos",
+	}:
+		if err := (&controllerssag.QosReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Qos"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_sag_qos"],
+			TypeName:         "alicloud_sag_qos",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Qos")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "sag.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "QosCar",
+	}:
+		if err := (&controllerssag.QosCarReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("QosCar"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_sag_qos_car"],
+			TypeName:         "alicloud_sag_qos_car",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "QosCar")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "sag.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "QosPolicy",
+	}:
+		if err := (&controllerssag.QosPolicyReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("QosPolicy"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_sag_qos_policy"],
+			TypeName:         "alicloud_sag_qos_policy",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "QosPolicy")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "sag.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "SnatEntry",
+	}:
+		if err := (&controllerssag.SnatEntryReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("SnatEntry"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_sag_snat_entry"],
+			TypeName:         "alicloud_sag_snat_entry",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "SnatEntry")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "security.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Group",
+	}:
+		if err := (&controllerssecurity.GroupReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Group"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_security_group"],
+			TypeName:         "alicloud_security_group",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Group")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "security.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "GroupRule",
+	}:
+		if err := (&controllerssecurity.GroupRuleReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("GroupRule"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_security_group_rule"],
+			TypeName:         "alicloud_security_group_rule",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "GroupRule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Slb",
+	}:
+		if err := (&controllersslb.SlbReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Slb"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_slb"],
+			TypeName:         "alicloud_slb",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Slb")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Acl",
+	}:
+		if err := (&controllersslb.AclReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Acl"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_slb_acl"],
+			TypeName:         "alicloud_slb_acl",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Acl")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Attachment",
+	}:
+		if err := (&controllersslb.AttachmentReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Attachment"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_slb_attachment"],
+			TypeName:         "alicloud_slb_attachment",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Attachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BackendServer",
+	}:
+		if err := (&controllersslb.BackendServerReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("BackendServer"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_slb_backend_server"],
+			TypeName:         "alicloud_slb_backend_server",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "BackendServer")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "CaCertificate",
+	}:
+		if err := (&controllersslb.CaCertificateReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("CaCertificate"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_slb_ca_certificate"],
+			TypeName:         "alicloud_slb_ca_certificate",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "CaCertificate")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DomainExtension",
+	}:
+		if err := (&controllersslb.DomainExtensionReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("DomainExtension"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_slb_domain_extension"],
+			TypeName:         "alicloud_slb_domain_extension",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "DomainExtension")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Listener",
+	}:
+		if err := (&controllersslb.ListenerReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Listener"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_slb_listener"],
+			TypeName:         "alicloud_slb_listener",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Listener")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "LoadBalancer",
+	}:
+		if err := (&controllersslb.LoadBalancerReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("LoadBalancer"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_slb_load_balancer"],
+			TypeName:         "alicloud_slb_load_balancer",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "LoadBalancer")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "MasterSlaveServerGroup",
+	}:
+		if err := (&controllersslb.MasterSlaveServerGroupReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("MasterSlaveServerGroup"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_slb_master_slave_server_group"],
+			TypeName:         "alicloud_slb_master_slave_server_group",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "MasterSlaveServerGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Rule",
+	}:
+		if err := (&controllersslb.RuleReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Rule"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_slb_rule"],
+			TypeName:         "alicloud_slb_rule",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Rule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ServerCertificate",
+	}:
+		if err := (&controllersslb.ServerCertificateReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ServerCertificate"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_slb_server_certificate"],
+			TypeName:         "alicloud_slb_server_certificate",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ServerCertificate")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ServerGroup",
+	}:
+		if err := (&controllersslb.ServerGroupReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ServerGroup"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_slb_server_group"],
+			TypeName:         "alicloud_slb_server_group",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ServerGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "snapshot.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Snapshot",
+	}:
+		if err := (&controllerssnapshot.SnapshotReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Snapshot"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_snapshot"],
+			TypeName:         "alicloud_snapshot",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Snapshot")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "snapshot.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Policy",
+	}:
+		if err := (&controllerssnapshot.PolicyReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Policy"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_snapshot_policy"],
+			TypeName:         "alicloud_snapshot_policy",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Policy")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "snat.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Entry",
+	}:
+		if err := (&controllerssnat.EntryReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Entry"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_snat_entry"],
+			TypeName:         "alicloud_snat_entry",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Entry")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ssl.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "VpnClientCert",
+	}:
+		if err := (&controllersssl.VpnClientCertReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("VpnClientCert"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ssl_vpn_client_cert"],
+			TypeName:         "alicloud_ssl_vpn_client_cert",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "VpnClientCert")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ssl.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "VpnServer",
+	}:
+		if err := (&controllersssl.VpnServerReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("VpnServer"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_ssl_vpn_server"],
+			TypeName:         "alicloud_ssl_vpn_server",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "VpnServer")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "subnet.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Subnet",
+	}:
+		if err := (&controllerssubnet.SubnetReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Subnet"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_subnet"],
+			TypeName:         "alicloud_subnet",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Subnet")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "tsdb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&controllerstsdb.InstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Instance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_tsdb_instance"],
+			TypeName:         "alicloud_tsdb_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "vpc.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Vpc",
+	}:
+		if err := (&controllersvpc.VpcReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Vpc"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_vpc"],
+			TypeName:         "alicloud_vpc",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Vpc")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "vpc.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "FlowLog",
+	}:
+		if err := (&controllersvpc.FlowLogReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("FlowLog"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_vpc_flow_log"],
+			TypeName:         "alicloud_vpc_flow_log",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "FlowLog")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "vpn.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Connection",
+	}:
+		if err := (&controllersvpn.ConnectionReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Connection"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_vpn_connection"],
+			TypeName:         "alicloud_vpn_connection",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Connection")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "vpn.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "CustomerGateway",
+	}:
+		if err := (&controllersvpn.CustomerGatewayReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("CustomerGateway"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_vpn_customer_gateway"],
+			TypeName:         "alicloud_vpn_customer_gateway",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "CustomerGateway")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "vpn.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Gateway",
+	}:
+		if err := (&controllersvpn.GatewayReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Gateway"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_vpn_gateway"],
+			TypeName:         "alicloud_vpn_gateway",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Gateway")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "vpn.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "RouteEntry",
+	}:
+		if err := (&controllersvpn.RouteEntryReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("RouteEntry"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_vpn_route_entry"],
+			TypeName:         "alicloud_vpn_route_entry",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "RouteEntry")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "vswitch.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Vswitch",
+	}:
+		if err := (&controllersvswitch.VswitchReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Vswitch"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_vswitch"],
+			TypeName:         "alicloud_vswitch",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Vswitch")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "waf.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Domain",
+	}:
+		if err := (&controllerswaf.DomainReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Domain"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_waf_domain"],
+			TypeName:         "alicloud_waf_domain",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Domain")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "waf.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&controllerswaf.InstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Instance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_waf_instance"],
+			TypeName:         "alicloud_waf_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "yundun.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BastionhostInstance",
+	}:
+		if err := (&controllersyundun.BastionhostInstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("BastionhostInstance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_yundun_bastionhost_instance"],
+			TypeName:         "alicloud_yundun_bastionhost_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "BastionhostInstance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "yundun.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DbauditInstance",
+	}:
+		if err := (&controllersyundun.DbauditInstanceReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("DbauditInstance"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["alicloud_yundun_dbaudit_instance"],
+			TypeName:         "alicloud_yundun_dbaudit_instance",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "DbauditInstance")
 			return err
 		}
 
@@ -605,174 +6644,3117 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 func SetupWebhook(mgr manager.Manager, gvk schema.GroupVersionKind) error {
 	switch gvk {
 	case schema.GroupVersionKind{
-		Group:   "bgp.alicloud.kubeform.com",
+		Group:   "actiontrail.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Session",
+		Kind:    "Actiontrail",
 	}:
-		if err := (&bgpv1alpha1.Session{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "Session")
+		if err := (&actiontrailv1alpha1.Actiontrail{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Actiontrail")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "connection.alicloud.kubeform.com",
+		Group:   "actiontrail.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Trail",
+	}:
+		if err := (&actiontrailv1alpha1.Trail{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Trail")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "adb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Account",
+	}:
+		if err := (&adbv1alpha1.Account{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Account")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "adb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BackupPolicy",
+	}:
+		if err := (&adbv1alpha1.BackupPolicy{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "BackupPolicy")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "adb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Cluster",
+	}:
+		if err := (&adbv1alpha1.Cluster{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Cluster")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "adb.alicloud.kubeform.com",
 		Version: "v1alpha1",
 		Kind:    "Connection",
 	}:
-		if err := (&connectionv1alpha1.Connection{}).SetupWebhookWithManager(mgr); err != nil {
+		if err := (&adbv1alpha1.Connection{}).SetupWebhookWithManager(mgr); err != nil {
 			setupLog.Error(err, "unable to create webhook", "webhook", "Connection")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "device.alicloud.kubeform.com",
+		Group:   "adb.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Device",
+		Kind:    "DbCluster",
 	}:
-		if err := (&devicev1alpha1.Device{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "Device")
+		if err := (&adbv1alpha1.DbCluster{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "DbCluster")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "device.alicloud.kubeform.com",
+		Group:   "alidns.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "NetworkType",
+		Kind:    "Domain",
 	}:
-		if err := (&devicev1alpha1.NetworkType{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "NetworkType")
+		if err := (&alidnsv1alpha1.Domain{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Domain")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "gateway.alicloud.kubeform.com",
+		Group:   "alidns.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Gateway",
+		Kind:    "DomainAttachment",
 	}:
-		if err := (&gatewayv1alpha1.Gateway{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "Gateway")
+		if err := (&alidnsv1alpha1.DomainAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "DomainAttachment")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "ip.alicloud.kubeform.com",
+		Group:   "alidns.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Attachment",
+		Kind:    "DomainGroup",
 	}:
-		if err := (&ipv1alpha1.Attachment{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "Attachment")
+		if err := (&alidnsv1alpha1.DomainGroup{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "DomainGroup")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "organization.alicloud.kubeform.com",
+		Group:   "alidns.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Organization",
+		Kind:    "Instance",
 	}:
-		if err := (&organizationv1alpha1.Organization{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "Organization")
+		if err := (&alidnsv1alpha1.Instance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Instance")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "port.alicloud.kubeform.com",
+		Group:   "alidns.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "VlanAttachment",
+		Kind:    "Record",
 	}:
-		if err := (&portv1alpha1.VlanAttachment{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "VlanAttachment")
+		if err := (&alidnsv1alpha1.Record{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Record")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "project.alicloud.kubeform.com",
+		Group:   "alikafka.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ConsumerGroup",
+	}:
+		if err := (&alikafkav1alpha1.ConsumerGroup{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ConsumerGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "alikafka.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&alikafkav1alpha1.Instance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "alikafka.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "SaslACL",
+	}:
+		if err := (&alikafkav1alpha1.SaslACL{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "SaslACL")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "alikafka.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "SaslUser",
+	}:
+		if err := (&alikafkav1alpha1.SaslUser{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "SaslUser")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "alikafka.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Topic",
+	}:
+		if err := (&alikafkav1alpha1.Topic{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Topic")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "amqp.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Exchange",
+	}:
+		if err := (&amqpv1alpha1.Exchange{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Exchange")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "amqp.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Queue",
+	}:
+		if err := (&amqpv1alpha1.Queue{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Queue")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "amqp.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "VirtualHost",
+	}:
+		if err := (&amqpv1alpha1.VirtualHost{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "VirtualHost")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "apigateway.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Api",
+	}:
+		if err := (&apigatewayv1alpha1.Api{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Api")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "apigateway.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "App",
+	}:
+		if err := (&apigatewayv1alpha1.App{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "App")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "apigateway.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AppAttachment",
+	}:
+		if err := (&apigatewayv1alpha1.AppAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "AppAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "apigateway.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Group",
+	}:
+		if err := (&apigatewayv1alpha1.Group{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Group")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "apigateway.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "VpcAccess",
+	}:
+		if err := (&apigatewayv1alpha1.VpcAccess{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "VpcAccess")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "auto.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ProvisioningGroup",
+	}:
+		if err := (&autov1alpha1.ProvisioningGroup{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ProvisioningGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "brain.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "IndustrialPidLoop",
+	}:
+		if err := (&brainv1alpha1.IndustrialPidLoop{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "IndustrialPidLoop")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "brain.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "IndustrialPidOrganization",
+	}:
+		if err := (&brainv1alpha1.IndustrialPidOrganization{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "IndustrialPidOrganization")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "brain.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "IndustrialPidProject",
+	}:
+		if err := (&brainv1alpha1.IndustrialPidProject{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "IndustrialPidProject")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Certificate",
+	}:
+		if err := (&casv1alpha1.Certificate{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Certificate")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cassandra.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BackupPlan",
+	}:
+		if err := (&cassandrav1alpha1.BackupPlan{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "BackupPlan")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cassandra.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Cluster",
+	}:
+		if err := (&cassandrav1alpha1.Cluster{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Cluster")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cassandra.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DataCenter",
+	}:
+		if err := (&cassandrav1alpha1.DataCenter{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "DataCenter")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cdn.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Domain",
+	}:
+		if err := (&cdnv1alpha1.Domain{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Domain")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cdn.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DomainConfig",
+	}:
+		if err := (&cdnv1alpha1.DomainConfig{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "DomainConfig")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cdn.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DomainNew",
+	}:
+		if err := (&cdnv1alpha1.DomainNew{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "DomainNew")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BandwidthLimit",
+	}:
+		if err := (&cenv1alpha1.BandwidthLimit{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "BandwidthLimit")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BandwidthPackage",
+	}:
+		if err := (&cenv1alpha1.BandwidthPackage{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "BandwidthPackage")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BandwidthPackageAttachment",
+	}:
+		if err := (&cenv1alpha1.BandwidthPackageAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "BandwidthPackageAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Flowlog",
+	}:
+		if err := (&cenv1alpha1.Flowlog{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Flowlog")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&cenv1alpha1.Instance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "InstanceAttachment",
+	}:
+		if err := (&cenv1alpha1.InstanceAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "InstanceAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "InstanceGrant",
+	}:
+		if err := (&cenv1alpha1.InstanceGrant{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "InstanceGrant")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "PrivateZone",
+	}:
+		if err := (&cenv1alpha1.PrivateZone{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "PrivateZone")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "RouteEntry",
+	}:
+		if err := (&cenv1alpha1.RouteEntry{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "RouteEntry")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "RouteMap",
+	}:
+		if err := (&cenv1alpha1.RouteMap{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "RouteMap")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "RouteService",
+	}:
+		if err := (&cenv1alpha1.RouteService{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "RouteService")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "TransitRouter",
+	}:
+		if err := (&cenv1alpha1.TransitRouter{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "TransitRouter")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "TransitRouterPeerAttachment",
+	}:
+		if err := (&cenv1alpha1.TransitRouterPeerAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "TransitRouterPeerAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "TransitRouterRouteEntry",
+	}:
+		if err := (&cenv1alpha1.TransitRouterRouteEntry{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "TransitRouterRouteEntry")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "TransitRouterRouteTable",
+	}:
+		if err := (&cenv1alpha1.TransitRouterRouteTable{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "TransitRouterRouteTable")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "TransitRouterRouteTableAssociation",
+	}:
+		if err := (&cenv1alpha1.TransitRouterRouteTableAssociation{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "TransitRouterRouteTableAssociation")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "TransitRouterRouteTablePropagation",
+	}:
+		if err := (&cenv1alpha1.TransitRouterRouteTablePropagation{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "TransitRouterRouteTablePropagation")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "TransitRouterVbrAttachment",
+	}:
+		if err := (&cenv1alpha1.TransitRouterVbrAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "TransitRouterVbrAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "TransitRouterVpcAttachment",
+	}:
+		if err := (&cenv1alpha1.TransitRouterVpcAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "TransitRouterVpcAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cen.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "VbrHealthCheck",
+	}:
+		if err := (&cenv1alpha1.VbrHealthCheck{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "VbrHealthCheck")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cloud.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ConnectNetwork",
+	}:
+		if err := (&cloudv1alpha1.ConnectNetwork{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ConnectNetwork")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cloud.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ConnectNetworkAttachment",
+	}:
+		if err := (&cloudv1alpha1.ConnectNetworkAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ConnectNetworkAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cloud.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ConnectNetworkGrant",
+	}:
+		if err := (&cloudv1alpha1.ConnectNetworkGrant{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ConnectNetworkGrant")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cloud.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "StorageGatewayStorageBundle",
+	}:
+		if err := (&cloudv1alpha1.StorageGatewayStorageBundle{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "StorageGatewayStorageBundle")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Alarm",
+	}:
+		if err := (&cmsv1alpha1.Alarm{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Alarm")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AlarmContact",
+	}:
+		if err := (&cmsv1alpha1.AlarmContact{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "AlarmContact")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AlarmContactGroup",
+	}:
+		if err := (&cmsv1alpha1.AlarmContactGroup{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "AlarmContactGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "GroupMetricRule",
+	}:
+		if err := (&cmsv1alpha1.GroupMetricRule{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "GroupMetricRule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "MonitorGroup",
+	}:
+		if err := (&cmsv1alpha1.MonitorGroup{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "MonitorGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "MonitorGroupInstances",
+	}:
+		if err := (&cmsv1alpha1.MonitorGroupInstances{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "MonitorGroupInstances")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "SiteMonitor",
+	}:
+		if err := (&cmsv1alpha1.SiteMonitor{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "SiteMonitor")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "common.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BandwidthPackage",
+	}:
+		if err := (&commonv1alpha1.BandwidthPackage{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "BandwidthPackage")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "common.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BandwidthPackageAttachment",
+	}:
+		if err := (&commonv1alpha1.BandwidthPackageAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "BandwidthPackageAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "config.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AggregateCompliancePack",
+	}:
+		if err := (&configv1alpha1.AggregateCompliancePack{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "AggregateCompliancePack")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "config.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AggregateConfigRule",
+	}:
+		if err := (&configv1alpha1.AggregateConfigRule{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "AggregateConfigRule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "config.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Aggregator",
+	}:
+		if err := (&configv1alpha1.Aggregator{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Aggregator")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "config.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "CompliancePack",
+	}:
+		if err := (&configv1alpha1.CompliancePack{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "CompliancePack")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "config.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ConfigurationRecorder",
+	}:
+		if err := (&configv1alpha1.ConfigurationRecorder{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ConfigurationRecorder")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "config.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DeliveryChannel",
+	}:
+		if err := (&configv1alpha1.DeliveryChannel{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "DeliveryChannel")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "config.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Rule",
+	}:
+		if err := (&configv1alpha1.Rule{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Rule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "container.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Cluster",
+	}:
+		if err := (&containerv1alpha1.Cluster{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Cluster")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "copy.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Image",
+	}:
+		if err := (&copyv1alpha1.Image{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Image")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cr.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "EeInstance",
+	}:
+		if err := (&crv1alpha1.EeInstance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "EeInstance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cr.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "EeNamespace",
+	}:
+		if err := (&crv1alpha1.EeNamespace{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "EeNamespace")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cr.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "EeRepo",
+	}:
+		if err := (&crv1alpha1.EeRepo{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "EeRepo")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cr.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "EeSyncRule",
+	}:
+		if err := (&crv1alpha1.EeSyncRule{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "EeSyncRule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cr.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Namespace",
+	}:
+		if err := (&crv1alpha1.Namespace{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Namespace")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cr.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Repo",
+	}:
+		if err := (&crv1alpha1.Repo{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Repo")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Application",
+	}:
+		if err := (&csv1alpha1.Application{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Application")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AutoscalingConfig",
+	}:
+		if err := (&csv1alpha1.AutoscalingConfig{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "AutoscalingConfig")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "EdgeKubernetes",
+	}:
+		if err := (&csv1alpha1.EdgeKubernetes{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "EdgeKubernetes")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Kubernetes",
+	}:
+		if err := (&csv1alpha1.Kubernetes{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Kubernetes")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "KubernetesAutoscaler",
+	}:
+		if err := (&csv1alpha1.KubernetesAutoscaler{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "KubernetesAutoscaler")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "KubernetesNodePool",
+	}:
+		if err := (&csv1alpha1.KubernetesNodePool{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "KubernetesNodePool")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "KubernetesPermissions",
+	}:
+		if err := (&csv1alpha1.KubernetesPermissions{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "KubernetesPermissions")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagedKubernetes",
+	}:
+		if err := (&csv1alpha1.ManagedKubernetes{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ManagedKubernetes")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ServerlessKubernetes",
+	}:
+		if err := (&csv1alpha1.ServerlessKubernetes{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ServerlessKubernetes")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "cs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Swarm",
+	}:
+		if err := (&csv1alpha1.Swarm{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Swarm")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "datahub.alicloud.kubeform.com",
 		Version: "v1alpha1",
 		Kind:    "Project",
 	}:
-		if err := (&projectv1alpha1.Project{}).SetupWebhookWithManager(mgr); err != nil {
+		if err := (&datahubv1alpha1.Project{}).SetupWebhookWithManager(mgr); err != nil {
 			setupLog.Error(err, "unable to create webhook", "webhook", "Project")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "project.alicloud.kubeform.com",
+		Group:   "datahub.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "ApiKey",
+		Kind:    "Subscription",
 	}:
-		if err := (&projectv1alpha1.ApiKey{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "ApiKey")
+		if err := (&datahubv1alpha1.Subscription{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Subscription")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "project.alicloud.kubeform.com",
+		Group:   "datahub.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "SshKey",
+		Kind:    "Topic",
 	}:
-		if err := (&projectv1alpha1.SshKey{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "SshKey")
+		if err := (&datahubv1alpha1.Topic{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Topic")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "db.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Account",
+	}:
+		if err := (&dbv1alpha1.Account{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Account")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "db.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AccountPrivilege",
+	}:
+		if err := (&dbv1alpha1.AccountPrivilege{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "AccountPrivilege")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "db.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BackupPolicy",
+	}:
+		if err := (&dbv1alpha1.BackupPolicy{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "BackupPolicy")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "db.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Connection",
+	}:
+		if err := (&dbv1alpha1.Connection{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Connection")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "db.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Database",
+	}:
+		if err := (&dbv1alpha1.Database{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Database")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "db.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&dbv1alpha1.Instance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "db.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ReadWriteSplittingConnection",
+	}:
+		if err := (&dbv1alpha1.ReadWriteSplittingConnection{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ReadWriteSplittingConnection")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "db.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ReadonlyInstance",
+	}:
+		if err := (&dbv1alpha1.ReadonlyInstance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ReadonlyInstance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "dcdn.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Domain",
+	}:
+		if err := (&dcdnv1alpha1.Domain{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Domain")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ddosbgp.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&ddosbgpv1alpha1.Instance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ddoscoo.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DomainResource",
+	}:
+		if err := (&ddoscoov1alpha1.DomainResource{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "DomainResource")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ddoscoo.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&ddoscoov1alpha1.Instance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ddoscoo.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Port",
+	}:
+		if err := (&ddoscoov1alpha1.Port{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Port")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ddoscoo.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "SchedulerRule",
+	}:
+		if err := (&ddoscoov1alpha1.SchedulerRule{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "SchedulerRule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "direct.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "MailReceivers",
+	}:
+		if err := (&directv1alpha1.MailReceivers{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "MailReceivers")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "disk.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Disk",
+	}:
+		if err := (&diskv1alpha1.Disk{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Disk")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "disk.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Attachment",
+	}:
+		if err := (&diskv1alpha1.Attachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Attachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "dms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "EnterpriseInstance",
+	}:
+		if err := (&dmsv1alpha1.EnterpriseInstance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "EnterpriseInstance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "dms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "EnterpriseUser",
+	}:
+		if err := (&dmsv1alpha1.EnterpriseUser{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "EnterpriseUser")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "dns.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Dns",
+	}:
+		if err := (&dnsv1alpha1.Dns{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Dns")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "dns.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Domain",
+	}:
+		if err := (&dnsv1alpha1.Domain{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Domain")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "dns.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DomainAttachment",
+	}:
+		if err := (&dnsv1alpha1.DomainAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "DomainAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "dns.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Group",
+	}:
+		if err := (&dnsv1alpha1.Group{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Group")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "dns.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&dnsv1alpha1.Instance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "dns.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Record",
+	}:
+		if err := (&dnsv1alpha1.Record{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Record")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "drds.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&drdsv1alpha1.Instance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "eci.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ContainerGroup",
+	}:
+		if err := (&eciv1alpha1.ContainerGroup{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ContainerGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "eci.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ImageCache",
+	}:
+		if err := (&eciv1alpha1.ImageCache{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ImageCache")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "eci.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "OpenapiImageCache",
+	}:
+		if err := (&eciv1alpha1.OpenapiImageCache{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "OpenapiImageCache")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AutoSnapshotPolicy",
+	}:
+		if err := (&ecsv1alpha1.AutoSnapshotPolicy{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "AutoSnapshotPolicy")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AutoSnapshotPolicyAttachment",
+	}:
+		if err := (&ecsv1alpha1.AutoSnapshotPolicyAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "AutoSnapshotPolicyAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Command",
+	}:
+		if err := (&ecsv1alpha1.Command{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Command")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DedicatedHost",
+	}:
+		if err := (&ecsv1alpha1.DedicatedHost{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "DedicatedHost")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Disk",
+	}:
+		if err := (&ecsv1alpha1.Disk{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Disk")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DiskAttachment",
+	}:
+		if err := (&ecsv1alpha1.DiskAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "DiskAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "HpcCluster",
+	}:
+		if err := (&ecsv1alpha1.HpcCluster{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "HpcCluster")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "KeyPair",
+	}:
+		if err := (&ecsv1alpha1.KeyPair{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "KeyPair")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "KeyPairAttachment",
+	}:
+		if err := (&ecsv1alpha1.KeyPairAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "KeyPairAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "LaunchTemplate",
+	}:
+		if err := (&ecsv1alpha1.LaunchTemplate{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "LaunchTemplate")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "NetworkInterface",
+	}:
+		if err := (&ecsv1alpha1.NetworkInterface{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "NetworkInterface")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "NetworkInterfaceAttachment",
+	}:
+		if err := (&ecsv1alpha1.NetworkInterfaceAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "NetworkInterfaceAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ecs.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Snapshot",
+	}:
+		if err := (&ecsv1alpha1.Snapshot{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Snapshot")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "edas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Application",
+	}:
+		if err := (&edasv1alpha1.Application{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Application")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "edas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ApplicationDeployment",
+	}:
+		if err := (&edasv1alpha1.ApplicationDeployment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ApplicationDeployment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "edas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ApplicationScale",
+	}:
+		if err := (&edasv1alpha1.ApplicationScale{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ApplicationScale")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "edas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Cluster",
+	}:
+		if err := (&edasv1alpha1.Cluster{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Cluster")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "edas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DeployGroup",
+	}:
+		if err := (&edasv1alpha1.DeployGroup{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "DeployGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "edas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "InstanceClusterAttachment",
+	}:
+		if err := (&edasv1alpha1.InstanceClusterAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "InstanceClusterAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "edas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "K8sApplication",
+	}:
+		if err := (&edasv1alpha1.K8sApplication{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "K8sApplication")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "edas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "K8sCluster",
+	}:
+		if err := (&edasv1alpha1.K8sCluster{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "K8sCluster")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "edas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "SlbAttachment",
+	}:
+		if err := (&edasv1alpha1.SlbAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "SlbAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "eip.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Eip",
+	}:
+		if err := (&eipv1alpha1.Eip{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Eip")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "eip.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Address",
+	}:
+		if err := (&eipv1alpha1.Address{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Address")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "eip.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Association",
+	}:
+		if err := (&eipv1alpha1.Association{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Association")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "eipanycast.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AnycastEipAddress",
+	}:
+		if err := (&eipanycastv1alpha1.AnycastEipAddress{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "AnycastEipAddress")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "eipanycast.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AnycastEipAddressAttachment",
+	}:
+		if err := (&eipanycastv1alpha1.AnycastEipAddressAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "AnycastEipAddressAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "elasticsearch.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&elasticsearchv1alpha1.Instance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "emr.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Cluster",
+	}:
+		if err := (&emrv1alpha1.Cluster{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Cluster")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ess.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Alarm",
+	}:
+		if err := (&essv1alpha1.Alarm{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Alarm")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ess.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Attachment",
+	}:
+		if err := (&essv1alpha1.Attachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Attachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ess.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "LifecycleHook",
+	}:
+		if err := (&essv1alpha1.LifecycleHook{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "LifecycleHook")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ess.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Notification",
+	}:
+		if err := (&essv1alpha1.Notification{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Notification")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ess.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ScalingConfiguration",
+	}:
+		if err := (&essv1alpha1.ScalingConfiguration{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ScalingConfiguration")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ess.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ScalingGroup",
+	}:
+		if err := (&essv1alpha1.ScalingGroup{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ScalingGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ess.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ScalingRule",
+	}:
+		if err := (&essv1alpha1.ScalingRule{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ScalingRule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ess.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ScalinggroupVserverGroups",
+	}:
+		if err := (&essv1alpha1.ScalinggroupVserverGroups{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ScalinggroupVserverGroups")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ess.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Schedule",
+	}:
+		if err := (&essv1alpha1.Schedule{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Schedule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ess.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ScheduledTask",
+	}:
+		if err := (&essv1alpha1.ScheduledTask{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ScheduledTask")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "event.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BridgeEventBus",
+	}:
+		if err := (&eventv1alpha1.BridgeEventBus{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "BridgeEventBus")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "event.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BridgeSchemaGroup",
+	}:
+		if err := (&eventv1alpha1.BridgeSchemaGroup{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "BridgeSchemaGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "fc.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Alias",
+	}:
+		if err := (&fcv1alpha1.Alias{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Alias")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "fc.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "CustomDomain",
+	}:
+		if err := (&fcv1alpha1.CustomDomain{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "CustomDomain")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "fc.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Function",
+	}:
+		if err := (&fcv1alpha1.Function{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Function")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "fc.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "FunctionAsyncInvokeConfig",
+	}:
+		if err := (&fcv1alpha1.FunctionAsyncInvokeConfig{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "FunctionAsyncInvokeConfig")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "fc.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Service",
+	}:
+		if err := (&fcv1alpha1.Service{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Service")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "fc.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Trigger",
+	}:
+		if err := (&fcv1alpha1.Trigger{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Trigger")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "fnf.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Flow",
+	}:
+		if err := (&fnfv1alpha1.Flow{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Flow")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "fnf.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Schedule",
+	}:
+		if err := (&fnfv1alpha1.Schedule{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Schedule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "forward.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Entry",
+	}:
+		if err := (&forwardv1alpha1.Entry{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Entry")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ga.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Accelerator",
+	}:
+		if err := (&gav1alpha1.Accelerator{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Accelerator")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ga.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BandwidthPackage",
+	}:
+		if err := (&gav1alpha1.BandwidthPackage{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "BandwidthPackage")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ga.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BandwidthPackageAttachment",
+	}:
+		if err := (&gav1alpha1.BandwidthPackageAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "BandwidthPackageAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ga.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "EndpointGroup",
+	}:
+		if err := (&gav1alpha1.EndpointGroup{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "EndpointGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ga.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ForwardingRule",
+	}:
+		if err := (&gav1alpha1.ForwardingRule{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ForwardingRule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ga.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "IpSet",
+	}:
+		if err := (&gav1alpha1.IpSet{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "IpSet")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ga.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Listener",
+	}:
+		if err := (&gav1alpha1.Listener{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Listener")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "gpdb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Connection",
+	}:
+		if err := (&gpdbv1alpha1.Connection{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Connection")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "gpdb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ElasticInstance",
+	}:
+		if err := (&gpdbv1alpha1.ElasticInstance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ElasticInstance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "gpdb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&gpdbv1alpha1.Instance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "havip.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Havip",
+	}:
+		if err := (&havipv1alpha1.Havip{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Havip")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "havip.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Attachment",
+	}:
+		if err := (&havipv1alpha1.Attachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Attachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "hbase.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&hbasev1alpha1.Instance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "image.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Image",
+	}:
+		if err := (&imagev1alpha1.Image{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Image")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "image.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Copy",
+	}:
+		if err := (&imagev1alpha1.Copy{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Copy")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "image.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Export",
+	}:
+		if err := (&imagev1alpha1.Export{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Export")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "image.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Import",
+	}:
+		if err := (&imagev1alpha1.Import{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Import")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "image.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "SharePermission",
+	}:
+		if err := (&imagev1alpha1.SharePermission{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "SharePermission")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "instance.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&instancev1alpha1.Instance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "key.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Pair",
+	}:
+		if err := (&keyv1alpha1.Pair{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Pair")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "key.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "PairAttachment",
+	}:
+		if err := (&keyv1alpha1.PairAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "PairAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "kms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Alias",
+	}:
+		if err := (&kmsv1alpha1.Alias{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Alias")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "kms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Ciphertext",
+	}:
+		if err := (&kmsv1alpha1.Ciphertext{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Ciphertext")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "kms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Key",
+	}:
+		if err := (&kmsv1alpha1.Key{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Key")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "kms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "KeyVersion",
+	}:
+		if err := (&kmsv1alpha1.KeyVersion{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "KeyVersion")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "kms.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Secret",
+	}:
+		if err := (&kmsv1alpha1.Secret{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Secret")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "kvstore.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Account",
+	}:
+		if err := (&kvstorev1alpha1.Account{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Account")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "kvstore.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BackupPolicy",
+	}:
+		if err := (&kvstorev1alpha1.BackupPolicy{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "BackupPolicy")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "kvstore.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Connection",
+	}:
+		if err := (&kvstorev1alpha1.Connection{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Connection")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "kvstore.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&kvstorev1alpha1.Instance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "launch.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Template",
+	}:
+		if err := (&launchv1alpha1.Template{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Template")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "log.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Alert",
+	}:
+		if err := (&logv1alpha1.Alert{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Alert")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "log.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Audit",
+	}:
+		if err := (&logv1alpha1.Audit{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Audit")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "log.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Dashboard",
+	}:
+		if err := (&logv1alpha1.Dashboard{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Dashboard")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "log.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Etl",
+	}:
+		if err := (&logv1alpha1.Etl{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Etl")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "log.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "MachineGroup",
+	}:
+		if err := (&logv1alpha1.MachineGroup{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "MachineGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "log.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "OssShipper",
+	}:
+		if err := (&logv1alpha1.OssShipper{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "OssShipper")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "log.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Project",
+	}:
+		if err := (&logv1alpha1.Project{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Project")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "log.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Store",
+	}:
+		if err := (&logv1alpha1.Store{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Store")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "log.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "StoreIndex",
+	}:
+		if err := (&logv1alpha1.StoreIndex{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "StoreIndex")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "logtail.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Attachment",
+	}:
+		if err := (&logtailv1alpha1.Attachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Attachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "logtail.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Config",
+	}:
+		if err := (&logtailv1alpha1.Config{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Config")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "market.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Order",
+	}:
+		if err := (&marketv1alpha1.Order{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Order")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "maxcompute.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Project",
+	}:
+		if err := (&maxcomputev1alpha1.Project{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Project")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "mns.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Queue",
+	}:
+		if err := (&mnsv1alpha1.Queue{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Queue")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "mns.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Topic",
+	}:
+		if err := (&mnsv1alpha1.Topic{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Topic")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "mns.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "TopicSubscription",
+	}:
+		if err := (&mnsv1alpha1.TopicSubscription{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "TopicSubscription")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "mongodb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&mongodbv1alpha1.Instance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "mongodb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ShardingInstance",
+	}:
+		if err := (&mongodbv1alpha1.ShardingInstance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ShardingInstance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "mse.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Cluster",
+	}:
+		if err := (&msev1alpha1.Cluster{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Cluster")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "nas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AccessGroup",
+	}:
+		if err := (&nasv1alpha1.AccessGroup{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "AccessGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "nas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AccessRule",
+	}:
+		if err := (&nasv1alpha1.AccessRule{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "AccessRule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "nas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "FileSystem",
+	}:
+		if err := (&nasv1alpha1.FileSystem{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "FileSystem")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "nas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "MountTarget",
+	}:
+		if err := (&nasv1alpha1.MountTarget{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "MountTarget")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "nat.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Gateway",
+	}:
+		if err := (&natv1alpha1.Gateway{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Gateway")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "network.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Acl",
+	}:
+		if err := (&networkv1alpha1.Acl{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Acl")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "network.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AclAttachment",
+	}:
+		if err := (&networkv1alpha1.AclAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "AclAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "network.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AclEntries",
+	}:
+		if err := (&networkv1alpha1.AclEntries{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "AclEntries")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "network.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Interface",
+	}:
+		if err := (&networkv1alpha1.Interface{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Interface")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "network.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "InterfaceAttachment",
+	}:
+		if err := (&networkv1alpha1.InterfaceAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "InterfaceAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ons.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Group",
+	}:
+		if err := (&onsv1alpha1.Group{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Group")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ons.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&onsv1alpha1.Instance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ons.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Topic",
+	}:
+		if err := (&onsv1alpha1.Topic{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Topic")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "oos.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Execution",
+	}:
+		if err := (&oosv1alpha1.Execution{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Execution")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "oos.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Template",
+	}:
+		if err := (&oosv1alpha1.Template{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Template")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "oss.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Bucket",
+	}:
+		if err := (&ossv1alpha1.Bucket{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Bucket")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "oss.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BucketObject",
+	}:
+		if err := (&ossv1alpha1.BucketObject{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "BucketObject")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ots.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&otsv1alpha1.Instance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ots.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "InstanceAttachment",
+	}:
+		if err := (&otsv1alpha1.InstanceAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "InstanceAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ots.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Table",
+	}:
+		if err := (&otsv1alpha1.Table{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Table")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "polardb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Account",
+	}:
+		if err := (&polardbv1alpha1.Account{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Account")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "polardb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AccountPrivilege",
+	}:
+		if err := (&polardbv1alpha1.AccountPrivilege{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "AccountPrivilege")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "polardb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BackupPolicy",
+	}:
+		if err := (&polardbv1alpha1.BackupPolicy{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "BackupPolicy")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "polardb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Cluster",
+	}:
+		if err := (&polardbv1alpha1.Cluster{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Cluster")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "polardb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Database",
+	}:
+		if err := (&polardbv1alpha1.Database{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Database")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "polardb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Endpoint",
+	}:
+		if err := (&polardbv1alpha1.Endpoint{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Endpoint")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "polardb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "EndpointAddress",
+	}:
+		if err := (&polardbv1alpha1.EndpointAddress{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "EndpointAddress")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "privatelink.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "VpcEndpoint",
+	}:
+		if err := (&privatelinkv1alpha1.VpcEndpoint{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "VpcEndpoint")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "privatelink.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "VpcEndpointConnection",
+	}:
+		if err := (&privatelinkv1alpha1.VpcEndpointConnection{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "VpcEndpointConnection")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "privatelink.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "VpcEndpointService",
+	}:
+		if err := (&privatelinkv1alpha1.VpcEndpointService{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "VpcEndpointService")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "privatelink.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "VpcEndpointServiceResource",
+	}:
+		if err := (&privatelinkv1alpha1.VpcEndpointServiceResource{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "VpcEndpointServiceResource")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "privatelink.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "VpcEndpointServiceUser",
+	}:
+		if err := (&privatelinkv1alpha1.VpcEndpointServiceUser{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "VpcEndpointServiceUser")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "privatelink.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "VpcEndpointZone",
+	}:
+		if err := (&privatelinkv1alpha1.VpcEndpointZone{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "VpcEndpointZone")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "pvtz.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Zone",
+	}:
+		if err := (&pvtzv1alpha1.Zone{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Zone")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "pvtz.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ZoneAttachment",
+	}:
+		if err := (&pvtzv1alpha1.ZoneAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ZoneAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "pvtz.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ZoneRecord",
+	}:
+		if err := (&pvtzv1alpha1.ZoneRecord{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ZoneRecord")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "quotas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ApplicationInfo",
+	}:
+		if err := (&quotasv1alpha1.ApplicationInfo{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ApplicationInfo")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "quotas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "QuotaAlarm",
+	}:
+		if err := (&quotasv1alpha1.QuotaAlarm{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "QuotaAlarm")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "quotas.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "QuotaApplication",
+	}:
+		if err := (&quotasv1alpha1.QuotaApplication{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "QuotaApplication")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AccessKey",
+	}:
+		if err := (&ramv1alpha1.AccessKey{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "AccessKey")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AccountAlias",
+	}:
+		if err := (&ramv1alpha1.AccountAlias{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "AccountAlias")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AccountPasswordPolicy",
+	}:
+		if err := (&ramv1alpha1.AccountPasswordPolicy{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "AccountPasswordPolicy")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Alias",
+	}:
+		if err := (&ramv1alpha1.Alias{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Alias")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Group",
+	}:
+		if err := (&ramv1alpha1.Group{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Group")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "GroupMembership",
+	}:
+		if err := (&ramv1alpha1.GroupMembership{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "GroupMembership")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "GroupPolicyAttachment",
+	}:
+		if err := (&ramv1alpha1.GroupPolicyAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "GroupPolicyAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "LoginProfile",
+	}:
+		if err := (&ramv1alpha1.LoginProfile{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "LoginProfile")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Policy",
+	}:
+		if err := (&ramv1alpha1.Policy{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Policy")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Role",
+	}:
+		if err := (&ramv1alpha1.Role{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Role")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "RoleAttachment",
+	}:
+		if err := (&ramv1alpha1.RoleAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "RoleAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "RolePolicyAttachment",
+	}:
+		if err := (&ramv1alpha1.RolePolicyAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "RolePolicyAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "SamlProvider",
+	}:
+		if err := (&ramv1alpha1.SamlProvider{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "SamlProvider")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "User",
+	}:
+		if err := (&ramv1alpha1.User{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "User")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ram.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "UserPolicyAttachment",
+	}:
+		if err := (&ramv1alpha1.UserPolicyAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "UserPolicyAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "rds.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Account",
+	}:
+		if err := (&rdsv1alpha1.Account{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Account")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "rds.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ParameterGroup",
+	}:
+		if err := (&rdsv1alpha1.ParameterGroup{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ParameterGroup")
 			return err
 		}
 	case schema.GroupVersionKind{
 		Group:   "reserved.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "IpBlock",
+		Kind:    "Instance",
 	}:
-		if err := (&reservedv1alpha1.IpBlock{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "IpBlock")
+		if err := (&reservedv1alpha1.Instance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Instance")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "spot.alicloud.kubeform.com",
+		Group:   "resource.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "MarketRequest",
+		Kind:    "ManagerAccount",
 	}:
-		if err := (&spotv1alpha1.MarketRequest{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "MarketRequest")
+		if err := (&resourcev1alpha1.ManagerAccount{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ManagerAccount")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "ssh.alicloud.kubeform.com",
+		Group:   "resource.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Key",
+		Kind:    "ManagerControlPolicy",
 	}:
-		if err := (&sshv1alpha1.Key{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "Key")
+		if err := (&resourcev1alpha1.ManagerControlPolicy{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ManagerControlPolicy")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "user.alicloud.kubeform.com",
+		Group:   "resource.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "ApiKey",
+		Kind:    "ManagerControlPolicyAttachment",
 	}:
-		if err := (&userv1alpha1.ApiKey{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "ApiKey")
+		if err := (&resourcev1alpha1.ManagerControlPolicyAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ManagerControlPolicyAttachment")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "virtual.alicloud.kubeform.com",
+		Group:   "resource.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Circuit",
+		Kind:    "ManagerFolder",
 	}:
-		if err := (&virtualv1alpha1.Circuit{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "Circuit")
+		if err := (&resourcev1alpha1.ManagerFolder{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ManagerFolder")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "vlan.alicloud.kubeform.com",
+		Group:   "resource.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Vlan",
+		Kind:    "ManagerHandshake",
 	}:
-		if err := (&vlanv1alpha1.Vlan{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "Vlan")
+		if err := (&resourcev1alpha1.ManagerHandshake{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ManagerHandshake")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "volume.alicloud.kubeform.com",
+		Group:   "resource.alicloud.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Volume",
+		Kind:    "ManagerPolicy",
 	}:
-		if err := (&volumev1alpha1.Volume{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "Volume")
+		if err := (&resourcev1alpha1.ManagerPolicy{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ManagerPolicy")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "volume.alicloud.kubeform.com",
+		Group:   "resource.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagerPolicyAttachment",
+	}:
+		if err := (&resourcev1alpha1.ManagerPolicyAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ManagerPolicyAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "resource.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagerPolicyVersion",
+	}:
+		if err := (&resourcev1alpha1.ManagerPolicyVersion{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ManagerPolicyVersion")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "resource.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagerResourceDirectory",
+	}:
+		if err := (&resourcev1alpha1.ManagerResourceDirectory{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ManagerResourceDirectory")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "resource.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagerResourceGroup",
+	}:
+		if err := (&resourcev1alpha1.ManagerResourceGroup{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ManagerResourceGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "resource.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagerResourceShare",
+	}:
+		if err := (&resourcev1alpha1.ManagerResourceShare{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ManagerResourceShare")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "resource.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagerRole",
+	}:
+		if err := (&resourcev1alpha1.ManagerRole{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ManagerRole")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "resource.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagerSharedResource",
+	}:
+		if err := (&resourcev1alpha1.ManagerSharedResource{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ManagerSharedResource")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "resource.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ManagerSharedTarget",
+	}:
+		if err := (&resourcev1alpha1.ManagerSharedTarget{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ManagerSharedTarget")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ros.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ChangeSet",
+	}:
+		if err := (&rosv1alpha1.ChangeSet{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ChangeSet")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ros.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Stack",
+	}:
+		if err := (&rosv1alpha1.Stack{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Stack")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ros.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "StackGroup",
+	}:
+		if err := (&rosv1alpha1.StackGroup{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "StackGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ros.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Template",
+	}:
+		if err := (&rosv1alpha1.Template{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Template")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "route.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Entry",
+	}:
+		if err := (&routev1alpha1.Entry{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Entry")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "route.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Table",
+	}:
+		if err := (&routev1alpha1.Table{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Table")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "route.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "TableAttachment",
+	}:
+		if err := (&routev1alpha1.TableAttachment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "TableAttachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "router.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Interface",
+	}:
+		if err := (&routerv1alpha1.Interface{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Interface")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "router.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "InterfaceConnection",
+	}:
+		if err := (&routerv1alpha1.InterfaceConnection{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "InterfaceConnection")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "sag.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Acl",
+	}:
+		if err := (&sagv1alpha1.Acl{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Acl")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "sag.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "AclRule",
+	}:
+		if err := (&sagv1alpha1.AclRule{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "AclRule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "sag.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ClientUser",
+	}:
+		if err := (&sagv1alpha1.ClientUser{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ClientUser")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "sag.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DnatEntry",
+	}:
+		if err := (&sagv1alpha1.DnatEntry{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "DnatEntry")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "sag.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Qos",
+	}:
+		if err := (&sagv1alpha1.Qos{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Qos")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "sag.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "QosCar",
+	}:
+		if err := (&sagv1alpha1.QosCar{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "QosCar")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "sag.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "QosPolicy",
+	}:
+		if err := (&sagv1alpha1.QosPolicy{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "QosPolicy")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "sag.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "SnatEntry",
+	}:
+		if err := (&sagv1alpha1.SnatEntry{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "SnatEntry")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "security.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Group",
+	}:
+		if err := (&securityv1alpha1.Group{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Group")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "security.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "GroupRule",
+	}:
+		if err := (&securityv1alpha1.GroupRule{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "GroupRule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Slb",
+	}:
+		if err := (&slbv1alpha1.Slb{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Slb")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Acl",
+	}:
+		if err := (&slbv1alpha1.Acl{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Acl")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
 		Version: "v1alpha1",
 		Kind:    "Attachment",
 	}:
-		if err := (&volumev1alpha1.Attachment{}).SetupWebhookWithManager(mgr); err != nil {
+		if err := (&slbv1alpha1.Attachment{}).SetupWebhookWithManager(mgr); err != nil {
 			setupLog.Error(err, "unable to create webhook", "webhook", "Attachment")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BackendServer",
+	}:
+		if err := (&slbv1alpha1.BackendServer{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "BackendServer")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "CaCertificate",
+	}:
+		if err := (&slbv1alpha1.CaCertificate{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "CaCertificate")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DomainExtension",
+	}:
+		if err := (&slbv1alpha1.DomainExtension{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "DomainExtension")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Listener",
+	}:
+		if err := (&slbv1alpha1.Listener{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Listener")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "LoadBalancer",
+	}:
+		if err := (&slbv1alpha1.LoadBalancer{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "LoadBalancer")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "MasterSlaveServerGroup",
+	}:
+		if err := (&slbv1alpha1.MasterSlaveServerGroup{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "MasterSlaveServerGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Rule",
+	}:
+		if err := (&slbv1alpha1.Rule{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Rule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ServerCertificate",
+	}:
+		if err := (&slbv1alpha1.ServerCertificate{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ServerCertificate")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ServerGroup",
+	}:
+		if err := (&slbv1alpha1.ServerGroup{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ServerGroup")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "snapshot.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Snapshot",
+	}:
+		if err := (&snapshotv1alpha1.Snapshot{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Snapshot")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "snapshot.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Policy",
+	}:
+		if err := (&snapshotv1alpha1.Policy{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Policy")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "snat.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Entry",
+	}:
+		if err := (&snatv1alpha1.Entry{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Entry")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ssl.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "VpnClientCert",
+	}:
+		if err := (&sslv1alpha1.VpnClientCert{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "VpnClientCert")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "ssl.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "VpnServer",
+	}:
+		if err := (&sslv1alpha1.VpnServer{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "VpnServer")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "subnet.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Subnet",
+	}:
+		if err := (&subnetv1alpha1.Subnet{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Subnet")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "tsdb.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&tsdbv1alpha1.Instance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "vpc.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Vpc",
+	}:
+		if err := (&vpcv1alpha1.Vpc{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Vpc")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "vpc.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "FlowLog",
+	}:
+		if err := (&vpcv1alpha1.FlowLog{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "FlowLog")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "vpn.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Connection",
+	}:
+		if err := (&vpnv1alpha1.Connection{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Connection")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "vpn.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "CustomerGateway",
+	}:
+		if err := (&vpnv1alpha1.CustomerGateway{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "CustomerGateway")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "vpn.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Gateway",
+	}:
+		if err := (&vpnv1alpha1.Gateway{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Gateway")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "vpn.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "RouteEntry",
+	}:
+		if err := (&vpnv1alpha1.RouteEntry{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "RouteEntry")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "vswitch.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Vswitch",
+	}:
+		if err := (&vswitchv1alpha1.Vswitch{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Vswitch")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "waf.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Domain",
+	}:
+		if err := (&wafv1alpha1.Domain{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Domain")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "waf.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Instance",
+	}:
+		if err := (&wafv1alpha1.Instance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Instance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "yundun.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "BastionhostInstance",
+	}:
+		if err := (&yundunv1alpha1.BastionhostInstance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "BastionhostInstance")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "yundun.alicloud.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "DbauditInstance",
+	}:
+		if err := (&yundunv1alpha1.DbauditInstance{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "DbauditInstance")
 			return err
 		}
 
