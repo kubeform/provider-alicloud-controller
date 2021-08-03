@@ -3,7 +3,7 @@
 
 # provider-alicloud-controller
 
-Kubeform controller for [Terraform Alicloud Provider](https://github.com/equinix/terraform-provider-metal)
+Kubeform controller for [Terraform AliCloud Provider](https://github.com/aliyun/terraform-provider-alicloud)
 
 ## Installation
 
