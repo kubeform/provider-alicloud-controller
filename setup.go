@@ -231,7 +231,7 @@ var runningControllers = struct {
 	mp map[schema.GroupVersionKind]bool
 }{mp: make(map[schema.GroupVersionKind]bool)}
 
-func watchCRD(ctx context.Context, crdClient *clientset.Clientset, vwcClient *admissionregistrationv1.AdmissionregistrationV1Client, stopCh <-chan struct{}, mgr manager.Manager, auditor *auditlib.EventPublisher, watchOnlyDefault bool) error {
+func watchCRD(ctx context.Context, crdClient *clientset.Clientset, vwcClient *admissionregistrationv1.AdmissionregistrationV1Client, stopCh <-chan struct{}, mgr manager.Manager, auditor *auditlib.EventPublisher, restrictToNamespace string) error {
 	informerFactory := informers.NewSharedInformerFactory(crdClient, time.Second*30)
 	i := informerFactory.Apiextensions().V1().CustomResourceDefinitions().Informer()
 	l := informerFactory.Apiextensions().V1().CustomResourceDefinitions().Lister()
@@ -297,7 +297,7 @@ func watchCRD(ctx context.Context, crdClient *clientset.Clientset, vwcClient *ad
 						}
 					}
 
-					err = SetupManager(ctx, mgr, gvk, auditor, watchOnlyDefault)
+					err = SetupManager(ctx, mgr, gvk, auditor, restrictToNamespace)
 					if err != nil {
 						setupLog.Error(err, "unable to start manager")
 						os.Exit(1)
@@ -356,6 +356,7 @@ func updateVWC(vwcClient *admissionregistrationv1.AdmissionregistrationV1Client,
 		{
 			Operations: []arv1.OperationType{
 				arv1.Delete,
+				arv1.Update,
 			},
 			Rule: arv1.Rule{
 				APIGroups:   []string{strings.ToLower(gvk.Group)},
@@ -403,7 +404,7 @@ func updateVWC(vwcClient *admissionregistrationv1.AdmissionregistrationV1Client,
 	return nil
 }
 
-func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVersionKind, auditor *auditlib.EventPublisher, watchOnlyDefault bool) error {
+func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVersionKind, auditor *auditlib.EventPublisher, restrictToNamespace string) error {
 	switch gvk {
 	case schema.GroupVersionKind{
 		Group:   "actiontrail.alicloud.kubeform.com",
@@ -419,7 +420,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_actiontrail"],
 			TypeName:         "alicloud_actiontrail",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Actiontrail")
 			return err
 		}
@@ -437,7 +438,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_actiontrail_trail"],
 			TypeName:         "alicloud_actiontrail_trail",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Trail")
 			return err
 		}
@@ -455,7 +456,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_adb_account"],
 			TypeName:         "alicloud_adb_account",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Account")
 			return err
 		}
@@ -473,7 +474,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_adb_backup_policy"],
 			TypeName:         "alicloud_adb_backup_policy",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "BackupPolicy")
 			return err
 		}
@@ -491,7 +492,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_adb_cluster"],
 			TypeName:         "alicloud_adb_cluster",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Cluster")
 			return err
 		}
@@ -509,7 +510,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_adb_connection"],
 			TypeName:         "alicloud_adb_connection",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Connection")
 			return err
 		}
@@ -527,7 +528,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_adb_db_cluster"],
 			TypeName:         "alicloud_adb_db_cluster",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "DbCluster")
 			return err
 		}
@@ -545,7 +546,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_alidns_domain"],
 			TypeName:         "alicloud_alidns_domain",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Domain")
 			return err
 		}
@@ -563,7 +564,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_alidns_domain_attachment"],
 			TypeName:         "alicloud_alidns_domain_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "DomainAttachment")
 			return err
 		}
@@ -581,7 +582,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_alidns_domain_group"],
 			TypeName:         "alicloud_alidns_domain_group",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "DomainGroup")
 			return err
 		}
@@ -599,7 +600,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_alidns_instance"],
 			TypeName:         "alicloud_alidns_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Instance")
 			return err
 		}
@@ -617,7 +618,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_alidns_record"],
 			TypeName:         "alicloud_alidns_record",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Record")
 			return err
 		}
@@ -635,7 +636,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_alikafka_consumer_group"],
 			TypeName:         "alicloud_alikafka_consumer_group",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ConsumerGroup")
 			return err
 		}
@@ -653,7 +654,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_alikafka_instance"],
 			TypeName:         "alicloud_alikafka_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Instance")
 			return err
 		}
@@ -671,7 +672,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_alikafka_sasl_acl"],
 			TypeName:         "alicloud_alikafka_sasl_acl",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "SaslACL")
 			return err
 		}
@@ -689,7 +690,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_alikafka_sasl_user"],
 			TypeName:         "alicloud_alikafka_sasl_user",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "SaslUser")
 			return err
 		}
@@ -707,7 +708,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_alikafka_topic"],
 			TypeName:         "alicloud_alikafka_topic",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Topic")
 			return err
 		}
@@ -725,7 +726,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_amqp_exchange"],
 			TypeName:         "alicloud_amqp_exchange",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Exchange")
 			return err
 		}
@@ -743,7 +744,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_amqp_queue"],
 			TypeName:         "alicloud_amqp_queue",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Queue")
 			return err
 		}
@@ -761,7 +762,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_amqp_virtual_host"],
 			TypeName:         "alicloud_amqp_virtual_host",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "VirtualHost")
 			return err
 		}
@@ -779,7 +780,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_api_gateway_api"],
 			TypeName:         "alicloud_api_gateway_api",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Api")
 			return err
 		}
@@ -797,7 +798,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_api_gateway_app"],
 			TypeName:         "alicloud_api_gateway_app",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "App")
 			return err
 		}
@@ -815,7 +816,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_api_gateway_app_attachment"],
 			TypeName:         "alicloud_api_gateway_app_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "AppAttachment")
 			return err
 		}
@@ -833,7 +834,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_api_gateway_group"],
 			TypeName:         "alicloud_api_gateway_group",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Group")
 			return err
 		}
@@ -851,7 +852,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_api_gateway_vpc_access"],
 			TypeName:         "alicloud_api_gateway_vpc_access",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "VpcAccess")
 			return err
 		}
@@ -869,7 +870,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_auto_provisioning_group"],
 			TypeName:         "alicloud_auto_provisioning_group",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ProvisioningGroup")
 			return err
 		}
@@ -887,7 +888,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_brain_industrial_pid_loop"],
 			TypeName:         "alicloud_brain_industrial_pid_loop",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "IndustrialPidLoop")
 			return err
 		}
@@ -905,7 +906,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_brain_industrial_pid_organization"],
 			TypeName:         "alicloud_brain_industrial_pid_organization",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "IndustrialPidOrganization")
 			return err
 		}
@@ -923,7 +924,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_brain_industrial_pid_project"],
 			TypeName:         "alicloud_brain_industrial_pid_project",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "IndustrialPidProject")
 			return err
 		}
@@ -941,7 +942,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cas_certificate"],
 			TypeName:         "alicloud_cas_certificate",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Certificate")
 			return err
 		}
@@ -959,7 +960,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cassandra_backup_plan"],
 			TypeName:         "alicloud_cassandra_backup_plan",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "BackupPlan")
 			return err
 		}
@@ -977,7 +978,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cassandra_cluster"],
 			TypeName:         "alicloud_cassandra_cluster",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Cluster")
 			return err
 		}
@@ -995,7 +996,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cassandra_data_center"],
 			TypeName:         "alicloud_cassandra_data_center",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "DataCenter")
 			return err
 		}
@@ -1013,7 +1014,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cdn_domain"],
 			TypeName:         "alicloud_cdn_domain",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Domain")
 			return err
 		}
@@ -1031,7 +1032,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cdn_domain_config"],
 			TypeName:         "alicloud_cdn_domain_config",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "DomainConfig")
 			return err
 		}
@@ -1049,7 +1050,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cdn_domain_new"],
 			TypeName:         "alicloud_cdn_domain_new",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "DomainNew")
 			return err
 		}
@@ -1067,7 +1068,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cen_bandwidth_limit"],
 			TypeName:         "alicloud_cen_bandwidth_limit",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "BandwidthLimit")
 			return err
 		}
@@ -1085,7 +1086,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cen_bandwidth_package"],
 			TypeName:         "alicloud_cen_bandwidth_package",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "BandwidthPackage")
 			return err
 		}
@@ -1103,7 +1104,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cen_bandwidth_package_attachment"],
 			TypeName:         "alicloud_cen_bandwidth_package_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "BandwidthPackageAttachment")
 			return err
 		}
@@ -1121,7 +1122,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cen_flowlog"],
 			TypeName:         "alicloud_cen_flowlog",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Flowlog")
 			return err
 		}
@@ -1139,7 +1140,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cen_instance"],
 			TypeName:         "alicloud_cen_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Instance")
 			return err
 		}
@@ -1157,7 +1158,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cen_instance_attachment"],
 			TypeName:         "alicloud_cen_instance_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "InstanceAttachment")
 			return err
 		}
@@ -1175,7 +1176,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cen_instance_grant"],
 			TypeName:         "alicloud_cen_instance_grant",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "InstanceGrant")
 			return err
 		}
@@ -1193,7 +1194,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cen_private_zone"],
 			TypeName:         "alicloud_cen_private_zone",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "PrivateZone")
 			return err
 		}
@@ -1211,7 +1212,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cen_route_entry"],
 			TypeName:         "alicloud_cen_route_entry",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "RouteEntry")
 			return err
 		}
@@ -1229,7 +1230,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cen_route_map"],
 			TypeName:         "alicloud_cen_route_map",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "RouteMap")
 			return err
 		}
@@ -1247,7 +1248,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cen_route_service"],
 			TypeName:         "alicloud_cen_route_service",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "RouteService")
 			return err
 		}
@@ -1265,7 +1266,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cen_transit_router"],
 			TypeName:         "alicloud_cen_transit_router",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "TransitRouter")
 			return err
 		}
@@ -1283,7 +1284,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cen_transit_router_peer_attachment"],
 			TypeName:         "alicloud_cen_transit_router_peer_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "TransitRouterPeerAttachment")
 			return err
 		}
@@ -1301,7 +1302,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cen_transit_router_route_entry"],
 			TypeName:         "alicloud_cen_transit_router_route_entry",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "TransitRouterRouteEntry")
 			return err
 		}
@@ -1319,7 +1320,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cen_transit_router_route_table"],
 			TypeName:         "alicloud_cen_transit_router_route_table",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "TransitRouterRouteTable")
 			return err
 		}
@@ -1337,7 +1338,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cen_transit_router_route_table_association"],
 			TypeName:         "alicloud_cen_transit_router_route_table_association",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "TransitRouterRouteTableAssociation")
 			return err
 		}
@@ -1355,7 +1356,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cen_transit_router_route_table_propagation"],
 			TypeName:         "alicloud_cen_transit_router_route_table_propagation",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "TransitRouterRouteTablePropagation")
 			return err
 		}
@@ -1373,7 +1374,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cen_transit_router_vbr_attachment"],
 			TypeName:         "alicloud_cen_transit_router_vbr_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "TransitRouterVbrAttachment")
 			return err
 		}
@@ -1391,7 +1392,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cen_transit_router_vpc_attachment"],
 			TypeName:         "alicloud_cen_transit_router_vpc_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "TransitRouterVpcAttachment")
 			return err
 		}
@@ -1409,7 +1410,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cen_vbr_health_check"],
 			TypeName:         "alicloud_cen_vbr_health_check",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "VbrHealthCheck")
 			return err
 		}
@@ -1427,7 +1428,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cloud_connect_network"],
 			TypeName:         "alicloud_cloud_connect_network",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ConnectNetwork")
 			return err
 		}
@@ -1445,7 +1446,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cloud_connect_network_attachment"],
 			TypeName:         "alicloud_cloud_connect_network_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ConnectNetworkAttachment")
 			return err
 		}
@@ -1463,7 +1464,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cloud_connect_network_grant"],
 			TypeName:         "alicloud_cloud_connect_network_grant",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ConnectNetworkGrant")
 			return err
 		}
@@ -1481,7 +1482,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cloud_storage_gateway_storage_bundle"],
 			TypeName:         "alicloud_cloud_storage_gateway_storage_bundle",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "StorageGatewayStorageBundle")
 			return err
 		}
@@ -1499,7 +1500,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cms_alarm"],
 			TypeName:         "alicloud_cms_alarm",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Alarm")
 			return err
 		}
@@ -1517,7 +1518,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cms_alarm_contact"],
 			TypeName:         "alicloud_cms_alarm_contact",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "AlarmContact")
 			return err
 		}
@@ -1535,7 +1536,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cms_alarm_contact_group"],
 			TypeName:         "alicloud_cms_alarm_contact_group",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "AlarmContactGroup")
 			return err
 		}
@@ -1553,7 +1554,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cms_group_metric_rule"],
 			TypeName:         "alicloud_cms_group_metric_rule",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "GroupMetricRule")
 			return err
 		}
@@ -1571,7 +1572,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cms_monitor_group"],
 			TypeName:         "alicloud_cms_monitor_group",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "MonitorGroup")
 			return err
 		}
@@ -1589,7 +1590,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cms_monitor_group_instances"],
 			TypeName:         "alicloud_cms_monitor_group_instances",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "MonitorGroupInstances")
 			return err
 		}
@@ -1607,7 +1608,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cms_site_monitor"],
 			TypeName:         "alicloud_cms_site_monitor",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "SiteMonitor")
 			return err
 		}
@@ -1625,7 +1626,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_common_bandwidth_package"],
 			TypeName:         "alicloud_common_bandwidth_package",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "BandwidthPackage")
 			return err
 		}
@@ -1643,7 +1644,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_common_bandwidth_package_attachment"],
 			TypeName:         "alicloud_common_bandwidth_package_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "BandwidthPackageAttachment")
 			return err
 		}
@@ -1661,7 +1662,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_config_aggregate_compliance_pack"],
 			TypeName:         "alicloud_config_aggregate_compliance_pack",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "AggregateCompliancePack")
 			return err
 		}
@@ -1679,7 +1680,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_config_aggregate_config_rule"],
 			TypeName:         "alicloud_config_aggregate_config_rule",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "AggregateConfigRule")
 			return err
 		}
@@ -1697,7 +1698,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_config_aggregator"],
 			TypeName:         "alicloud_config_aggregator",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Aggregator")
 			return err
 		}
@@ -1715,7 +1716,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_config_compliance_pack"],
 			TypeName:         "alicloud_config_compliance_pack",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "CompliancePack")
 			return err
 		}
@@ -1733,7 +1734,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_config_configuration_recorder"],
 			TypeName:         "alicloud_config_configuration_recorder",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ConfigurationRecorder")
 			return err
 		}
@@ -1751,7 +1752,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_config_delivery_channel"],
 			TypeName:         "alicloud_config_delivery_channel",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "DeliveryChannel")
 			return err
 		}
@@ -1769,7 +1770,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_config_rule"],
 			TypeName:         "alicloud_config_rule",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Rule")
 			return err
 		}
@@ -1787,7 +1788,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_container_cluster"],
 			TypeName:         "alicloud_container_cluster",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Cluster")
 			return err
 		}
@@ -1805,7 +1806,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_copy_image"],
 			TypeName:         "alicloud_copy_image",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Image")
 			return err
 		}
@@ -1823,7 +1824,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cr_ee_instance"],
 			TypeName:         "alicloud_cr_ee_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "EeInstance")
 			return err
 		}
@@ -1841,7 +1842,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cr_ee_namespace"],
 			TypeName:         "alicloud_cr_ee_namespace",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "EeNamespace")
 			return err
 		}
@@ -1859,7 +1860,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cr_ee_repo"],
 			TypeName:         "alicloud_cr_ee_repo",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "EeRepo")
 			return err
 		}
@@ -1877,7 +1878,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cr_ee_sync_rule"],
 			TypeName:         "alicloud_cr_ee_sync_rule",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "EeSyncRule")
 			return err
 		}
@@ -1895,7 +1896,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cr_namespace"],
 			TypeName:         "alicloud_cr_namespace",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Namespace")
 			return err
 		}
@@ -1913,7 +1914,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cr_repo"],
 			TypeName:         "alicloud_cr_repo",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Repo")
 			return err
 		}
@@ -1931,7 +1932,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cs_application"],
 			TypeName:         "alicloud_cs_application",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Application")
 			return err
 		}
@@ -1949,7 +1950,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cs_autoscaling_config"],
 			TypeName:         "alicloud_cs_autoscaling_config",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "AutoscalingConfig")
 			return err
 		}
@@ -1967,7 +1968,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cs_edge_kubernetes"],
 			TypeName:         "alicloud_cs_edge_kubernetes",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "EdgeKubernetes")
 			return err
 		}
@@ -1985,7 +1986,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cs_kubernetes"],
 			TypeName:         "alicloud_cs_kubernetes",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Kubernetes")
 			return err
 		}
@@ -2003,7 +2004,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cs_kubernetes_autoscaler"],
 			TypeName:         "alicloud_cs_kubernetes_autoscaler",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "KubernetesAutoscaler")
 			return err
 		}
@@ -2021,7 +2022,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cs_kubernetes_node_pool"],
 			TypeName:         "alicloud_cs_kubernetes_node_pool",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "KubernetesNodePool")
 			return err
 		}
@@ -2039,7 +2040,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cs_kubernetes_permissions"],
 			TypeName:         "alicloud_cs_kubernetes_permissions",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "KubernetesPermissions")
 			return err
 		}
@@ -2057,7 +2058,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cs_managed_kubernetes"],
 			TypeName:         "alicloud_cs_managed_kubernetes",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ManagedKubernetes")
 			return err
 		}
@@ -2075,7 +2076,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cs_serverless_kubernetes"],
 			TypeName:         "alicloud_cs_serverless_kubernetes",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ServerlessKubernetes")
 			return err
 		}
@@ -2093,7 +2094,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_cs_swarm"],
 			TypeName:         "alicloud_cs_swarm",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Swarm")
 			return err
 		}
@@ -2111,7 +2112,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_datahub_project"],
 			TypeName:         "alicloud_datahub_project",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Project")
 			return err
 		}
@@ -2129,7 +2130,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_datahub_subscription"],
 			TypeName:         "alicloud_datahub_subscription",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Subscription")
 			return err
 		}
@@ -2147,7 +2148,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_datahub_topic"],
 			TypeName:         "alicloud_datahub_topic",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Topic")
 			return err
 		}
@@ -2165,7 +2166,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_db_account"],
 			TypeName:         "alicloud_db_account",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Account")
 			return err
 		}
@@ -2183,7 +2184,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_db_account_privilege"],
 			TypeName:         "alicloud_db_account_privilege",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "AccountPrivilege")
 			return err
 		}
@@ -2201,7 +2202,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_db_backup_policy"],
 			TypeName:         "alicloud_db_backup_policy",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "BackupPolicy")
 			return err
 		}
@@ -2219,7 +2220,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_db_connection"],
 			TypeName:         "alicloud_db_connection",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Connection")
 			return err
 		}
@@ -2237,7 +2238,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_db_database"],
 			TypeName:         "alicloud_db_database",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Database")
 			return err
 		}
@@ -2255,7 +2256,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_db_instance"],
 			TypeName:         "alicloud_db_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Instance")
 			return err
 		}
@@ -2273,7 +2274,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_db_read_write_splitting_connection"],
 			TypeName:         "alicloud_db_read_write_splitting_connection",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ReadWriteSplittingConnection")
 			return err
 		}
@@ -2291,7 +2292,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_db_readonly_instance"],
 			TypeName:         "alicloud_db_readonly_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ReadonlyInstance")
 			return err
 		}
@@ -2309,7 +2310,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_dcdn_domain"],
 			TypeName:         "alicloud_dcdn_domain",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Domain")
 			return err
 		}
@@ -2327,7 +2328,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ddosbgp_instance"],
 			TypeName:         "alicloud_ddosbgp_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Instance")
 			return err
 		}
@@ -2345,7 +2346,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ddoscoo_domain_resource"],
 			TypeName:         "alicloud_ddoscoo_domain_resource",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "DomainResource")
 			return err
 		}
@@ -2363,7 +2364,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ddoscoo_instance"],
 			TypeName:         "alicloud_ddoscoo_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Instance")
 			return err
 		}
@@ -2381,7 +2382,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ddoscoo_port"],
 			TypeName:         "alicloud_ddoscoo_port",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Port")
 			return err
 		}
@@ -2399,7 +2400,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ddoscoo_scheduler_rule"],
 			TypeName:         "alicloud_ddoscoo_scheduler_rule",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "SchedulerRule")
 			return err
 		}
@@ -2417,7 +2418,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_direct_mail_receivers"],
 			TypeName:         "alicloud_direct_mail_receivers",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "MailReceivers")
 			return err
 		}
@@ -2435,7 +2436,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_disk"],
 			TypeName:         "alicloud_disk",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Disk")
 			return err
 		}
@@ -2453,7 +2454,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_disk_attachment"],
 			TypeName:         "alicloud_disk_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Attachment")
 			return err
 		}
@@ -2471,7 +2472,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_dms_enterprise_instance"],
 			TypeName:         "alicloud_dms_enterprise_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "EnterpriseInstance")
 			return err
 		}
@@ -2489,7 +2490,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_dms_enterprise_user"],
 			TypeName:         "alicloud_dms_enterprise_user",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "EnterpriseUser")
 			return err
 		}
@@ -2507,7 +2508,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_dns"],
 			TypeName:         "alicloud_dns",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Dns")
 			return err
 		}
@@ -2525,7 +2526,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_dns_domain"],
 			TypeName:         "alicloud_dns_domain",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Domain")
 			return err
 		}
@@ -2543,7 +2544,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_dns_domain_attachment"],
 			TypeName:         "alicloud_dns_domain_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "DomainAttachment")
 			return err
 		}
@@ -2561,7 +2562,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_dns_group"],
 			TypeName:         "alicloud_dns_group",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Group")
 			return err
 		}
@@ -2579,7 +2580,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_dns_instance"],
 			TypeName:         "alicloud_dns_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Instance")
 			return err
 		}
@@ -2597,7 +2598,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_dns_record"],
 			TypeName:         "alicloud_dns_record",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Record")
 			return err
 		}
@@ -2615,7 +2616,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_drds_instance"],
 			TypeName:         "alicloud_drds_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Instance")
 			return err
 		}
@@ -2633,7 +2634,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_eci_container_group"],
 			TypeName:         "alicloud_eci_container_group",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ContainerGroup")
 			return err
 		}
@@ -2651,7 +2652,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_eci_image_cache"],
 			TypeName:         "alicloud_eci_image_cache",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ImageCache")
 			return err
 		}
@@ -2669,7 +2670,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_eci_openapi_image_cache"],
 			TypeName:         "alicloud_eci_openapi_image_cache",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "OpenapiImageCache")
 			return err
 		}
@@ -2687,7 +2688,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ecs_auto_snapshot_policy"],
 			TypeName:         "alicloud_ecs_auto_snapshot_policy",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "AutoSnapshotPolicy")
 			return err
 		}
@@ -2705,7 +2706,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ecs_auto_snapshot_policy_attachment"],
 			TypeName:         "alicloud_ecs_auto_snapshot_policy_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "AutoSnapshotPolicyAttachment")
 			return err
 		}
@@ -2723,7 +2724,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ecs_command"],
 			TypeName:         "alicloud_ecs_command",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Command")
 			return err
 		}
@@ -2741,7 +2742,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ecs_dedicated_host"],
 			TypeName:         "alicloud_ecs_dedicated_host",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "DedicatedHost")
 			return err
 		}
@@ -2759,7 +2760,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ecs_disk"],
 			TypeName:         "alicloud_ecs_disk",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Disk")
 			return err
 		}
@@ -2777,7 +2778,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ecs_disk_attachment"],
 			TypeName:         "alicloud_ecs_disk_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "DiskAttachment")
 			return err
 		}
@@ -2795,7 +2796,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ecs_hpc_cluster"],
 			TypeName:         "alicloud_ecs_hpc_cluster",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "HpcCluster")
 			return err
 		}
@@ -2813,7 +2814,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ecs_key_pair"],
 			TypeName:         "alicloud_ecs_key_pair",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "KeyPair")
 			return err
 		}
@@ -2831,7 +2832,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ecs_key_pair_attachment"],
 			TypeName:         "alicloud_ecs_key_pair_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "KeyPairAttachment")
 			return err
 		}
@@ -2849,7 +2850,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ecs_launch_template"],
 			TypeName:         "alicloud_ecs_launch_template",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "LaunchTemplate")
 			return err
 		}
@@ -2867,7 +2868,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ecs_network_interface"],
 			TypeName:         "alicloud_ecs_network_interface",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "NetworkInterface")
 			return err
 		}
@@ -2885,7 +2886,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ecs_network_interface_attachment"],
 			TypeName:         "alicloud_ecs_network_interface_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "NetworkInterfaceAttachment")
 			return err
 		}
@@ -2903,7 +2904,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ecs_snapshot"],
 			TypeName:         "alicloud_ecs_snapshot",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Snapshot")
 			return err
 		}
@@ -2921,7 +2922,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_edas_application"],
 			TypeName:         "alicloud_edas_application",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Application")
 			return err
 		}
@@ -2939,7 +2940,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_edas_application_deployment"],
 			TypeName:         "alicloud_edas_application_deployment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ApplicationDeployment")
 			return err
 		}
@@ -2957,7 +2958,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_edas_application_scale"],
 			TypeName:         "alicloud_edas_application_scale",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ApplicationScale")
 			return err
 		}
@@ -2975,7 +2976,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_edas_cluster"],
 			TypeName:         "alicloud_edas_cluster",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Cluster")
 			return err
 		}
@@ -2993,7 +2994,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_edas_deploy_group"],
 			TypeName:         "alicloud_edas_deploy_group",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "DeployGroup")
 			return err
 		}
@@ -3011,7 +3012,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_edas_instance_cluster_attachment"],
 			TypeName:         "alicloud_edas_instance_cluster_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "InstanceClusterAttachment")
 			return err
 		}
@@ -3029,7 +3030,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_edas_k8s_application"],
 			TypeName:         "alicloud_edas_k8s_application",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "K8sApplication")
 			return err
 		}
@@ -3047,7 +3048,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_edas_k8s_cluster"],
 			TypeName:         "alicloud_edas_k8s_cluster",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "K8sCluster")
 			return err
 		}
@@ -3065,7 +3066,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_edas_slb_attachment"],
 			TypeName:         "alicloud_edas_slb_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "SlbAttachment")
 			return err
 		}
@@ -3083,7 +3084,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_eip"],
 			TypeName:         "alicloud_eip",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Eip")
 			return err
 		}
@@ -3101,7 +3102,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_eip_address"],
 			TypeName:         "alicloud_eip_address",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Address")
 			return err
 		}
@@ -3119,7 +3120,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_eip_association"],
 			TypeName:         "alicloud_eip_association",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Association")
 			return err
 		}
@@ -3137,7 +3138,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_eipanycast_anycast_eip_address"],
 			TypeName:         "alicloud_eipanycast_anycast_eip_address",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "AnycastEipAddress")
 			return err
 		}
@@ -3155,7 +3156,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_eipanycast_anycast_eip_address_attachment"],
 			TypeName:         "alicloud_eipanycast_anycast_eip_address_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "AnycastEipAddressAttachment")
 			return err
 		}
@@ -3173,7 +3174,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_elasticsearch_instance"],
 			TypeName:         "alicloud_elasticsearch_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Instance")
 			return err
 		}
@@ -3191,7 +3192,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_emr_cluster"],
 			TypeName:         "alicloud_emr_cluster",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Cluster")
 			return err
 		}
@@ -3209,7 +3210,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ess_alarm"],
 			TypeName:         "alicloud_ess_alarm",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Alarm")
 			return err
 		}
@@ -3227,7 +3228,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ess_attachment"],
 			TypeName:         "alicloud_ess_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Attachment")
 			return err
 		}
@@ -3245,7 +3246,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ess_lifecycle_hook"],
 			TypeName:         "alicloud_ess_lifecycle_hook",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "LifecycleHook")
 			return err
 		}
@@ -3263,7 +3264,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ess_notification"],
 			TypeName:         "alicloud_ess_notification",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Notification")
 			return err
 		}
@@ -3281,7 +3282,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ess_scaling_configuration"],
 			TypeName:         "alicloud_ess_scaling_configuration",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ScalingConfiguration")
 			return err
 		}
@@ -3299,7 +3300,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ess_scaling_group"],
 			TypeName:         "alicloud_ess_scaling_group",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ScalingGroup")
 			return err
 		}
@@ -3317,7 +3318,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ess_scaling_rule"],
 			TypeName:         "alicloud_ess_scaling_rule",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ScalingRule")
 			return err
 		}
@@ -3335,7 +3336,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ess_scalinggroup_vserver_groups"],
 			TypeName:         "alicloud_ess_scalinggroup_vserver_groups",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ScalinggroupVserverGroups")
 			return err
 		}
@@ -3353,7 +3354,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ess_schedule"],
 			TypeName:         "alicloud_ess_schedule",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Schedule")
 			return err
 		}
@@ -3371,7 +3372,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ess_scheduled_task"],
 			TypeName:         "alicloud_ess_scheduled_task",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ScheduledTask")
 			return err
 		}
@@ -3389,7 +3390,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_event_bridge_event_bus"],
 			TypeName:         "alicloud_event_bridge_event_bus",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "BridgeEventBus")
 			return err
 		}
@@ -3407,7 +3408,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_event_bridge_schema_group"],
 			TypeName:         "alicloud_event_bridge_schema_group",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "BridgeSchemaGroup")
 			return err
 		}
@@ -3425,7 +3426,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_fc_alias"],
 			TypeName:         "alicloud_fc_alias",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Alias")
 			return err
 		}
@@ -3443,7 +3444,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_fc_custom_domain"],
 			TypeName:         "alicloud_fc_custom_domain",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "CustomDomain")
 			return err
 		}
@@ -3461,7 +3462,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_fc_function"],
 			TypeName:         "alicloud_fc_function",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Function")
 			return err
 		}
@@ -3479,7 +3480,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_fc_function_async_invoke_config"],
 			TypeName:         "alicloud_fc_function_async_invoke_config",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "FunctionAsyncInvokeConfig")
 			return err
 		}
@@ -3497,7 +3498,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_fc_service"],
 			TypeName:         "alicloud_fc_service",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Service")
 			return err
 		}
@@ -3515,7 +3516,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_fc_trigger"],
 			TypeName:         "alicloud_fc_trigger",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Trigger")
 			return err
 		}
@@ -3533,7 +3534,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_fnf_flow"],
 			TypeName:         "alicloud_fnf_flow",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Flow")
 			return err
 		}
@@ -3551,7 +3552,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_fnf_schedule"],
 			TypeName:         "alicloud_fnf_schedule",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Schedule")
 			return err
 		}
@@ -3569,7 +3570,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_forward_entry"],
 			TypeName:         "alicloud_forward_entry",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Entry")
 			return err
 		}
@@ -3587,7 +3588,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ga_accelerator"],
 			TypeName:         "alicloud_ga_accelerator",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Accelerator")
 			return err
 		}
@@ -3605,7 +3606,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ga_bandwidth_package"],
 			TypeName:         "alicloud_ga_bandwidth_package",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "BandwidthPackage")
 			return err
 		}
@@ -3623,7 +3624,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ga_bandwidth_package_attachment"],
 			TypeName:         "alicloud_ga_bandwidth_package_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "BandwidthPackageAttachment")
 			return err
 		}
@@ -3641,7 +3642,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ga_endpoint_group"],
 			TypeName:         "alicloud_ga_endpoint_group",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "EndpointGroup")
 			return err
 		}
@@ -3659,7 +3660,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ga_forwarding_rule"],
 			TypeName:         "alicloud_ga_forwarding_rule",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ForwardingRule")
 			return err
 		}
@@ -3677,7 +3678,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ga_ip_set"],
 			TypeName:         "alicloud_ga_ip_set",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "IpSet")
 			return err
 		}
@@ -3695,7 +3696,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ga_listener"],
 			TypeName:         "alicloud_ga_listener",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Listener")
 			return err
 		}
@@ -3713,7 +3714,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_gpdb_connection"],
 			TypeName:         "alicloud_gpdb_connection",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Connection")
 			return err
 		}
@@ -3731,7 +3732,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_gpdb_elastic_instance"],
 			TypeName:         "alicloud_gpdb_elastic_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ElasticInstance")
 			return err
 		}
@@ -3749,7 +3750,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_gpdb_instance"],
 			TypeName:         "alicloud_gpdb_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Instance")
 			return err
 		}
@@ -3767,7 +3768,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_havip"],
 			TypeName:         "alicloud_havip",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Havip")
 			return err
 		}
@@ -3785,7 +3786,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_havip_attachment"],
 			TypeName:         "alicloud_havip_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Attachment")
 			return err
 		}
@@ -3803,7 +3804,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_hbase_instance"],
 			TypeName:         "alicloud_hbase_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Instance")
 			return err
 		}
@@ -3821,7 +3822,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_image"],
 			TypeName:         "alicloud_image",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Image")
 			return err
 		}
@@ -3839,7 +3840,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_image_copy"],
 			TypeName:         "alicloud_image_copy",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Copy")
 			return err
 		}
@@ -3857,7 +3858,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_image_export"],
 			TypeName:         "alicloud_image_export",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Export")
 			return err
 		}
@@ -3875,7 +3876,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_image_import"],
 			TypeName:         "alicloud_image_import",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Import")
 			return err
 		}
@@ -3893,7 +3894,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_image_share_permission"],
 			TypeName:         "alicloud_image_share_permission",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "SharePermission")
 			return err
 		}
@@ -3911,7 +3912,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_instance"],
 			TypeName:         "alicloud_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Instance")
 			return err
 		}
@@ -3929,7 +3930,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_key_pair"],
 			TypeName:         "alicloud_key_pair",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Pair")
 			return err
 		}
@@ -3947,7 +3948,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_key_pair_attachment"],
 			TypeName:         "alicloud_key_pair_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "PairAttachment")
 			return err
 		}
@@ -3965,7 +3966,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_kms_alias"],
 			TypeName:         "alicloud_kms_alias",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Alias")
 			return err
 		}
@@ -3983,7 +3984,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_kms_ciphertext"],
 			TypeName:         "alicloud_kms_ciphertext",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Ciphertext")
 			return err
 		}
@@ -4001,7 +4002,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_kms_key"],
 			TypeName:         "alicloud_kms_key",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Key")
 			return err
 		}
@@ -4019,7 +4020,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_kms_key_version"],
 			TypeName:         "alicloud_kms_key_version",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "KeyVersion")
 			return err
 		}
@@ -4037,7 +4038,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_kms_secret"],
 			TypeName:         "alicloud_kms_secret",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Secret")
 			return err
 		}
@@ -4055,7 +4056,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_kvstore_account"],
 			TypeName:         "alicloud_kvstore_account",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Account")
 			return err
 		}
@@ -4073,7 +4074,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_kvstore_backup_policy"],
 			TypeName:         "alicloud_kvstore_backup_policy",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "BackupPolicy")
 			return err
 		}
@@ -4091,7 +4092,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_kvstore_connection"],
 			TypeName:         "alicloud_kvstore_connection",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Connection")
 			return err
 		}
@@ -4109,7 +4110,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_kvstore_instance"],
 			TypeName:         "alicloud_kvstore_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Instance")
 			return err
 		}
@@ -4127,7 +4128,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_launch_template"],
 			TypeName:         "alicloud_launch_template",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Template")
 			return err
 		}
@@ -4145,7 +4146,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_log_alert"],
 			TypeName:         "alicloud_log_alert",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Alert")
 			return err
 		}
@@ -4163,7 +4164,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_log_audit"],
 			TypeName:         "alicloud_log_audit",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Audit")
 			return err
 		}
@@ -4181,7 +4182,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_log_dashboard"],
 			TypeName:         "alicloud_log_dashboard",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Dashboard")
 			return err
 		}
@@ -4199,7 +4200,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_log_etl"],
 			TypeName:         "alicloud_log_etl",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Etl")
 			return err
 		}
@@ -4217,7 +4218,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_log_machine_group"],
 			TypeName:         "alicloud_log_machine_group",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "MachineGroup")
 			return err
 		}
@@ -4235,7 +4236,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_log_oss_shipper"],
 			TypeName:         "alicloud_log_oss_shipper",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "OssShipper")
 			return err
 		}
@@ -4253,7 +4254,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_log_project"],
 			TypeName:         "alicloud_log_project",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Project")
 			return err
 		}
@@ -4271,7 +4272,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_log_store"],
 			TypeName:         "alicloud_log_store",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Store")
 			return err
 		}
@@ -4289,7 +4290,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_log_store_index"],
 			TypeName:         "alicloud_log_store_index",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "StoreIndex")
 			return err
 		}
@@ -4307,7 +4308,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_logtail_attachment"],
 			TypeName:         "alicloud_logtail_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Attachment")
 			return err
 		}
@@ -4325,7 +4326,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_logtail_config"],
 			TypeName:         "alicloud_logtail_config",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Config")
 			return err
 		}
@@ -4343,7 +4344,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_market_order"],
 			TypeName:         "alicloud_market_order",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Order")
 			return err
 		}
@@ -4361,7 +4362,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_maxcompute_project"],
 			TypeName:         "alicloud_maxcompute_project",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Project")
 			return err
 		}
@@ -4379,7 +4380,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_mns_queue"],
 			TypeName:         "alicloud_mns_queue",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Queue")
 			return err
 		}
@@ -4397,7 +4398,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_mns_topic"],
 			TypeName:         "alicloud_mns_topic",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Topic")
 			return err
 		}
@@ -4415,7 +4416,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_mns_topic_subscription"],
 			TypeName:         "alicloud_mns_topic_subscription",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "TopicSubscription")
 			return err
 		}
@@ -4433,7 +4434,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_mongodb_instance"],
 			TypeName:         "alicloud_mongodb_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Instance")
 			return err
 		}
@@ -4451,7 +4452,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_mongodb_sharding_instance"],
 			TypeName:         "alicloud_mongodb_sharding_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ShardingInstance")
 			return err
 		}
@@ -4469,7 +4470,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_mse_cluster"],
 			TypeName:         "alicloud_mse_cluster",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Cluster")
 			return err
 		}
@@ -4487,7 +4488,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_nas_access_group"],
 			TypeName:         "alicloud_nas_access_group",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "AccessGroup")
 			return err
 		}
@@ -4505,7 +4506,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_nas_access_rule"],
 			TypeName:         "alicloud_nas_access_rule",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "AccessRule")
 			return err
 		}
@@ -4523,7 +4524,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_nas_file_system"],
 			TypeName:         "alicloud_nas_file_system",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "FileSystem")
 			return err
 		}
@@ -4541,7 +4542,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_nas_mount_target"],
 			TypeName:         "alicloud_nas_mount_target",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "MountTarget")
 			return err
 		}
@@ -4559,7 +4560,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_nat_gateway"],
 			TypeName:         "alicloud_nat_gateway",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Gateway")
 			return err
 		}
@@ -4577,7 +4578,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_network_acl"],
 			TypeName:         "alicloud_network_acl",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Acl")
 			return err
 		}
@@ -4595,7 +4596,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_network_acl_attachment"],
 			TypeName:         "alicloud_network_acl_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "AclAttachment")
 			return err
 		}
@@ -4613,7 +4614,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_network_acl_entries"],
 			TypeName:         "alicloud_network_acl_entries",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "AclEntries")
 			return err
 		}
@@ -4631,7 +4632,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_network_interface"],
 			TypeName:         "alicloud_network_interface",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Interface")
 			return err
 		}
@@ -4649,7 +4650,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_network_interface_attachment"],
 			TypeName:         "alicloud_network_interface_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "InterfaceAttachment")
 			return err
 		}
@@ -4667,7 +4668,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ons_group"],
 			TypeName:         "alicloud_ons_group",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Group")
 			return err
 		}
@@ -4685,7 +4686,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ons_instance"],
 			TypeName:         "alicloud_ons_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Instance")
 			return err
 		}
@@ -4703,7 +4704,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ons_topic"],
 			TypeName:         "alicloud_ons_topic",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Topic")
 			return err
 		}
@@ -4721,7 +4722,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_oos_execution"],
 			TypeName:         "alicloud_oos_execution",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Execution")
 			return err
 		}
@@ -4739,7 +4740,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_oos_template"],
 			TypeName:         "alicloud_oos_template",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Template")
 			return err
 		}
@@ -4757,7 +4758,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_oss_bucket"],
 			TypeName:         "alicloud_oss_bucket",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Bucket")
 			return err
 		}
@@ -4775,7 +4776,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_oss_bucket_object"],
 			TypeName:         "alicloud_oss_bucket_object",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "BucketObject")
 			return err
 		}
@@ -4793,7 +4794,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ots_instance"],
 			TypeName:         "alicloud_ots_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Instance")
 			return err
 		}
@@ -4811,7 +4812,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ots_instance_attachment"],
 			TypeName:         "alicloud_ots_instance_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "InstanceAttachment")
 			return err
 		}
@@ -4829,7 +4830,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ots_table"],
 			TypeName:         "alicloud_ots_table",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Table")
 			return err
 		}
@@ -4847,7 +4848,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_polardb_account"],
 			TypeName:         "alicloud_polardb_account",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Account")
 			return err
 		}
@@ -4865,7 +4866,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_polardb_account_privilege"],
 			TypeName:         "alicloud_polardb_account_privilege",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "AccountPrivilege")
 			return err
 		}
@@ -4883,7 +4884,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_polardb_backup_policy"],
 			TypeName:         "alicloud_polardb_backup_policy",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "BackupPolicy")
 			return err
 		}
@@ -4901,7 +4902,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_polardb_cluster"],
 			TypeName:         "alicloud_polardb_cluster",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Cluster")
 			return err
 		}
@@ -4919,7 +4920,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_polardb_database"],
 			TypeName:         "alicloud_polardb_database",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Database")
 			return err
 		}
@@ -4937,7 +4938,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_polardb_endpoint"],
 			TypeName:         "alicloud_polardb_endpoint",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Endpoint")
 			return err
 		}
@@ -4955,7 +4956,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_polardb_endpoint_address"],
 			TypeName:         "alicloud_polardb_endpoint_address",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "EndpointAddress")
 			return err
 		}
@@ -4973,7 +4974,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_privatelink_vpc_endpoint"],
 			TypeName:         "alicloud_privatelink_vpc_endpoint",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "VpcEndpoint")
 			return err
 		}
@@ -4991,7 +4992,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_privatelink_vpc_endpoint_connection"],
 			TypeName:         "alicloud_privatelink_vpc_endpoint_connection",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "VpcEndpointConnection")
 			return err
 		}
@@ -5009,7 +5010,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_privatelink_vpc_endpoint_service"],
 			TypeName:         "alicloud_privatelink_vpc_endpoint_service",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "VpcEndpointService")
 			return err
 		}
@@ -5027,7 +5028,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_privatelink_vpc_endpoint_service_resource"],
 			TypeName:         "alicloud_privatelink_vpc_endpoint_service_resource",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "VpcEndpointServiceResource")
 			return err
 		}
@@ -5045,7 +5046,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_privatelink_vpc_endpoint_service_user"],
 			TypeName:         "alicloud_privatelink_vpc_endpoint_service_user",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "VpcEndpointServiceUser")
 			return err
 		}
@@ -5063,7 +5064,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_privatelink_vpc_endpoint_zone"],
 			TypeName:         "alicloud_privatelink_vpc_endpoint_zone",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "VpcEndpointZone")
 			return err
 		}
@@ -5081,7 +5082,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_pvtz_zone"],
 			TypeName:         "alicloud_pvtz_zone",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Zone")
 			return err
 		}
@@ -5099,7 +5100,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_pvtz_zone_attachment"],
 			TypeName:         "alicloud_pvtz_zone_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ZoneAttachment")
 			return err
 		}
@@ -5117,7 +5118,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_pvtz_zone_record"],
 			TypeName:         "alicloud_pvtz_zone_record",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ZoneRecord")
 			return err
 		}
@@ -5135,7 +5136,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_quotas_application_info"],
 			TypeName:         "alicloud_quotas_application_info",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ApplicationInfo")
 			return err
 		}
@@ -5153,7 +5154,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_quotas_quota_alarm"],
 			TypeName:         "alicloud_quotas_quota_alarm",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "QuotaAlarm")
 			return err
 		}
@@ -5171,7 +5172,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_quotas_quota_application"],
 			TypeName:         "alicloud_quotas_quota_application",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "QuotaApplication")
 			return err
 		}
@@ -5189,7 +5190,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ram_access_key"],
 			TypeName:         "alicloud_ram_access_key",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "AccessKey")
 			return err
 		}
@@ -5207,7 +5208,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ram_account_alias"],
 			TypeName:         "alicloud_ram_account_alias",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "AccountAlias")
 			return err
 		}
@@ -5225,7 +5226,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ram_account_password_policy"],
 			TypeName:         "alicloud_ram_account_password_policy",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "AccountPasswordPolicy")
 			return err
 		}
@@ -5243,7 +5244,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ram_alias"],
 			TypeName:         "alicloud_ram_alias",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Alias")
 			return err
 		}
@@ -5261,7 +5262,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ram_group"],
 			TypeName:         "alicloud_ram_group",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Group")
 			return err
 		}
@@ -5279,7 +5280,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ram_group_membership"],
 			TypeName:         "alicloud_ram_group_membership",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "GroupMembership")
 			return err
 		}
@@ -5297,7 +5298,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ram_group_policy_attachment"],
 			TypeName:         "alicloud_ram_group_policy_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "GroupPolicyAttachment")
 			return err
 		}
@@ -5315,7 +5316,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ram_login_profile"],
 			TypeName:         "alicloud_ram_login_profile",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "LoginProfile")
 			return err
 		}
@@ -5333,7 +5334,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ram_policy"],
 			TypeName:         "alicloud_ram_policy",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Policy")
 			return err
 		}
@@ -5351,7 +5352,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ram_role"],
 			TypeName:         "alicloud_ram_role",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Role")
 			return err
 		}
@@ -5369,7 +5370,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ram_role_attachment"],
 			TypeName:         "alicloud_ram_role_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "RoleAttachment")
 			return err
 		}
@@ -5387,7 +5388,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ram_role_policy_attachment"],
 			TypeName:         "alicloud_ram_role_policy_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "RolePolicyAttachment")
 			return err
 		}
@@ -5405,7 +5406,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ram_saml_provider"],
 			TypeName:         "alicloud_ram_saml_provider",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "SamlProvider")
 			return err
 		}
@@ -5423,7 +5424,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ram_user"],
 			TypeName:         "alicloud_ram_user",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "User")
 			return err
 		}
@@ -5441,7 +5442,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ram_user_policy_attachment"],
 			TypeName:         "alicloud_ram_user_policy_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "UserPolicyAttachment")
 			return err
 		}
@@ -5459,7 +5460,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_rds_account"],
 			TypeName:         "alicloud_rds_account",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Account")
 			return err
 		}
@@ -5477,7 +5478,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_rds_parameter_group"],
 			TypeName:         "alicloud_rds_parameter_group",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ParameterGroup")
 			return err
 		}
@@ -5495,7 +5496,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_reserved_instance"],
 			TypeName:         "alicloud_reserved_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Instance")
 			return err
 		}
@@ -5513,7 +5514,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_resource_manager_account"],
 			TypeName:         "alicloud_resource_manager_account",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ManagerAccount")
 			return err
 		}
@@ -5531,7 +5532,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_resource_manager_control_policy"],
 			TypeName:         "alicloud_resource_manager_control_policy",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ManagerControlPolicy")
 			return err
 		}
@@ -5549,7 +5550,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_resource_manager_control_policy_attachment"],
 			TypeName:         "alicloud_resource_manager_control_policy_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ManagerControlPolicyAttachment")
 			return err
 		}
@@ -5567,7 +5568,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_resource_manager_folder"],
 			TypeName:         "alicloud_resource_manager_folder",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ManagerFolder")
 			return err
 		}
@@ -5585,7 +5586,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_resource_manager_handshake"],
 			TypeName:         "alicloud_resource_manager_handshake",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ManagerHandshake")
 			return err
 		}
@@ -5603,7 +5604,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_resource_manager_policy"],
 			TypeName:         "alicloud_resource_manager_policy",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ManagerPolicy")
 			return err
 		}
@@ -5621,7 +5622,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_resource_manager_policy_attachment"],
 			TypeName:         "alicloud_resource_manager_policy_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ManagerPolicyAttachment")
 			return err
 		}
@@ -5639,7 +5640,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_resource_manager_policy_version"],
 			TypeName:         "alicloud_resource_manager_policy_version",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ManagerPolicyVersion")
 			return err
 		}
@@ -5657,7 +5658,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_resource_manager_resource_directory"],
 			TypeName:         "alicloud_resource_manager_resource_directory",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ManagerResourceDirectory")
 			return err
 		}
@@ -5675,7 +5676,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_resource_manager_resource_group"],
 			TypeName:         "alicloud_resource_manager_resource_group",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ManagerResourceGroup")
 			return err
 		}
@@ -5693,7 +5694,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_resource_manager_resource_share"],
 			TypeName:         "alicloud_resource_manager_resource_share",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ManagerResourceShare")
 			return err
 		}
@@ -5711,7 +5712,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_resource_manager_role"],
 			TypeName:         "alicloud_resource_manager_role",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ManagerRole")
 			return err
 		}
@@ -5729,7 +5730,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_resource_manager_shared_resource"],
 			TypeName:         "alicloud_resource_manager_shared_resource",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ManagerSharedResource")
 			return err
 		}
@@ -5747,7 +5748,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_resource_manager_shared_target"],
 			TypeName:         "alicloud_resource_manager_shared_target",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ManagerSharedTarget")
 			return err
 		}
@@ -5765,7 +5766,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ros_change_set"],
 			TypeName:         "alicloud_ros_change_set",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ChangeSet")
 			return err
 		}
@@ -5783,7 +5784,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ros_stack"],
 			TypeName:         "alicloud_ros_stack",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Stack")
 			return err
 		}
@@ -5801,7 +5802,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ros_stack_group"],
 			TypeName:         "alicloud_ros_stack_group",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "StackGroup")
 			return err
 		}
@@ -5819,7 +5820,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ros_template"],
 			TypeName:         "alicloud_ros_template",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Template")
 			return err
 		}
@@ -5837,7 +5838,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_route_entry"],
 			TypeName:         "alicloud_route_entry",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Entry")
 			return err
 		}
@@ -5855,7 +5856,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_route_table"],
 			TypeName:         "alicloud_route_table",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Table")
 			return err
 		}
@@ -5873,7 +5874,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_route_table_attachment"],
 			TypeName:         "alicloud_route_table_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "TableAttachment")
 			return err
 		}
@@ -5891,7 +5892,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_router_interface"],
 			TypeName:         "alicloud_router_interface",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Interface")
 			return err
 		}
@@ -5909,7 +5910,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_router_interface_connection"],
 			TypeName:         "alicloud_router_interface_connection",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "InterfaceConnection")
 			return err
 		}
@@ -5927,7 +5928,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_sag_acl"],
 			TypeName:         "alicloud_sag_acl",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Acl")
 			return err
 		}
@@ -5945,7 +5946,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_sag_acl_rule"],
 			TypeName:         "alicloud_sag_acl_rule",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "AclRule")
 			return err
 		}
@@ -5963,7 +5964,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_sag_client_user"],
 			TypeName:         "alicloud_sag_client_user",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ClientUser")
 			return err
 		}
@@ -5981,7 +5982,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_sag_dnat_entry"],
 			TypeName:         "alicloud_sag_dnat_entry",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "DnatEntry")
 			return err
 		}
@@ -5999,7 +6000,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_sag_qos"],
 			TypeName:         "alicloud_sag_qos",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Qos")
 			return err
 		}
@@ -6017,7 +6018,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_sag_qos_car"],
 			TypeName:         "alicloud_sag_qos_car",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "QosCar")
 			return err
 		}
@@ -6035,7 +6036,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_sag_qos_policy"],
 			TypeName:         "alicloud_sag_qos_policy",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "QosPolicy")
 			return err
 		}
@@ -6053,7 +6054,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_sag_snat_entry"],
 			TypeName:         "alicloud_sag_snat_entry",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "SnatEntry")
 			return err
 		}
@@ -6071,7 +6072,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_security_group"],
 			TypeName:         "alicloud_security_group",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Group")
 			return err
 		}
@@ -6089,7 +6090,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_security_group_rule"],
 			TypeName:         "alicloud_security_group_rule",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "GroupRule")
 			return err
 		}
@@ -6107,7 +6108,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_slb"],
 			TypeName:         "alicloud_slb",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Slb")
 			return err
 		}
@@ -6125,7 +6126,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_slb_acl"],
 			TypeName:         "alicloud_slb_acl",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Acl")
 			return err
 		}
@@ -6143,7 +6144,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_slb_attachment"],
 			TypeName:         "alicloud_slb_attachment",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Attachment")
 			return err
 		}
@@ -6161,7 +6162,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_slb_backend_server"],
 			TypeName:         "alicloud_slb_backend_server",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "BackendServer")
 			return err
 		}
@@ -6179,7 +6180,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_slb_ca_certificate"],
 			TypeName:         "alicloud_slb_ca_certificate",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "CaCertificate")
 			return err
 		}
@@ -6197,7 +6198,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_slb_domain_extension"],
 			TypeName:         "alicloud_slb_domain_extension",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "DomainExtension")
 			return err
 		}
@@ -6215,7 +6216,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_slb_listener"],
 			TypeName:         "alicloud_slb_listener",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Listener")
 			return err
 		}
@@ -6233,7 +6234,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_slb_load_balancer"],
 			TypeName:         "alicloud_slb_load_balancer",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "LoadBalancer")
 			return err
 		}
@@ -6251,7 +6252,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_slb_master_slave_server_group"],
 			TypeName:         "alicloud_slb_master_slave_server_group",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "MasterSlaveServerGroup")
 			return err
 		}
@@ -6269,7 +6270,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_slb_rule"],
 			TypeName:         "alicloud_slb_rule",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Rule")
 			return err
 		}
@@ -6287,7 +6288,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_slb_server_certificate"],
 			TypeName:         "alicloud_slb_server_certificate",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ServerCertificate")
 			return err
 		}
@@ -6305,7 +6306,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_slb_server_group"],
 			TypeName:         "alicloud_slb_server_group",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "ServerGroup")
 			return err
 		}
@@ -6323,7 +6324,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_snapshot"],
 			TypeName:         "alicloud_snapshot",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Snapshot")
 			return err
 		}
@@ -6341,7 +6342,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_snapshot_policy"],
 			TypeName:         "alicloud_snapshot_policy",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Policy")
 			return err
 		}
@@ -6359,7 +6360,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_snat_entry"],
 			TypeName:         "alicloud_snat_entry",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Entry")
 			return err
 		}
@@ -6377,7 +6378,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ssl_vpn_client_cert"],
 			TypeName:         "alicloud_ssl_vpn_client_cert",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "VpnClientCert")
 			return err
 		}
@@ -6395,7 +6396,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_ssl_vpn_server"],
 			TypeName:         "alicloud_ssl_vpn_server",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "VpnServer")
 			return err
 		}
@@ -6413,7 +6414,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_subnet"],
 			TypeName:         "alicloud_subnet",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Subnet")
 			return err
 		}
@@ -6431,7 +6432,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_tsdb_instance"],
 			TypeName:         "alicloud_tsdb_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Instance")
 			return err
 		}
@@ -6449,7 +6450,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_vpc"],
 			TypeName:         "alicloud_vpc",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Vpc")
 			return err
 		}
@@ -6467,7 +6468,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_vpc_flow_log"],
 			TypeName:         "alicloud_vpc_flow_log",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "FlowLog")
 			return err
 		}
@@ -6485,7 +6486,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_vpn_connection"],
 			TypeName:         "alicloud_vpn_connection",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Connection")
 			return err
 		}
@@ -6503,7 +6504,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_vpn_customer_gateway"],
 			TypeName:         "alicloud_vpn_customer_gateway",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "CustomerGateway")
 			return err
 		}
@@ -6521,7 +6522,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_vpn_gateway"],
 			TypeName:         "alicloud_vpn_gateway",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Gateway")
 			return err
 		}
@@ -6539,7 +6540,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_vpn_route_entry"],
 			TypeName:         "alicloud_vpn_route_entry",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "RouteEntry")
 			return err
 		}
@@ -6557,7 +6558,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_vswitch"],
 			TypeName:         "alicloud_vswitch",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Vswitch")
 			return err
 		}
@@ -6575,7 +6576,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_waf_domain"],
 			TypeName:         "alicloud_waf_domain",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Domain")
 			return err
 		}
@@ -6593,7 +6594,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_waf_instance"],
 			TypeName:         "alicloud_waf_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Instance")
 			return err
 		}
@@ -6611,7 +6612,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_yundun_bastionhost_instance"],
 			TypeName:         "alicloud_yundun_bastionhost_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "BastionhostInstance")
 			return err
 		}
@@ -6629,7 +6630,7 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Resource:         _provider.ResourcesMap["alicloud_yundun_dbaudit_instance"],
 			TypeName:         "alicloud_yundun_dbaudit_instance",
 			WatchOnlyDefault: watchOnlyDefault,
-		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "DbauditInstance")
 			return err
 		}
