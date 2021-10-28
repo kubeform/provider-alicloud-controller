@@ -3,7 +3,7 @@ module kubeform.dev/provider-alicloud-controller
 go 1.16
 
 require (
-	github.com/aliyun/terraform-provider-alicloud v1.128.0
+	github.com/aliyun/terraform-provider-alicloud v1.140.0
 	github.com/fatih/structs v1.1.0
 	github.com/go-logr/logr v0.4.0
 	github.com/gobuffalo/flect v0.2.3
@@ -15,19 +15,19 @@ require (
 	github.com/json-iterator/go v1.1.11
 	github.com/spf13/cobra v1.1.3
 	github.com/zclconf/go-cty v1.9.1
-	go.bytebuilders.dev/audit v0.0.7
-	go.bytebuilders.dev/license-verifier v0.9.2
+	go.bytebuilders.dev/audit v0.0.11
+	go.bytebuilders.dev/license-verifier v0.9.3
 	go.bytebuilders.dev/license-verifier/kubernetes v0.9.2
-	gomodules.xyz/logs v0.0.3
-	gomodules.xyz/x v0.0.7
+	gomodules.xyz/logs v0.0.4
+	gomodules.xyz/x v0.0.8
 	k8s.io/api v0.21.1
 	k8s.io/apiextensions-apiserver v0.21.1
 	k8s.io/apimachinery v0.21.1
 	k8s.io/client-go v10.0.0+incompatible
 	k8s.io/klog/v2 v2.8.0
-	kmodules.xyz/client-go v0.0.0-20210822203828-5e9cebbf1dfa
+	kmodules.xyz/client-go v0.0.0-20211028120227-48eb36f92a30
 	kubeform.dev/apimachinery v0.0.0-20210824104859-ba5604d5a1cc
-	kubeform.dev/provider-alicloud-api v0.3.1-0.20211020091934-20bf05d3ed76
+	kubeform.dev/provider-alicloud-api v0.3.1-0.20211028192645-0ad2933e70a0
 	kubeform.dev/terraform-backend-sdk v0.0.0-20210922115523-21574335f0db
 	sigs.k8s.io/cli-utils v0.25.0
 	sigs.k8s.io/controller-runtime v0.9.0
