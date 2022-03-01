@@ -154,3650 +154,3648 @@ type Data struct {
 	ResourceType string
 }
 
-var (
-	allJsonIt = map[schema.GroupVersionResource]Data{
-		{
-			Group:    "actiontrail.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "actiontrails",
-		}: {
-			JsonIt:       controllers.GetJSONItr(actiontrailv1alpha1.GetEncoder(), actiontrailv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_actiontrail",
-		},
-		{
-			Group:    "actiontrail.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "historydeliveryjobs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(actiontrailv1alpha1.GetEncoder(), actiontrailv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_actiontrail_history_delivery_job",
-		},
-		{
-			Group:    "actiontrail.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "trails",
-		}: {
-			JsonIt:       controllers.GetJSONItr(actiontrailv1alpha1.GetEncoder(), actiontrailv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_actiontrail_trail",
-		},
-		{
-			Group:    "adb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "accounts",
-		}: {
-			JsonIt:       controllers.GetJSONItr(adbv1alpha1.GetEncoder(), adbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_adb_account",
-		},
-		{
-			Group:    "adb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "backuppolicies",
-		}: {
-			JsonIt:       controllers.GetJSONItr(adbv1alpha1.GetEncoder(), adbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_adb_backup_policy",
-		},
-		{
-			Group:    "adb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "clusters",
-		}: {
-			JsonIt:       controllers.GetJSONItr(adbv1alpha1.GetEncoder(), adbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_adb_cluster",
-		},
-		{
-			Group:    "adb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "connections",
-		}: {
-			JsonIt:       controllers.GetJSONItr(adbv1alpha1.GetEncoder(), adbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_adb_connection",
-		},
-		{
-			Group:    "adb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "dbclusters",
-		}: {
-			JsonIt:       controllers.GetJSONItr(adbv1alpha1.GetEncoder(), adbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_adb_db_cluster",
-		},
-		{
-			Group:    "alb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "acls",
-		}: {
-			JsonIt:       controllers.GetJSONItr(albv1alpha1.GetEncoder(), albv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_alb_acl",
-		},
-		{
-			Group:    "alb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "healthchecktemplates",
-		}: {
-			JsonIt:       controllers.GetJSONItr(albv1alpha1.GetEncoder(), albv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_alb_health_check_template",
-		},
-		{
-			Group:    "alb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "listeners",
-		}: {
-			JsonIt:       controllers.GetJSONItr(albv1alpha1.GetEncoder(), albv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_alb_listener",
-		},
-		{
-			Group:    "alb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "loadbalancers",
-		}: {
-			JsonIt:       controllers.GetJSONItr(albv1alpha1.GetEncoder(), albv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_alb_load_balancer",
-		},
-		{
-			Group:    "alb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "rules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(albv1alpha1.GetEncoder(), albv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_alb_rule",
-		},
-		{
-			Group:    "alb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "securitypolicies",
-		}: {
-			JsonIt:       controllers.GetJSONItr(albv1alpha1.GetEncoder(), albv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_alb_security_policy",
-		},
-		{
-			Group:    "alb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "servergroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(albv1alpha1.GetEncoder(), albv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_alb_server_group",
-		},
-		{
-			Group:    "alidns.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "domains",
-		}: {
-			JsonIt:       controllers.GetJSONItr(alidnsv1alpha1.GetEncoder(), alidnsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_alidns_domain",
-		},
-		{
-			Group:    "alidns.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "domainattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(alidnsv1alpha1.GetEncoder(), alidnsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_alidns_domain_attachment",
-		},
-		{
-			Group:    "alidns.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "domaingroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(alidnsv1alpha1.GetEncoder(), alidnsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_alidns_domain_group",
-		},
-		{
-			Group:    "alidns.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(alidnsv1alpha1.GetEncoder(), alidnsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_alidns_instance",
-		},
-		{
-			Group:    "alidns.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "records",
-		}: {
-			JsonIt:       controllers.GetJSONItr(alidnsv1alpha1.GetEncoder(), alidnsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_alidns_record",
-		},
-		{
-			Group:    "alikafka.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "consumergroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(alikafkav1alpha1.GetEncoder(), alikafkav1alpha1.GetDecoder()),
-			ResourceType: "alicloud_alikafka_consumer_group",
-		},
-		{
-			Group:    "alikafka.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(alikafkav1alpha1.GetEncoder(), alikafkav1alpha1.GetDecoder()),
-			ResourceType: "alicloud_alikafka_instance",
-		},
-		{
-			Group:    "alikafka.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "saslacls",
-		}: {
-			JsonIt:       controllers.GetJSONItr(alikafkav1alpha1.GetEncoder(), alikafkav1alpha1.GetDecoder()),
-			ResourceType: "alicloud_alikafka_sasl_acl",
-		},
-		{
-			Group:    "alikafka.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "saslusers",
-		}: {
-			JsonIt:       controllers.GetJSONItr(alikafkav1alpha1.GetEncoder(), alikafkav1alpha1.GetDecoder()),
-			ResourceType: "alicloud_alikafka_sasl_user",
-		},
-		{
-			Group:    "alikafka.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "topics",
-		}: {
-			JsonIt:       controllers.GetJSONItr(alikafkav1alpha1.GetEncoder(), alikafkav1alpha1.GetDecoder()),
-			ResourceType: "alicloud_alikafka_topic",
-		},
-		{
-			Group:    "amqp.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "bindings",
-		}: {
-			JsonIt:       controllers.GetJSONItr(amqpv1alpha1.GetEncoder(), amqpv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_amqp_binding",
-		},
-		{
-			Group:    "amqp.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "exchanges",
-		}: {
-			JsonIt:       controllers.GetJSONItr(amqpv1alpha1.GetEncoder(), amqpv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_amqp_exchange",
-		},
-		{
-			Group:    "amqp.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(amqpv1alpha1.GetEncoder(), amqpv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_amqp_instance",
-		},
-		{
-			Group:    "amqp.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "queues",
-		}: {
-			JsonIt:       controllers.GetJSONItr(amqpv1alpha1.GetEncoder(), amqpv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_amqp_queue",
-		},
-		{
-			Group:    "amqp.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "virtualhosts",
-		}: {
-			JsonIt:       controllers.GetJSONItr(amqpv1alpha1.GetEncoder(), amqpv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_amqp_virtual_host",
-		},
-		{
-			Group:    "apigateway.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "apis",
-		}: {
-			JsonIt:       controllers.GetJSONItr(apigatewayv1alpha1.GetEncoder(), apigatewayv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_api_gateway_api",
-		},
-		{
-			Group:    "apigateway.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "apps",
-		}: {
-			JsonIt:       controllers.GetJSONItr(apigatewayv1alpha1.GetEncoder(), apigatewayv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_api_gateway_app",
-		},
-		{
-			Group:    "apigateway.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "appattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(apigatewayv1alpha1.GetEncoder(), apigatewayv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_api_gateway_app_attachment",
-		},
-		{
-			Group:    "apigateway.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "groups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(apigatewayv1alpha1.GetEncoder(), apigatewayv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_api_gateway_group",
-		},
-		{
-			Group:    "apigateway.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "vpcaccesses",
-		}: {
-			JsonIt:       controllers.GetJSONItr(apigatewayv1alpha1.GetEncoder(), apigatewayv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_api_gateway_vpc_access",
-		},
-		{
-			Group:    "arms.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "alertcontacts",
-		}: {
-			JsonIt:       controllers.GetJSONItr(armsv1alpha1.GetEncoder(), armsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_arms_alert_contact",
-		},
-		{
-			Group:    "arms.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "alertcontactgroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(armsv1alpha1.GetEncoder(), armsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_arms_alert_contact_group",
-		},
-		{
-			Group:    "arms.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "dispatchrules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(armsv1alpha1.GetEncoder(), armsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_arms_dispatch_rule",
-		},
-		{
-			Group:    "arms.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "prometheusalertrules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(armsv1alpha1.GetEncoder(), armsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_arms_prometheus_alert_rule",
-		},
-		{
-			Group:    "auto.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "provisioninggroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(autov1alpha1.GetEncoder(), autov1alpha1.GetDecoder()),
-			ResourceType: "alicloud_auto_provisioning_group",
-		},
-		{
-			Group:    "bastionhost.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "hosts",
-		}: {
-			JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_bastionhost_host",
-		},
-		{
-			Group:    "bastionhost.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "hostaccounts",
-		}: {
-			JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_bastionhost_host_account",
-		},
-		{
-			Group:    "bastionhost.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "hostaccountuserattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_bastionhost_host_account_user_attachment",
-		},
-		{
-			Group:    "bastionhost.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "hostaccountusergroupattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_bastionhost_host_account_user_group_attachment",
-		},
-		{
-			Group:    "bastionhost.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "hostattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_bastionhost_host_attachment",
-		},
-		{
-			Group:    "bastionhost.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "hostgroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_bastionhost_host_group",
-		},
-		{
-			Group:    "bastionhost.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "hostgroupaccountuserattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_bastionhost_host_group_account_user_attachment",
-		},
-		{
-			Group:    "bastionhost.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "hostgroupaccountusergroupattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_bastionhost_host_group_account_user_group_attachment",
-		},
-		{
-			Group:    "bastionhost.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_bastionhost_instance",
-		},
-		{
-			Group:    "bastionhost.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "users",
-		}: {
-			JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_bastionhost_user",
-		},
-		{
-			Group:    "bastionhost.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "userattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_bastionhost_user_attachment",
-		},
-		{
-			Group:    "bastionhost.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "usergroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_bastionhost_user_group",
-		},
-		{
-			Group:    "brain.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "industrialpidloops",
-		}: {
-			JsonIt:       controllers.GetJSONItr(brainv1alpha1.GetEncoder(), brainv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_brain_industrial_pid_loop",
-		},
-		{
-			Group:    "brain.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "industrialpidorganizations",
-		}: {
-			JsonIt:       controllers.GetJSONItr(brainv1alpha1.GetEncoder(), brainv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_brain_industrial_pid_organization",
-		},
-		{
-			Group:    "brain.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "industrialpidprojects",
-		}: {
-			JsonIt:       controllers.GetJSONItr(brainv1alpha1.GetEncoder(), brainv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_brain_industrial_pid_project",
-		},
-		{
-			Group:    "cas.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "certificates",
-		}: {
-			JsonIt:       controllers.GetJSONItr(casv1alpha1.GetEncoder(), casv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cas_certificate",
-		},
-		{
-			Group:    "cassandra.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "backupplans",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cassandrav1alpha1.GetEncoder(), cassandrav1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cassandra_backup_plan",
-		},
-		{
-			Group:    "cassandra.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "clusters",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cassandrav1alpha1.GetEncoder(), cassandrav1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cassandra_cluster",
-		},
-		{
-			Group:    "cassandra.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "datacenters",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cassandrav1alpha1.GetEncoder(), cassandrav1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cassandra_data_center",
-		},
-		{
-			Group:    "cddc.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "dedicatedhostgroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cddcv1alpha1.GetEncoder(), cddcv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cddc_dedicated_host_group",
-		},
-		{
-			Group:    "cdn.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "domains",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cdnv1alpha1.GetEncoder(), cdnv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cdn_domain",
-		},
-		{
-			Group:    "cdn.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "domainconfigs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cdnv1alpha1.GetEncoder(), cdnv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cdn_domain_config",
-		},
-		{
-			Group:    "cdn.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "domainnews",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cdnv1alpha1.GetEncoder(), cdnv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cdn_domain_new",
-		},
-		{
-			Group:    "cdn.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "realtimelogdeliveries",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cdnv1alpha1.GetEncoder(), cdnv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cdn_real_time_log_delivery",
-		},
-		{
-			Group:    "cen.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "bandwidthlimits",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cen_bandwidth_limit",
-		},
-		{
-			Group:    "cen.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "bandwidthpackages",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cen_bandwidth_package",
-		},
-		{
-			Group:    "cen.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "bandwidthpackageattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cen_bandwidth_package_attachment",
-		},
-		{
-			Group:    "cen.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "flowlogs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cen_flowlog",
-		},
-		{
-			Group:    "cen.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cen_instance",
-		},
-		{
-			Group:    "cen.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instanceattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cen_instance_attachment",
-		},
-		{
-			Group:    "cen.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instancegrants",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cen_instance_grant",
-		},
-		{
-			Group:    "cen.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "privatezones",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cen_private_zone",
-		},
-		{
-			Group:    "cen.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "routeentries",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cen_route_entry",
-		},
-		{
-			Group:    "cen.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "routemaps",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cen_route_map",
-		},
-		{
-			Group:    "cen.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "routeservices",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cen_route_service",
-		},
-		{
-			Group:    "cen.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "transitrouters",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cen_transit_router",
-		},
-		{
-			Group:    "cen.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "transitrouterpeerattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cen_transit_router_peer_attachment",
-		},
-		{
-			Group:    "cen.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "transitrouterrouteentries",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cen_transit_router_route_entry",
-		},
-		{
-			Group:    "cen.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "transitrouterroutetables",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cen_transit_router_route_table",
-		},
-		{
-			Group:    "cen.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "transitrouterroutetableassociations",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cen_transit_router_route_table_association",
-		},
-		{
-			Group:    "cen.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "transitrouterroutetablepropagations",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cen_transit_router_route_table_propagation",
-		},
-		{
-			Group:    "cen.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "transitroutervbrattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cen_transit_router_vbr_attachment",
-		},
-		{
-			Group:    "cen.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "transitroutervpcattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cen_transit_router_vpc_attachment",
-		},
-		{
-			Group:    "cen.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "vbrhealthchecks",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cen_vbr_health_check",
-		},
-		{
-			Group:    "click.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "houseaccounts",
-		}: {
-			JsonIt:       controllers.GetJSONItr(clickv1alpha1.GetEncoder(), clickv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_click_house_account",
-		},
-		{
-			Group:    "click.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "housedbclusters",
-		}: {
-			JsonIt:       controllers.GetJSONItr(clickv1alpha1.GetEncoder(), clickv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_click_house_db_cluster",
-		},
-		{
-			Group:    "cloud.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "connectnetworks",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cloud_connect_network",
-		},
-		{
-			Group:    "cloud.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "connectnetworkattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cloud_connect_network_attachment",
-		},
-		{
-			Group:    "cloud.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "connectnetworkgrants",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cloud_connect_network_grant",
-		},
-		{
-			Group:    "cloud.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "firewallcontrolpolicies",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cloud_firewall_control_policy",
-		},
-		{
-			Group:    "cloud.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "firewallcontrolpolicyorders",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cloud_firewall_control_policy_order",
-		},
-		{
-			Group:    "cloud.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "firewallinstances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cloud_firewall_instance",
-		},
-		{
-			Group:    "cloud.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "ssoaccessconfigurations",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cloud_sso_access_configuration",
-		},
-		{
-			Group:    "cloud.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "ssodirectories",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cloud_sso_directory",
-		},
-		{
-			Group:    "cloud.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "ssogroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cloud_sso_group",
-		},
-		{
-			Group:    "cloud.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "ssoscimservercredentials",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cloud_sso_scim_server_credential",
-		},
-		{
-			Group:    "cloud.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "ssousers",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cloud_sso_user",
-		},
-		{
-			Group:    "cloud.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "storagegatewaygateways",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cloud_storage_gateway_gateway",
-		},
-		{
-			Group:    "cloud.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "storagegatewaystoragebundles",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cloud_storage_gateway_storage_bundle",
-		},
-		{
-			Group:    "cloudauth.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "faceconfigs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cloudauthv1alpha1.GetEncoder(), cloudauthv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cloudauth_face_config",
-		},
-		{
-			Group:    "cms.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "alarms",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cmsv1alpha1.GetEncoder(), cmsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cms_alarm",
-		},
-		{
-			Group:    "cms.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "alarmcontacts",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cmsv1alpha1.GetEncoder(), cmsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cms_alarm_contact",
-		},
-		{
-			Group:    "cms.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "alarmcontactgroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cmsv1alpha1.GetEncoder(), cmsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cms_alarm_contact_group",
-		},
-		{
-			Group:    "cms.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "groupmetricrules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cmsv1alpha1.GetEncoder(), cmsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cms_group_metric_rule",
-		},
-		{
-			Group:    "cms.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "metricruletemplates",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cmsv1alpha1.GetEncoder(), cmsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cms_metric_rule_template",
-		},
-		{
-			Group:    "cms.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "monitorgroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cmsv1alpha1.GetEncoder(), cmsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cms_monitor_group",
-		},
-		{
-			Group:    "cms.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "monitorgroupinstances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cmsv1alpha1.GetEncoder(), cmsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cms_monitor_group_instances",
-		},
-		{
-			Group:    "cms.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "sitemonitors",
-		}: {
-			JsonIt:       controllers.GetJSONItr(cmsv1alpha1.GetEncoder(), cmsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cms_site_monitor",
-		},
-		{
-			Group:    "common.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "bandwidthpackages",
-		}: {
-			JsonIt:       controllers.GetJSONItr(commonv1alpha1.GetEncoder(), commonv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_common_bandwidth_package",
-		},
-		{
-			Group:    "common.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "bandwidthpackageattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(commonv1alpha1.GetEncoder(), commonv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_common_bandwidth_package_attachment",
-		},
-		{
-			Group:    "config.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "aggregatecompliancepacks",
-		}: {
-			JsonIt:       controllers.GetJSONItr(configv1alpha1.GetEncoder(), configv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_config_aggregate_compliance_pack",
-		},
-		{
-			Group:    "config.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "aggregateconfigrules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(configv1alpha1.GetEncoder(), configv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_config_aggregate_config_rule",
-		},
-		{
-			Group:    "config.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "aggregators",
-		}: {
-			JsonIt:       controllers.GetJSONItr(configv1alpha1.GetEncoder(), configv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_config_aggregator",
-		},
-		{
-			Group:    "config.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "compliancepacks",
-		}: {
-			JsonIt:       controllers.GetJSONItr(configv1alpha1.GetEncoder(), configv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_config_compliance_pack",
-		},
-		{
-			Group:    "config.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "configurationrecorders",
-		}: {
-			JsonIt:       controllers.GetJSONItr(configv1alpha1.GetEncoder(), configv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_config_configuration_recorder",
-		},
-		{
-			Group:    "config.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "deliverychannels",
-		}: {
-			JsonIt:       controllers.GetJSONItr(configv1alpha1.GetEncoder(), configv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_config_delivery_channel",
-		},
-		{
-			Group:    "config.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "rules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(configv1alpha1.GetEncoder(), configv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_config_rule",
-		},
-		{
-			Group:    "container.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "clusters",
-		}: {
-			JsonIt:       controllers.GetJSONItr(containerv1alpha1.GetEncoder(), containerv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_container_cluster",
-		},
-		{
-			Group:    "copy.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "images",
-		}: {
-			JsonIt:       controllers.GetJSONItr(copyv1alpha1.GetEncoder(), copyv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_copy_image",
-		},
-		{
-			Group:    "cr.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "eeinstances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(crv1alpha1.GetEncoder(), crv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cr_ee_instance",
-		},
-		{
-			Group:    "cr.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "eenamespaces",
-		}: {
-			JsonIt:       controllers.GetJSONItr(crv1alpha1.GetEncoder(), crv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cr_ee_namespace",
-		},
-		{
-			Group:    "cr.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "eerepoes",
-		}: {
-			JsonIt:       controllers.GetJSONItr(crv1alpha1.GetEncoder(), crv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cr_ee_repo",
-		},
-		{
-			Group:    "cr.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "eesyncrules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(crv1alpha1.GetEncoder(), crv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cr_ee_sync_rule",
-		},
-		{
-			Group:    "cr.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "endpointaclpolicies",
-		}: {
-			JsonIt:       controllers.GetJSONItr(crv1alpha1.GetEncoder(), crv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cr_endpoint_acl_policy",
-		},
-		{
-			Group:    "cr.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "namespaces",
-		}: {
-			JsonIt:       controllers.GetJSONItr(crv1alpha1.GetEncoder(), crv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cr_namespace",
-		},
-		{
-			Group:    "cr.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "repoes",
-		}: {
-			JsonIt:       controllers.GetJSONItr(crv1alpha1.GetEncoder(), crv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cr_repo",
-		},
-		{
-			Group:    "cs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "applications",
-		}: {
-			JsonIt:       controllers.GetJSONItr(csv1alpha1.GetEncoder(), csv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cs_application",
-		},
-		{
-			Group:    "cs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "autoscalingconfigs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(csv1alpha1.GetEncoder(), csv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cs_autoscaling_config",
-		},
-		{
-			Group:    "cs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "edgekubernetes",
-		}: {
-			JsonIt:       controllers.GetJSONItr(csv1alpha1.GetEncoder(), csv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cs_edge_kubernetes",
-		},
-		{
-			Group:    "cs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "kubernetes",
-		}: {
-			JsonIt:       controllers.GetJSONItr(csv1alpha1.GetEncoder(), csv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cs_kubernetes",
-		},
-		{
-			Group:    "cs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "kubernetesautoscalers",
-		}: {
-			JsonIt:       controllers.GetJSONItr(csv1alpha1.GetEncoder(), csv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cs_kubernetes_autoscaler",
-		},
-		{
-			Group:    "cs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "kubernetesnodepools",
-		}: {
-			JsonIt:       controllers.GetJSONItr(csv1alpha1.GetEncoder(), csv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cs_kubernetes_node_pool",
-		},
-		{
-			Group:    "cs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "kubernetespermissions",
-		}: {
-			JsonIt:       controllers.GetJSONItr(csv1alpha1.GetEncoder(), csv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cs_kubernetes_permissions",
-		},
-		{
-			Group:    "cs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "managedkubernetes",
-		}: {
-			JsonIt:       controllers.GetJSONItr(csv1alpha1.GetEncoder(), csv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cs_managed_kubernetes",
-		},
-		{
-			Group:    "cs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "serverlesskubernetes",
-		}: {
-			JsonIt:       controllers.GetJSONItr(csv1alpha1.GetEncoder(), csv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cs_serverless_kubernetes",
-		},
-		{
-			Group:    "cs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "swarms",
-		}: {
-			JsonIt:       controllers.GetJSONItr(csv1alpha1.GetEncoder(), csv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_cs_swarm",
-		},
-		{
-			Group:    "data.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "worksfolders",
-		}: {
-			JsonIt:       controllers.GetJSONItr(datav1alpha1.GetEncoder(), datav1alpha1.GetDecoder()),
-			ResourceType: "alicloud_data_works_folder",
-		},
-		{
-			Group:    "database.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "gatewaygateways",
-		}: {
-			JsonIt:       controllers.GetJSONItr(databasev1alpha1.GetEncoder(), databasev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_database_gateway_gateway",
-		},
-		{
-			Group:    "datahub.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "projects",
-		}: {
-			JsonIt:       controllers.GetJSONItr(datahubv1alpha1.GetEncoder(), datahubv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_datahub_project",
-		},
-		{
-			Group:    "datahub.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "subscriptions",
-		}: {
-			JsonIt:       controllers.GetJSONItr(datahubv1alpha1.GetEncoder(), datahubv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_datahub_subscription",
-		},
-		{
-			Group:    "datahub.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "topics",
-		}: {
-			JsonIt:       controllers.GetJSONItr(datahubv1alpha1.GetEncoder(), datahubv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_datahub_topic",
-		},
-		{
-			Group:    "db.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "accounts",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dbv1alpha1.GetEncoder(), dbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_db_account",
-		},
-		{
-			Group:    "db.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "accountprivileges",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dbv1alpha1.GetEncoder(), dbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_db_account_privilege",
-		},
-		{
-			Group:    "db.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "backuppolicies",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dbv1alpha1.GetEncoder(), dbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_db_backup_policy",
-		},
-		{
-			Group:    "db.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "connections",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dbv1alpha1.GetEncoder(), dbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_db_connection",
-		},
-		{
-			Group:    "db.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "databases",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dbv1alpha1.GetEncoder(), dbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_db_database",
-		},
-		{
-			Group:    "db.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dbv1alpha1.GetEncoder(), dbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_db_instance",
-		},
-		{
-			Group:    "db.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "readwritesplittingconnections",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dbv1alpha1.GetEncoder(), dbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_db_read_write_splitting_connection",
-		},
-		{
-			Group:    "db.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "readonlyinstances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dbv1alpha1.GetEncoder(), dbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_db_readonly_instance",
-		},
-		{
-			Group:    "dbfs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dbfsv1alpha1.GetEncoder(), dbfsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_dbfs_instance",
-		},
-		{
-			Group:    "dcdn.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "domains",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dcdnv1alpha1.GetEncoder(), dcdnv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_dcdn_domain",
-		},
-		{
-			Group:    "dcdn.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "domainconfigs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dcdnv1alpha1.GetEncoder(), dcdnv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_dcdn_domain_config",
-		},
-		{
-			Group:    "ddosbgp.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ddosbgpv1alpha1.GetEncoder(), ddosbgpv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ddosbgp_instance",
-		},
-		{
-			Group:    "ddoscoo.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "domainresources",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ddoscoov1alpha1.GetEncoder(), ddoscoov1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ddoscoo_domain_resource",
-		},
-		{
-			Group:    "ddoscoo.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ddoscoov1alpha1.GetEncoder(), ddoscoov1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ddoscoo_instance",
-		},
-		{
-			Group:    "ddoscoo.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "ports",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ddoscoov1alpha1.GetEncoder(), ddoscoov1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ddoscoo_port",
-		},
-		{
-			Group:    "ddoscoo.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "schedulerrules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ddoscoov1alpha1.GetEncoder(), ddoscoov1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ddoscoo_scheduler_rule",
-		},
-		{
-			Group:    "dfs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "accessgroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dfsv1alpha1.GetEncoder(), dfsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_dfs_access_group",
-		},
-		{
-			Group:    "dfs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "accessrules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dfsv1alpha1.GetEncoder(), dfsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_dfs_access_rule",
-		},
-		{
-			Group:    "dfs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "filesystems",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dfsv1alpha1.GetEncoder(), dfsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_dfs_file_system",
-		},
-		{
-			Group:    "dfs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "mountpoints",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dfsv1alpha1.GetEncoder(), dfsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_dfs_mount_point",
-		},
-		{
-			Group:    "direct.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "maildomains",
-		}: {
-			JsonIt:       controllers.GetJSONItr(directv1alpha1.GetEncoder(), directv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_direct_mail_domain",
-		},
-		{
-			Group:    "direct.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "mailmailaddresses",
-		}: {
-			JsonIt:       controllers.GetJSONItr(directv1alpha1.GetEncoder(), directv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_direct_mail_mail_address",
-		},
-		{
-			Group:    "direct.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "mailreceivers",
-		}: {
-			JsonIt:       controllers.GetJSONItr(directv1alpha1.GetEncoder(), directv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_direct_mail_receivers",
-		},
-		{
-			Group:    "disk.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "disks",
-		}: {
-			JsonIt:       controllers.GetJSONItr(diskv1alpha1.GetEncoder(), diskv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_disk",
-		},
-		{
-			Group:    "disk.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "attachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(diskv1alpha1.GetEncoder(), diskv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_disk_attachment",
-		},
-		{
-			Group:    "dms.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "enterpriseinstances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dmsv1alpha1.GetEncoder(), dmsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_dms_enterprise_instance",
-		},
-		{
-			Group:    "dms.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "enterpriseusers",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dmsv1alpha1.GetEncoder(), dmsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_dms_enterprise_user",
-		},
-		{
-			Group:    "dns.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "dns",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dnsv1alpha1.GetEncoder(), dnsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_dns",
-		},
-		{
-			Group:    "dns.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "domains",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dnsv1alpha1.GetEncoder(), dnsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_dns_domain",
-		},
-		{
-			Group:    "dns.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "domainattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dnsv1alpha1.GetEncoder(), dnsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_dns_domain_attachment",
-		},
-		{
-			Group:    "dns.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "groups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dnsv1alpha1.GetEncoder(), dnsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_dns_group",
-		},
-		{
-			Group:    "dns.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dnsv1alpha1.GetEncoder(), dnsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_dns_instance",
-		},
-		{
-			Group:    "dns.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "records",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dnsv1alpha1.GetEncoder(), dnsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_dns_record",
-		},
-		{
-			Group:    "drds.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(drdsv1alpha1.GetEncoder(), drdsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_drds_instance",
-		},
-		{
-			Group:    "dts.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "jobmonitorrules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dtsv1alpha1.GetEncoder(), dtsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_dts_job_monitor_rule",
-		},
-		{
-			Group:    "dts.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "subscriptionjobs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dtsv1alpha1.GetEncoder(), dtsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_dts_subscription_job",
-		},
-		{
-			Group:    "dts.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "synchronizationinstances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dtsv1alpha1.GetEncoder(), dtsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_dts_synchronization_instance",
-		},
-		{
-			Group:    "dts.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "synchronizationjobs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(dtsv1alpha1.GetEncoder(), dtsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_dts_synchronization_job",
-		},
-		{
-			Group:    "eais.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(eaisv1alpha1.GetEncoder(), eaisv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_eais_instance",
-		},
-		{
-			Group:    "ecd.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "policygroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ecdv1alpha1.GetEncoder(), ecdv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ecd_policy_group",
-		},
-		{
-			Group:    "ecd.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "simpleofficesites",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ecdv1alpha1.GetEncoder(), ecdv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ecd_simple_office_site",
-		},
-		{
-			Group:    "eci.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "containergroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(eciv1alpha1.GetEncoder(), eciv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_eci_container_group",
-		},
-		{
-			Group:    "eci.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "imagecaches",
-		}: {
-			JsonIt:       controllers.GetJSONItr(eciv1alpha1.GetEncoder(), eciv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_eci_image_cache",
-		},
-		{
-			Group:    "eci.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "openapiimagecaches",
-		}: {
-			JsonIt:       controllers.GetJSONItr(eciv1alpha1.GetEncoder(), eciv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_eci_openapi_image_cache",
-		},
-		{
-			Group:    "ecp.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "keypairs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ecpv1alpha1.GetEncoder(), ecpv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ecp_key_pair",
-		},
-		{
-			Group:    "ecs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "autosnapshotpolicies",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ecs_auto_snapshot_policy",
-		},
-		{
-			Group:    "ecs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "autosnapshotpolicyattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ecs_auto_snapshot_policy_attachment",
-		},
-		{
-			Group:    "ecs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "commands",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ecs_command",
-		},
-		{
-			Group:    "ecs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "dedicatedhosts",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ecs_dedicated_host",
-		},
-		{
-			Group:    "ecs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "deploymentsets",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ecs_deployment_set",
-		},
-		{
-			Group:    "ecs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "disks",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ecs_disk",
-		},
-		{
-			Group:    "ecs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "diskattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ecs_disk_attachment",
-		},
-		{
-			Group:    "ecs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "hpcclusters",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ecs_hpc_cluster",
-		},
-		{
-			Group:    "ecs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "keypairs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ecs_key_pair",
-		},
-		{
-			Group:    "ecs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "keypairattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ecs_key_pair_attachment",
-		},
-		{
-			Group:    "ecs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "launchtemplates",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ecs_launch_template",
-		},
-		{
-			Group:    "ecs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "networkinterfaces",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ecs_network_interface",
-		},
-		{
-			Group:    "ecs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "networkinterfaceattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ecs_network_interface_attachment",
-		},
-		{
-			Group:    "ecs.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "snapshots",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ecs_snapshot",
-		},
-		{
-			Group:    "edas.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "applications",
-		}: {
-			JsonIt:       controllers.GetJSONItr(edasv1alpha1.GetEncoder(), edasv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_edas_application",
-		},
-		{
-			Group:    "edas.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "applicationdeployments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(edasv1alpha1.GetEncoder(), edasv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_edas_application_deployment",
-		},
-		{
-			Group:    "edas.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "applicationscales",
-		}: {
-			JsonIt:       controllers.GetJSONItr(edasv1alpha1.GetEncoder(), edasv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_edas_application_scale",
-		},
-		{
-			Group:    "edas.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "clusters",
-		}: {
-			JsonIt:       controllers.GetJSONItr(edasv1alpha1.GetEncoder(), edasv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_edas_cluster",
-		},
-		{
-			Group:    "edas.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "deploygroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(edasv1alpha1.GetEncoder(), edasv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_edas_deploy_group",
-		},
-		{
-			Group:    "edas.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instanceclusterattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(edasv1alpha1.GetEncoder(), edasv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_edas_instance_cluster_attachment",
-		},
-		{
-			Group:    "edas.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "k8sapplications",
-		}: {
-			JsonIt:       controllers.GetJSONItr(edasv1alpha1.GetEncoder(), edasv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_edas_k8s_application",
-		},
-		{
-			Group:    "edas.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "k8sclusters",
-		}: {
-			JsonIt:       controllers.GetJSONItr(edasv1alpha1.GetEncoder(), edasv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_edas_k8s_cluster",
-		},
-		{
-			Group:    "edas.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "slbattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(edasv1alpha1.GetEncoder(), edasv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_edas_slb_attachment",
-		},
-		{
-			Group:    "ehpc.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "jobtemplates",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ehpcv1alpha1.GetEncoder(), ehpcv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ehpc_job_template",
-		},
-		{
-			Group:    "eip.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "eips",
-		}: {
-			JsonIt:       controllers.GetJSONItr(eipv1alpha1.GetEncoder(), eipv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_eip",
-		},
-		{
-			Group:    "eip.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "addresses",
-		}: {
-			JsonIt:       controllers.GetJSONItr(eipv1alpha1.GetEncoder(), eipv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_eip_address",
-		},
-		{
-			Group:    "eip.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "associations",
-		}: {
-			JsonIt:       controllers.GetJSONItr(eipv1alpha1.GetEncoder(), eipv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_eip_association",
-		},
-		{
-			Group:    "eipanycast.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "anycasteipaddresses",
-		}: {
-			JsonIt:       controllers.GetJSONItr(eipanycastv1alpha1.GetEncoder(), eipanycastv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_eipanycast_anycast_eip_address",
-		},
-		{
-			Group:    "eipanycast.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "anycasteipaddressattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(eipanycastv1alpha1.GetEncoder(), eipanycastv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_eipanycast_anycast_eip_address_attachment",
-		},
-		{
-			Group:    "elasticsearch.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(elasticsearchv1alpha1.GetEncoder(), elasticsearchv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_elasticsearch_instance",
-		},
-		{
-			Group:    "emr.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "clusters",
-		}: {
-			JsonIt:       controllers.GetJSONItr(emrv1alpha1.GetEncoder(), emrv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_emr_cluster",
-		},
-		{
-			Group:    "ens.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "keypairs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ensv1alpha1.GetEncoder(), ensv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ens_key_pair",
-		},
-		{
-			Group:    "ess.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "alarms",
-		}: {
-			JsonIt:       controllers.GetJSONItr(essv1alpha1.GetEncoder(), essv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ess_alarm",
-		},
-		{
-			Group:    "ess.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "attachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(essv1alpha1.GetEncoder(), essv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ess_attachment",
-		},
-		{
-			Group:    "ess.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "lifecyclehooks",
-		}: {
-			JsonIt:       controllers.GetJSONItr(essv1alpha1.GetEncoder(), essv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ess_lifecycle_hook",
-		},
-		{
-			Group:    "ess.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "notifications",
-		}: {
-			JsonIt:       controllers.GetJSONItr(essv1alpha1.GetEncoder(), essv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ess_notification",
-		},
-		{
-			Group:    "ess.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "scalingconfigurations",
-		}: {
-			JsonIt:       controllers.GetJSONItr(essv1alpha1.GetEncoder(), essv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ess_scaling_configuration",
-		},
-		{
-			Group:    "ess.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "scalinggroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(essv1alpha1.GetEncoder(), essv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ess_scaling_group",
-		},
-		{
-			Group:    "ess.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "scalingrules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(essv1alpha1.GetEncoder(), essv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ess_scaling_rule",
-		},
-		{
-			Group:    "ess.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "scalinggroupvservergroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(essv1alpha1.GetEncoder(), essv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ess_scalinggroup_vserver_groups",
-		},
-		{
-			Group:    "ess.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "schedules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(essv1alpha1.GetEncoder(), essv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ess_schedule",
-		},
-		{
-			Group:    "ess.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "scheduledtasks",
-		}: {
-			JsonIt:       controllers.GetJSONItr(essv1alpha1.GetEncoder(), essv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ess_scheduled_task",
-		},
-		{
-			Group:    "event.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "bridgeeventbus",
-		}: {
-			JsonIt:       controllers.GetJSONItr(eventv1alpha1.GetEncoder(), eventv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_event_bridge_event_bus",
-		},
-		{
-			Group:    "event.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "bridgeeventsources",
-		}: {
-			JsonIt:       controllers.GetJSONItr(eventv1alpha1.GetEncoder(), eventv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_event_bridge_event_source",
-		},
-		{
-			Group:    "event.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "bridgerules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(eventv1alpha1.GetEncoder(), eventv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_event_bridge_rule",
-		},
-		{
-			Group:    "event.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "bridgeslrs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(eventv1alpha1.GetEncoder(), eventv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_event_bridge_slr",
-		},
-		{
-			Group:    "express.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "connectphysicalconnections",
-		}: {
-			JsonIt:       controllers.GetJSONItr(expressv1alpha1.GetEncoder(), expressv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_express_connect_physical_connection",
-		},
-		{
-			Group:    "express.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "connectvirtualborderrouters",
-		}: {
-			JsonIt:       controllers.GetJSONItr(expressv1alpha1.GetEncoder(), expressv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_express_connect_virtual_border_router",
-		},
-		{
-			Group:    "fc.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "aliases",
-		}: {
-			JsonIt:       controllers.GetJSONItr(fcv1alpha1.GetEncoder(), fcv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_fc_alias",
-		},
-		{
-			Group:    "fc.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "customdomains",
-		}: {
-			JsonIt:       controllers.GetJSONItr(fcv1alpha1.GetEncoder(), fcv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_fc_custom_domain",
-		},
-		{
-			Group:    "fc.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "functions",
-		}: {
-			JsonIt:       controllers.GetJSONItr(fcv1alpha1.GetEncoder(), fcv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_fc_function",
-		},
-		{
-			Group:    "fc.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "functionasyncinvokeconfigs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(fcv1alpha1.GetEncoder(), fcv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_fc_function_async_invoke_config",
-		},
-		{
-			Group:    "fc.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "services",
-		}: {
-			JsonIt:       controllers.GetJSONItr(fcv1alpha1.GetEncoder(), fcv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_fc_service",
-		},
-		{
-			Group:    "fc.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "triggers",
-		}: {
-			JsonIt:       controllers.GetJSONItr(fcv1alpha1.GetEncoder(), fcv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_fc_trigger",
-		},
-		{
-			Group:    "fnf.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "flows",
-		}: {
-			JsonIt:       controllers.GetJSONItr(fnfv1alpha1.GetEncoder(), fnfv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_fnf_flow",
-		},
-		{
-			Group:    "fnf.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "schedules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(fnfv1alpha1.GetEncoder(), fnfv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_fnf_schedule",
-		},
-		{
-			Group:    "forward.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "entries",
-		}: {
-			JsonIt:       controllers.GetJSONItr(forwardv1alpha1.GetEncoder(), forwardv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_forward_entry",
-		},
-		{
-			Group:    "ga.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "accelerators",
-		}: {
-			JsonIt:       controllers.GetJSONItr(gav1alpha1.GetEncoder(), gav1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ga_accelerator",
-		},
-		{
-			Group:    "ga.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "bandwidthpackages",
-		}: {
-			JsonIt:       controllers.GetJSONItr(gav1alpha1.GetEncoder(), gav1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ga_bandwidth_package",
-		},
-		{
-			Group:    "ga.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "bandwidthpackageattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(gav1alpha1.GetEncoder(), gav1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ga_bandwidth_package_attachment",
-		},
-		{
-			Group:    "ga.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "endpointgroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(gav1alpha1.GetEncoder(), gav1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ga_endpoint_group",
-		},
-		{
-			Group:    "ga.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "forwardingrules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(gav1alpha1.GetEncoder(), gav1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ga_forwarding_rule",
-		},
-		{
-			Group:    "ga.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "ipsets",
-		}: {
-			JsonIt:       controllers.GetJSONItr(gav1alpha1.GetEncoder(), gav1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ga_ip_set",
-		},
-		{
-			Group:    "ga.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "listeners",
-		}: {
-			JsonIt:       controllers.GetJSONItr(gav1alpha1.GetEncoder(), gav1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ga_listener",
-		},
-		{
-			Group:    "gpdb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "connections",
-		}: {
-			JsonIt:       controllers.GetJSONItr(gpdbv1alpha1.GetEncoder(), gpdbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_gpdb_connection",
-		},
-		{
-			Group:    "gpdb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "elasticinstances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(gpdbv1alpha1.GetEncoder(), gpdbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_gpdb_elastic_instance",
-		},
-		{
-			Group:    "gpdb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(gpdbv1alpha1.GetEncoder(), gpdbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_gpdb_instance",
-		},
-		{
-			Group:    "graph.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "databasedbinstances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(graphv1alpha1.GetEncoder(), graphv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_graph_database_db_instance",
-		},
-		{
-			Group:    "havip.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "havips",
-		}: {
-			JsonIt:       controllers.GetJSONItr(havipv1alpha1.GetEncoder(), havipv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_havip",
-		},
-		{
-			Group:    "havip.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "attachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(havipv1alpha1.GetEncoder(), havipv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_havip_attachment",
-		},
-		{
-			Group:    "hbase.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(hbasev1alpha1.GetEncoder(), hbasev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_hbase_instance",
-		},
-		{
-			Group:    "hbr.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "ecsbackupclients",
-		}: {
-			JsonIt:       controllers.GetJSONItr(hbrv1alpha1.GetEncoder(), hbrv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_hbr_ecs_backup_client",
-		},
-		{
-			Group:    "hbr.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "ecsbackupplans",
-		}: {
-			JsonIt:       controllers.GetJSONItr(hbrv1alpha1.GetEncoder(), hbrv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_hbr_ecs_backup_plan",
-		},
-		{
-			Group:    "hbr.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "nasbackupplans",
-		}: {
-			JsonIt:       controllers.GetJSONItr(hbrv1alpha1.GetEncoder(), hbrv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_hbr_nas_backup_plan",
-		},
-		{
-			Group:    "hbr.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "ossbackupplans",
-		}: {
-			JsonIt:       controllers.GetJSONItr(hbrv1alpha1.GetEncoder(), hbrv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_hbr_oss_backup_plan",
-		},
-		{
-			Group:    "hbr.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "restorejobs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(hbrv1alpha1.GetEncoder(), hbrv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_hbr_restore_job",
-		},
-		{
-			Group:    "hbr.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "vaults",
-		}: {
-			JsonIt:       controllers.GetJSONItr(hbrv1alpha1.GetEncoder(), hbrv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_hbr_vault",
-		},
-		{
-			Group:    "image.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "images",
-		}: {
-			JsonIt:       controllers.GetJSONItr(imagev1alpha1.GetEncoder(), imagev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_image",
-		},
-		{
-			Group:    "image.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "copies",
-		}: {
-			JsonIt:       controllers.GetJSONItr(imagev1alpha1.GetEncoder(), imagev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_image_copy",
-		},
-		{
-			Group:    "image.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "exports",
-		}: {
-			JsonIt:       controllers.GetJSONItr(imagev1alpha1.GetEncoder(), imagev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_image_export",
-		},
-		{
-			Group:    "image.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "imports",
-		}: {
-			JsonIt:       controllers.GetJSONItr(imagev1alpha1.GetEncoder(), imagev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_image_import",
-		},
-		{
-			Group:    "image.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "sharepermissions",
-		}: {
-			JsonIt:       controllers.GetJSONItr(imagev1alpha1.GetEncoder(), imagev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_image_share_permission",
-		},
-		{
-			Group:    "imm.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "projects",
-		}: {
-			JsonIt:       controllers.GetJSONItr(immv1alpha1.GetEncoder(), immv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_imm_project",
-		},
-		{
-			Group:    "imp.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "apptemplates",
-		}: {
-			JsonIt:       controllers.GetJSONItr(impv1alpha1.GetEncoder(), impv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_imp_app_template",
-		},
-		{
-			Group:    "instance.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(instancev1alpha1.GetEncoder(), instancev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_instance",
-		},
-		{
-			Group:    "iot.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "devicegroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(iotv1alpha1.GetEncoder(), iotv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_iot_device_group",
-		},
-		{
-			Group:    "key.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "pairs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(keyv1alpha1.GetEncoder(), keyv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_key_pair",
-		},
-		{
-			Group:    "key.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "pairattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(keyv1alpha1.GetEncoder(), keyv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_key_pair_attachment",
-		},
-		{
-			Group:    "kms.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "aliases",
-		}: {
-			JsonIt:       controllers.GetJSONItr(kmsv1alpha1.GetEncoder(), kmsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_kms_alias",
-		},
-		{
-			Group:    "kms.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "ciphertexts",
-		}: {
-			JsonIt:       controllers.GetJSONItr(kmsv1alpha1.GetEncoder(), kmsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_kms_ciphertext",
-		},
-		{
-			Group:    "kms.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "keys",
-		}: {
-			JsonIt:       controllers.GetJSONItr(kmsv1alpha1.GetEncoder(), kmsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_kms_key",
-		},
-		{
-			Group:    "kms.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "keyversions",
-		}: {
-			JsonIt:       controllers.GetJSONItr(kmsv1alpha1.GetEncoder(), kmsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_kms_key_version",
-		},
-		{
-			Group:    "kms.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "secrets",
-		}: {
-			JsonIt:       controllers.GetJSONItr(kmsv1alpha1.GetEncoder(), kmsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_kms_secret",
-		},
-		{
-			Group:    "kvstore.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "accounts",
-		}: {
-			JsonIt:       controllers.GetJSONItr(kvstorev1alpha1.GetEncoder(), kvstorev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_kvstore_account",
-		},
-		{
-			Group:    "kvstore.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "auditlogconfigs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(kvstorev1alpha1.GetEncoder(), kvstorev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_kvstore_audit_log_config",
-		},
-		{
-			Group:    "kvstore.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "backuppolicies",
-		}: {
-			JsonIt:       controllers.GetJSONItr(kvstorev1alpha1.GetEncoder(), kvstorev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_kvstore_backup_policy",
-		},
-		{
-			Group:    "kvstore.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "connections",
-		}: {
-			JsonIt:       controllers.GetJSONItr(kvstorev1alpha1.GetEncoder(), kvstorev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_kvstore_connection",
-		},
-		{
-			Group:    "kvstore.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(kvstorev1alpha1.GetEncoder(), kvstorev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_kvstore_instance",
-		},
-		{
-			Group:    "launch.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "templates",
-		}: {
-			JsonIt:       controllers.GetJSONItr(launchv1alpha1.GetEncoder(), launchv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_launch_template",
-		},
-		{
-			Group:    "lindorm.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(lindormv1alpha1.GetEncoder(), lindormv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_lindorm_instance",
-		},
-		{
-			Group:    "log.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "alerts",
-		}: {
-			JsonIt:       controllers.GetJSONItr(logv1alpha1.GetEncoder(), logv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_log_alert",
-		},
-		{
-			Group:    "log.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "audits",
-		}: {
-			JsonIt:       controllers.GetJSONItr(logv1alpha1.GetEncoder(), logv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_log_audit",
-		},
-		{
-			Group:    "log.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "dashboards",
-		}: {
-			JsonIt:       controllers.GetJSONItr(logv1alpha1.GetEncoder(), logv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_log_dashboard",
-		},
-		{
-			Group:    "log.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "etls",
-		}: {
-			JsonIt:       controllers.GetJSONItr(logv1alpha1.GetEncoder(), logv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_log_etl",
-		},
-		{
-			Group:    "log.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "machinegroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(logv1alpha1.GetEncoder(), logv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_log_machine_group",
-		},
-		{
-			Group:    "log.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "ossshippers",
-		}: {
-			JsonIt:       controllers.GetJSONItr(logv1alpha1.GetEncoder(), logv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_log_oss_shipper",
-		},
-		{
-			Group:    "log.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "projects",
-		}: {
-			JsonIt:       controllers.GetJSONItr(logv1alpha1.GetEncoder(), logv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_log_project",
-		},
-		{
-			Group:    "log.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "stores",
-		}: {
-			JsonIt:       controllers.GetJSONItr(logv1alpha1.GetEncoder(), logv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_log_store",
-		},
-		{
-			Group:    "log.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "storeindices",
-		}: {
-			JsonIt:       controllers.GetJSONItr(logv1alpha1.GetEncoder(), logv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_log_store_index",
-		},
-		{
-			Group:    "logtail.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "attachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(logtailv1alpha1.GetEncoder(), logtailv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_logtail_attachment",
-		},
-		{
-			Group:    "logtail.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "configs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(logtailv1alpha1.GetEncoder(), logtailv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_logtail_config",
-		},
-		{
-			Group:    "market.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "orders",
-		}: {
-			JsonIt:       controllers.GetJSONItr(marketv1alpha1.GetEncoder(), marketv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_market_order",
-		},
-		{
-			Group:    "maxcompute.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "projects",
-		}: {
-			JsonIt:       controllers.GetJSONItr(maxcomputev1alpha1.GetEncoder(), maxcomputev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_maxcompute_project",
-		},
-		{
-			Group:    "mhub.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "apps",
-		}: {
-			JsonIt:       controllers.GetJSONItr(mhubv1alpha1.GetEncoder(), mhubv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_mhub_app",
-		},
-		{
-			Group:    "mhub.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "products",
-		}: {
-			JsonIt:       controllers.GetJSONItr(mhubv1alpha1.GetEncoder(), mhubv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_mhub_product",
-		},
-		{
-			Group:    "mns.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "queues",
-		}: {
-			JsonIt:       controllers.GetJSONItr(mnsv1alpha1.GetEncoder(), mnsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_mns_queue",
-		},
-		{
-			Group:    "mns.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "topics",
-		}: {
-			JsonIt:       controllers.GetJSONItr(mnsv1alpha1.GetEncoder(), mnsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_mns_topic",
-		},
-		{
-			Group:    "mns.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "topicsubscriptions",
-		}: {
-			JsonIt:       controllers.GetJSONItr(mnsv1alpha1.GetEncoder(), mnsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_mns_topic_subscription",
-		},
-		{
-			Group:    "mongodb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(mongodbv1alpha1.GetEncoder(), mongodbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_mongodb_instance",
-		},
-		{
-			Group:    "mongodb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "shardinginstances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(mongodbv1alpha1.GetEncoder(), mongodbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_mongodb_sharding_instance",
-		},
-		{
-			Group:    "msc.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "subcontacts",
-		}: {
-			JsonIt:       controllers.GetJSONItr(mscv1alpha1.GetEncoder(), mscv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_msc_sub_contact",
-		},
-		{
-			Group:    "msc.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "subsubscriptions",
-		}: {
-			JsonIt:       controllers.GetJSONItr(mscv1alpha1.GetEncoder(), mscv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_msc_sub_subscription",
-		},
-		{
-			Group:    "mse.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "clusters",
-		}: {
-			JsonIt:       controllers.GetJSONItr(msev1alpha1.GetEncoder(), msev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_mse_cluster",
-		},
-		{
-			Group:    "nas.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "accessgroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(nasv1alpha1.GetEncoder(), nasv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_nas_access_group",
-		},
-		{
-			Group:    "nas.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "accessrules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(nasv1alpha1.GetEncoder(), nasv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_nas_access_rule",
-		},
-		{
-			Group:    "nas.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "filesystems",
-		}: {
-			JsonIt:       controllers.GetJSONItr(nasv1alpha1.GetEncoder(), nasv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_nas_file_system",
-		},
-		{
-			Group:    "nas.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "mounttargets",
-		}: {
-			JsonIt:       controllers.GetJSONItr(nasv1alpha1.GetEncoder(), nasv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_nas_mount_target",
-		},
-		{
-			Group:    "nat.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "gateways",
-		}: {
-			JsonIt:       controllers.GetJSONItr(natv1alpha1.GetEncoder(), natv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_nat_gateway",
-		},
-		{
-			Group:    "network.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "acls",
-		}: {
-			JsonIt:       controllers.GetJSONItr(networkv1alpha1.GetEncoder(), networkv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_network_acl",
-		},
-		{
-			Group:    "network.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "aclattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(networkv1alpha1.GetEncoder(), networkv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_network_acl_attachment",
-		},
-		{
-			Group:    "network.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "aclentries",
-		}: {
-			JsonIt:       controllers.GetJSONItr(networkv1alpha1.GetEncoder(), networkv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_network_acl_entries",
-		},
-		{
-			Group:    "network.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "interfaces",
-		}: {
-			JsonIt:       controllers.GetJSONItr(networkv1alpha1.GetEncoder(), networkv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_network_interface",
-		},
-		{
-			Group:    "network.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "interfaceattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(networkv1alpha1.GetEncoder(), networkv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_network_interface_attachment",
-		},
-		{
-			Group:    "ons.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "groups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(onsv1alpha1.GetEncoder(), onsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ons_group",
-		},
-		{
-			Group:    "ons.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(onsv1alpha1.GetEncoder(), onsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ons_instance",
-		},
-		{
-			Group:    "ons.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "topics",
-		}: {
-			JsonIt:       controllers.GetJSONItr(onsv1alpha1.GetEncoder(), onsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ons_topic",
-		},
-		{
-			Group:    "oos.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "executions",
-		}: {
-			JsonIt:       controllers.GetJSONItr(oosv1alpha1.GetEncoder(), oosv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_oos_execution",
-		},
-		{
-			Group:    "oos.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "templates",
-		}: {
-			JsonIt:       controllers.GetJSONItr(oosv1alpha1.GetEncoder(), oosv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_oos_template",
-		},
-		{
-			Group:    "open.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "searchappgroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(openv1alpha1.GetEncoder(), openv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_open_search_app_group",
-		},
-		{
-			Group:    "oss.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "buckets",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ossv1alpha1.GetEncoder(), ossv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_oss_bucket",
-		},
-		{
-			Group:    "oss.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "bucketobjects",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ossv1alpha1.GetEncoder(), ossv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_oss_bucket_object",
-		},
-		{
-			Group:    "ots.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(otsv1alpha1.GetEncoder(), otsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ots_instance",
-		},
-		{
-			Group:    "ots.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instanceattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(otsv1alpha1.GetEncoder(), otsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ots_instance_attachment",
-		},
-		{
-			Group:    "ots.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "tables",
-		}: {
-			JsonIt:       controllers.GetJSONItr(otsv1alpha1.GetEncoder(), otsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ots_table",
-		},
-		{
-			Group:    "polardb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "accounts",
-		}: {
-			JsonIt:       controllers.GetJSONItr(polardbv1alpha1.GetEncoder(), polardbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_polardb_account",
-		},
-		{
-			Group:    "polardb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "accountprivileges",
-		}: {
-			JsonIt:       controllers.GetJSONItr(polardbv1alpha1.GetEncoder(), polardbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_polardb_account_privilege",
-		},
-		{
-			Group:    "polardb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "backuppolicies",
-		}: {
-			JsonIt:       controllers.GetJSONItr(polardbv1alpha1.GetEncoder(), polardbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_polardb_backup_policy",
-		},
-		{
-			Group:    "polardb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "clusters",
-		}: {
-			JsonIt:       controllers.GetJSONItr(polardbv1alpha1.GetEncoder(), polardbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_polardb_cluster",
-		},
-		{
-			Group:    "polardb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "databases",
-		}: {
-			JsonIt:       controllers.GetJSONItr(polardbv1alpha1.GetEncoder(), polardbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_polardb_database",
-		},
-		{
-			Group:    "polardb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "endpoints",
-		}: {
-			JsonIt:       controllers.GetJSONItr(polardbv1alpha1.GetEncoder(), polardbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_polardb_endpoint",
-		},
-		{
-			Group:    "polardb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "endpointaddresses",
-		}: {
-			JsonIt:       controllers.GetJSONItr(polardbv1alpha1.GetEncoder(), polardbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_polardb_endpoint_address",
-		},
-		{
-			Group:    "privatelink.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "vpcendpoints",
-		}: {
-			JsonIt:       controllers.GetJSONItr(privatelinkv1alpha1.GetEncoder(), privatelinkv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_privatelink_vpc_endpoint",
-		},
-		{
-			Group:    "privatelink.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "vpcendpointconnections",
-		}: {
-			JsonIt:       controllers.GetJSONItr(privatelinkv1alpha1.GetEncoder(), privatelinkv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_privatelink_vpc_endpoint_connection",
-		},
-		{
-			Group:    "privatelink.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "vpcendpointservices",
-		}: {
-			JsonIt:       controllers.GetJSONItr(privatelinkv1alpha1.GetEncoder(), privatelinkv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_privatelink_vpc_endpoint_service",
-		},
-		{
-			Group:    "privatelink.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "vpcendpointserviceresources",
-		}: {
-			JsonIt:       controllers.GetJSONItr(privatelinkv1alpha1.GetEncoder(), privatelinkv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_privatelink_vpc_endpoint_service_resource",
-		},
-		{
-			Group:    "privatelink.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "vpcendpointserviceusers",
-		}: {
-			JsonIt:       controllers.GetJSONItr(privatelinkv1alpha1.GetEncoder(), privatelinkv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_privatelink_vpc_endpoint_service_user",
-		},
-		{
-			Group:    "privatelink.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "vpcendpointzones",
-		}: {
-			JsonIt:       controllers.GetJSONItr(privatelinkv1alpha1.GetEncoder(), privatelinkv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_privatelink_vpc_endpoint_zone",
-		},
-		{
-			Group:    "pvtz.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "uservpcauthorizations",
-		}: {
-			JsonIt:       controllers.GetJSONItr(pvtzv1alpha1.GetEncoder(), pvtzv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_pvtz_user_vpc_authorization",
-		},
-		{
-			Group:    "pvtz.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "zones",
-		}: {
-			JsonIt:       controllers.GetJSONItr(pvtzv1alpha1.GetEncoder(), pvtzv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_pvtz_zone",
-		},
-		{
-			Group:    "pvtz.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "zoneattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(pvtzv1alpha1.GetEncoder(), pvtzv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_pvtz_zone_attachment",
-		},
-		{
-			Group:    "pvtz.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "zonerecords",
-		}: {
-			JsonIt:       controllers.GetJSONItr(pvtzv1alpha1.GetEncoder(), pvtzv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_pvtz_zone_record",
-		},
-		{
-			Group:    "quick.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "biusers",
-		}: {
-			JsonIt:       controllers.GetJSONItr(quickv1alpha1.GetEncoder(), quickv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_quick_bi_user",
-		},
-		{
-			Group:    "quotas.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "applicationinfoes",
-		}: {
-			JsonIt:       controllers.GetJSONItr(quotasv1alpha1.GetEncoder(), quotasv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_quotas_application_info",
-		},
-		{
-			Group:    "quotas.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "quotaalarms",
-		}: {
-			JsonIt:       controllers.GetJSONItr(quotasv1alpha1.GetEncoder(), quotasv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_quotas_quota_alarm",
-		},
-		{
-			Group:    "quotas.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "quotaapplications",
-		}: {
-			JsonIt:       controllers.GetJSONItr(quotasv1alpha1.GetEncoder(), quotasv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_quotas_quota_application",
-		},
-		{
-			Group:    "ram.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "accesskeys",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ram_access_key",
-		},
-		{
-			Group:    "ram.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "accountalias",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ram_account_alias",
-		},
-		{
-			Group:    "ram.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "accountpasswordpolicies",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ram_account_password_policy",
-		},
-		{
-			Group:    "ram.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "aliases",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ram_alias",
-		},
-		{
-			Group:    "ram.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "groups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ram_group",
-		},
-		{
-			Group:    "ram.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "groupmemberships",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ram_group_membership",
-		},
-		{
-			Group:    "ram.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "grouppolicyattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ram_group_policy_attachment",
-		},
-		{
-			Group:    "ram.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "loginprofiles",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ram_login_profile",
-		},
-		{
-			Group:    "ram.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "policies",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ram_policy",
-		},
-		{
-			Group:    "ram.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "roles",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ram_role",
-		},
-		{
-			Group:    "ram.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "roleattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ram_role_attachment",
-		},
-		{
-			Group:    "ram.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "rolepolicyattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ram_role_policy_attachment",
-		},
-		{
-			Group:    "ram.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "samlproviders",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ram_saml_provider",
-		},
-		{
-			Group:    "ram.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "users",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ram_user",
-		},
-		{
-			Group:    "ram.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "userpolicyattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ram_user_policy_attachment",
-		},
-		{
-			Group:    "rdc.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "organizations",
-		}: {
-			JsonIt:       controllers.GetJSONItr(rdcv1alpha1.GetEncoder(), rdcv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_rdc_organization",
-		},
-		{
-			Group:    "rds.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "accounts",
-		}: {
-			JsonIt:       controllers.GetJSONItr(rdsv1alpha1.GetEncoder(), rdsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_rds_account",
-		},
-		{
-			Group:    "rds.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "parametergroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(rdsv1alpha1.GetEncoder(), rdsv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_rds_parameter_group",
-		},
-		{
-			Group:    "reserved.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(reservedv1alpha1.GetEncoder(), reservedv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_reserved_instance",
-		},
-		{
-			Group:    "resource.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "manageraccounts",
-		}: {
-			JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_resource_manager_account",
-		},
-		{
-			Group:    "resource.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "managercontrolpolicies",
-		}: {
-			JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_resource_manager_control_policy",
-		},
-		{
-			Group:    "resource.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "managercontrolpolicyattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_resource_manager_control_policy_attachment",
-		},
-		{
-			Group:    "resource.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "managerfolders",
-		}: {
-			JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_resource_manager_folder",
-		},
-		{
-			Group:    "resource.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "managerhandshakes",
-		}: {
-			JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_resource_manager_handshake",
-		},
-		{
-			Group:    "resource.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "managerpolicies",
-		}: {
-			JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_resource_manager_policy",
-		},
-		{
-			Group:    "resource.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "managerpolicyattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_resource_manager_policy_attachment",
-		},
-		{
-			Group:    "resource.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "managerpolicyversions",
-		}: {
-			JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_resource_manager_policy_version",
-		},
-		{
-			Group:    "resource.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "managerresourcedirectories",
-		}: {
-			JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_resource_manager_resource_directory",
-		},
-		{
-			Group:    "resource.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "managerresourcegroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_resource_manager_resource_group",
-		},
-		{
-			Group:    "resource.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "managerresourceshares",
-		}: {
-			JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_resource_manager_resource_share",
-		},
-		{
-			Group:    "resource.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "managerroles",
-		}: {
-			JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_resource_manager_role",
-		},
-		{
-			Group:    "resource.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "managersharedresources",
-		}: {
-			JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_resource_manager_shared_resource",
-		},
-		{
-			Group:    "resource.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "managersharedtargets",
-		}: {
-			JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_resource_manager_shared_target",
-		},
-		{
-			Group:    "ros.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "changesets",
-		}: {
-			JsonIt:       controllers.GetJSONItr(rosv1alpha1.GetEncoder(), rosv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ros_change_set",
-		},
-		{
-			Group:    "ros.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "stacks",
-		}: {
-			JsonIt:       controllers.GetJSONItr(rosv1alpha1.GetEncoder(), rosv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ros_stack",
-		},
-		{
-			Group:    "ros.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "stackgroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(rosv1alpha1.GetEncoder(), rosv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ros_stack_group",
-		},
-		{
-			Group:    "ros.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "templates",
-		}: {
-			JsonIt:       controllers.GetJSONItr(rosv1alpha1.GetEncoder(), rosv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ros_template",
-		},
-		{
-			Group:    "route.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "entries",
-		}: {
-			JsonIt:       controllers.GetJSONItr(routev1alpha1.GetEncoder(), routev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_route_entry",
-		},
-		{
-			Group:    "route.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "tables",
-		}: {
-			JsonIt:       controllers.GetJSONItr(routev1alpha1.GetEncoder(), routev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_route_table",
-		},
-		{
-			Group:    "route.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "tableattachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(routev1alpha1.GetEncoder(), routev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_route_table_attachment",
-		},
-		{
-			Group:    "router.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "interfaces",
-		}: {
-			JsonIt:       controllers.GetJSONItr(routerv1alpha1.GetEncoder(), routerv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_router_interface",
-		},
-		{
-			Group:    "router.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "interfaceconnections",
-		}: {
-			JsonIt:       controllers.GetJSONItr(routerv1alpha1.GetEncoder(), routerv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_router_interface_connection",
-		},
-		{
-			Group:    "sae.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "applications",
-		}: {
-			JsonIt:       controllers.GetJSONItr(saev1alpha1.GetEncoder(), saev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_sae_application",
-		},
-		{
-			Group:    "sae.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "configmaps",
-		}: {
-			JsonIt:       controllers.GetJSONItr(saev1alpha1.GetEncoder(), saev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_sae_config_map",
-		},
-		{
-			Group:    "sae.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "ingresses",
-		}: {
-			JsonIt:       controllers.GetJSONItr(saev1alpha1.GetEncoder(), saev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_sae_ingress",
-		},
-		{
-			Group:    "sae.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "namespaces",
-		}: {
-			JsonIt:       controllers.GetJSONItr(saev1alpha1.GetEncoder(), saev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_sae_namespace",
-		},
-		{
-			Group:    "sag.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "acls",
-		}: {
-			JsonIt:       controllers.GetJSONItr(sagv1alpha1.GetEncoder(), sagv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_sag_acl",
-		},
-		{
-			Group:    "sag.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "aclrules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(sagv1alpha1.GetEncoder(), sagv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_sag_acl_rule",
-		},
-		{
-			Group:    "sag.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "clientusers",
-		}: {
-			JsonIt:       controllers.GetJSONItr(sagv1alpha1.GetEncoder(), sagv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_sag_client_user",
-		},
-		{
-			Group:    "sag.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "dnatentries",
-		}: {
-			JsonIt:       controllers.GetJSONItr(sagv1alpha1.GetEncoder(), sagv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_sag_dnat_entry",
-		},
-		{
-			Group:    "sag.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "qos",
-		}: {
-			JsonIt:       controllers.GetJSONItr(sagv1alpha1.GetEncoder(), sagv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_sag_qos",
-		},
-		{
-			Group:    "sag.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "qoscars",
-		}: {
-			JsonIt:       controllers.GetJSONItr(sagv1alpha1.GetEncoder(), sagv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_sag_qos_car",
-		},
-		{
-			Group:    "sag.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "qospolicies",
-		}: {
-			JsonIt:       controllers.GetJSONItr(sagv1alpha1.GetEncoder(), sagv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_sag_qos_policy",
-		},
-		{
-			Group:    "sag.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "snatentries",
-		}: {
-			JsonIt:       controllers.GetJSONItr(sagv1alpha1.GetEncoder(), sagv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_sag_snat_entry",
-		},
-		{
-			Group:    "scdn.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "domains",
-		}: {
-			JsonIt:       controllers.GetJSONItr(scdnv1alpha1.GetEncoder(), scdnv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_scdn_domain",
-		},
-		{
-			Group:    "scdn.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "domainconfigs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(scdnv1alpha1.GetEncoder(), scdnv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_scdn_domain_config",
-		},
-		{
-			Group:    "sddp.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "configs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(sddpv1alpha1.GetEncoder(), sddpv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_sddp_config",
-		},
-		{
-			Group:    "sddp.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(sddpv1alpha1.GetEncoder(), sddpv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_sddp_instance",
-		},
-		{
-			Group:    "sddp.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "rules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(sddpv1alpha1.GetEncoder(), sddpv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_sddp_rule",
-		},
-		{
-			Group:    "security.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "centergroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(securityv1alpha1.GetEncoder(), securityv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_security_center_group",
-		},
-		{
-			Group:    "security.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "groups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(securityv1alpha1.GetEncoder(), securityv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_security_group",
-		},
-		{
-			Group:    "security.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "grouprules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(securityv1alpha1.GetEncoder(), securityv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_security_group_rule",
-		},
-		{
-			Group:    "service.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "meshservicemeshes",
-		}: {
-			JsonIt:       controllers.GetJSONItr(servicev1alpha1.GetEncoder(), servicev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_service_mesh_service_mesh",
-		},
-		{
-			Group:    "simple.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "applicationserverinstances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(simplev1alpha1.GetEncoder(), simplev1alpha1.GetDecoder()),
-			ResourceType: "alicloud_simple_application_server_instance",
-		},
-		{
-			Group:    "slb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "slbs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_slb",
-		},
-		{
-			Group:    "slb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "acls",
-		}: {
-			JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_slb_acl",
-		},
-		{
-			Group:    "slb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "attachments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_slb_attachment",
-		},
-		{
-			Group:    "slb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "backendservers",
-		}: {
-			JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_slb_backend_server",
-		},
-		{
-			Group:    "slb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "cacertificates",
-		}: {
-			JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_slb_ca_certificate",
-		},
-		{
-			Group:    "slb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "domainextensions",
-		}: {
-			JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_slb_domain_extension",
-		},
-		{
-			Group:    "slb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "listeners",
-		}: {
-			JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_slb_listener",
-		},
-		{
-			Group:    "slb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "loadbalancers",
-		}: {
-			JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_slb_load_balancer",
-		},
-		{
-			Group:    "slb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "masterslaveservergroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_slb_master_slave_server_group",
-		},
-		{
-			Group:    "slb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "rules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_slb_rule",
-		},
-		{
-			Group:    "slb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "servercertificates",
-		}: {
-			JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_slb_server_certificate",
-		},
-		{
-			Group:    "slb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "servergroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_slb_server_group",
-		},
-		{
-			Group:    "slb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "tlscipherpolicies",
-		}: {
-			JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_slb_tls_cipher_policy",
-		},
-		{
-			Group:    "snapshot.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "snapshots",
-		}: {
-			JsonIt:       controllers.GetJSONItr(snapshotv1alpha1.GetEncoder(), snapshotv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_snapshot",
-		},
-		{
-			Group:    "snapshot.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "policies",
-		}: {
-			JsonIt:       controllers.GetJSONItr(snapshotv1alpha1.GetEncoder(), snapshotv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_snapshot_policy",
-		},
-		{
-			Group:    "snat.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "entries",
-		}: {
-			JsonIt:       controllers.GetJSONItr(snatv1alpha1.GetEncoder(), snatv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_snat_entry",
-		},
-		{
-			Group:    "ssl.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "certificatesservicecertificates",
-		}: {
-			JsonIt:       controllers.GetJSONItr(sslv1alpha1.GetEncoder(), sslv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ssl_certificates_service_certificate",
-		},
-		{
-			Group:    "ssl.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "vpnclientcerts",
-		}: {
-			JsonIt:       controllers.GetJSONItr(sslv1alpha1.GetEncoder(), sslv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ssl_vpn_client_cert",
-		},
-		{
-			Group:    "ssl.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "vpnservers",
-		}: {
-			JsonIt:       controllers.GetJSONItr(sslv1alpha1.GetEncoder(), sslv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_ssl_vpn_server",
-		},
-		{
-			Group:    "subnet.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "subnets",
-		}: {
-			JsonIt:       controllers.GetJSONItr(subnetv1alpha1.GetEncoder(), subnetv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_subnet",
-		},
-		{
-			Group:    "tsdb.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(tsdbv1alpha1.GetEncoder(), tsdbv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_tsdb_instance",
-		},
-		{
-			Group:    "video.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "surveillancesystemgroups",
-		}: {
-			JsonIt:       controllers.GetJSONItr(videov1alpha1.GetEncoder(), videov1alpha1.GetDecoder()),
-			ResourceType: "alicloud_video_surveillance_system_group",
-		},
-		{
-			Group:    "vod.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "domains",
-		}: {
-			JsonIt:       controllers.GetJSONItr(vodv1alpha1.GetEncoder(), vodv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_vod_domain",
-		},
-		{
-			Group:    "vpc.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "vpcs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(vpcv1alpha1.GetEncoder(), vpcv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_vpc",
-		},
-		{
-			Group:    "vpc.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "dhcpoptionssets",
-		}: {
-			JsonIt:       controllers.GetJSONItr(vpcv1alpha1.GetEncoder(), vpcv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_vpc_dhcp_options_set",
-		},
-		{
-			Group:    "vpc.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "flowlogs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(vpcv1alpha1.GetEncoder(), vpcv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_vpc_flow_log",
-		},
-		{
-			Group:    "vpc.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "natips",
-		}: {
-			JsonIt:       controllers.GetJSONItr(vpcv1alpha1.GetEncoder(), vpcv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_vpc_nat_ip",
-		},
-		{
-			Group:    "vpc.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "natipcidrs",
-		}: {
-			JsonIt:       controllers.GetJSONItr(vpcv1alpha1.GetEncoder(), vpcv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_vpc_nat_ip_cidr",
-		},
-		{
-			Group:    "vpc.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "trafficmirrorfilters",
-		}: {
-			JsonIt:       controllers.GetJSONItr(vpcv1alpha1.GetEncoder(), vpcv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_vpc_traffic_mirror_filter",
-		},
-		{
-			Group:    "vpc.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "trafficmirrorfilteregressrules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(vpcv1alpha1.GetEncoder(), vpcv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_vpc_traffic_mirror_filter_egress_rule",
-		},
-		{
-			Group:    "vpn.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "connections",
-		}: {
-			JsonIt:       controllers.GetJSONItr(vpnv1alpha1.GetEncoder(), vpnv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_vpn_connection",
-		},
-		{
-			Group:    "vpn.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "customergateways",
-		}: {
-			JsonIt:       controllers.GetJSONItr(vpnv1alpha1.GetEncoder(), vpnv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_vpn_customer_gateway",
-		},
-		{
-			Group:    "vpn.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "gateways",
-		}: {
-			JsonIt:       controllers.GetJSONItr(vpnv1alpha1.GetEncoder(), vpnv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_vpn_gateway",
-		},
-		{
-			Group:    "vpn.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "routeentries",
-		}: {
-			JsonIt:       controllers.GetJSONItr(vpnv1alpha1.GetEncoder(), vpnv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_vpn_route_entry",
-		},
-		{
-			Group:    "vswitch.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "vswitches",
-		}: {
-			JsonIt:       controllers.GetJSONItr(vswitchv1alpha1.GetEncoder(), vswitchv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_vswitch",
-		},
-		{
-			Group:    "waf.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "certificates",
-		}: {
-			JsonIt:       controllers.GetJSONItr(wafv1alpha1.GetEncoder(), wafv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_waf_certificate",
-		},
-		{
-			Group:    "waf.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "domains",
-		}: {
-			JsonIt:       controllers.GetJSONItr(wafv1alpha1.GetEncoder(), wafv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_waf_domain",
-		},
-		{
-			Group:    "waf.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "instances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(wafv1alpha1.GetEncoder(), wafv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_waf_instance",
-		},
-		{
-			Group:    "yundun.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "bastionhostinstances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(yundunv1alpha1.GetEncoder(), yundunv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_yundun_bastionhost_instance",
-		},
-		{
-			Group:    "yundun.alicloud.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "dbauditinstances",
-		}: {
-			JsonIt:       controllers.GetJSONItr(yundunv1alpha1.GetEncoder(), yundunv1alpha1.GetDecoder()),
-			ResourceType: "alicloud_yundun_dbaudit_instance",
-		},
-	}
-)
+var allJsonIt = map[schema.GroupVersionResource]Data{
+	{
+		Group:    "actiontrail.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "actiontrails",
+	}: {
+		JsonIt:       controllers.GetJSONItr(actiontrailv1alpha1.GetEncoder(), actiontrailv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_actiontrail",
+	},
+	{
+		Group:    "actiontrail.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "historydeliveryjobs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(actiontrailv1alpha1.GetEncoder(), actiontrailv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_actiontrail_history_delivery_job",
+	},
+	{
+		Group:    "actiontrail.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "trails",
+	}: {
+		JsonIt:       controllers.GetJSONItr(actiontrailv1alpha1.GetEncoder(), actiontrailv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_actiontrail_trail",
+	},
+	{
+		Group:    "adb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "accounts",
+	}: {
+		JsonIt:       controllers.GetJSONItr(adbv1alpha1.GetEncoder(), adbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_adb_account",
+	},
+	{
+		Group:    "adb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "backuppolicies",
+	}: {
+		JsonIt:       controllers.GetJSONItr(adbv1alpha1.GetEncoder(), adbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_adb_backup_policy",
+	},
+	{
+		Group:    "adb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "clusters",
+	}: {
+		JsonIt:       controllers.GetJSONItr(adbv1alpha1.GetEncoder(), adbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_adb_cluster",
+	},
+	{
+		Group:    "adb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "connections",
+	}: {
+		JsonIt:       controllers.GetJSONItr(adbv1alpha1.GetEncoder(), adbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_adb_connection",
+	},
+	{
+		Group:    "adb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "dbclusters",
+	}: {
+		JsonIt:       controllers.GetJSONItr(adbv1alpha1.GetEncoder(), adbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_adb_db_cluster",
+	},
+	{
+		Group:    "alb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "acls",
+	}: {
+		JsonIt:       controllers.GetJSONItr(albv1alpha1.GetEncoder(), albv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_alb_acl",
+	},
+	{
+		Group:    "alb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "healthchecktemplates",
+	}: {
+		JsonIt:       controllers.GetJSONItr(albv1alpha1.GetEncoder(), albv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_alb_health_check_template",
+	},
+	{
+		Group:    "alb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "listeners",
+	}: {
+		JsonIt:       controllers.GetJSONItr(albv1alpha1.GetEncoder(), albv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_alb_listener",
+	},
+	{
+		Group:    "alb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "loadbalancers",
+	}: {
+		JsonIt:       controllers.GetJSONItr(albv1alpha1.GetEncoder(), albv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_alb_load_balancer",
+	},
+	{
+		Group:    "alb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "rules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(albv1alpha1.GetEncoder(), albv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_alb_rule",
+	},
+	{
+		Group:    "alb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "securitypolicies",
+	}: {
+		JsonIt:       controllers.GetJSONItr(albv1alpha1.GetEncoder(), albv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_alb_security_policy",
+	},
+	{
+		Group:    "alb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "servergroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(albv1alpha1.GetEncoder(), albv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_alb_server_group",
+	},
+	{
+		Group:    "alidns.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "domains",
+	}: {
+		JsonIt:       controllers.GetJSONItr(alidnsv1alpha1.GetEncoder(), alidnsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_alidns_domain",
+	},
+	{
+		Group:    "alidns.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "domainattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(alidnsv1alpha1.GetEncoder(), alidnsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_alidns_domain_attachment",
+	},
+	{
+		Group:    "alidns.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "domaingroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(alidnsv1alpha1.GetEncoder(), alidnsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_alidns_domain_group",
+	},
+	{
+		Group:    "alidns.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(alidnsv1alpha1.GetEncoder(), alidnsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_alidns_instance",
+	},
+	{
+		Group:    "alidns.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "records",
+	}: {
+		JsonIt:       controllers.GetJSONItr(alidnsv1alpha1.GetEncoder(), alidnsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_alidns_record",
+	},
+	{
+		Group:    "alikafka.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "consumergroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(alikafkav1alpha1.GetEncoder(), alikafkav1alpha1.GetDecoder()),
+		ResourceType: "alicloud_alikafka_consumer_group",
+	},
+	{
+		Group:    "alikafka.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(alikafkav1alpha1.GetEncoder(), alikafkav1alpha1.GetDecoder()),
+		ResourceType: "alicloud_alikafka_instance",
+	},
+	{
+		Group:    "alikafka.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "saslacls",
+	}: {
+		JsonIt:       controllers.GetJSONItr(alikafkav1alpha1.GetEncoder(), alikafkav1alpha1.GetDecoder()),
+		ResourceType: "alicloud_alikafka_sasl_acl",
+	},
+	{
+		Group:    "alikafka.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "saslusers",
+	}: {
+		JsonIt:       controllers.GetJSONItr(alikafkav1alpha1.GetEncoder(), alikafkav1alpha1.GetDecoder()),
+		ResourceType: "alicloud_alikafka_sasl_user",
+	},
+	{
+		Group:    "alikafka.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "topics",
+	}: {
+		JsonIt:       controllers.GetJSONItr(alikafkav1alpha1.GetEncoder(), alikafkav1alpha1.GetDecoder()),
+		ResourceType: "alicloud_alikafka_topic",
+	},
+	{
+		Group:    "amqp.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "bindings",
+	}: {
+		JsonIt:       controllers.GetJSONItr(amqpv1alpha1.GetEncoder(), amqpv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_amqp_binding",
+	},
+	{
+		Group:    "amqp.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "exchanges",
+	}: {
+		JsonIt:       controllers.GetJSONItr(amqpv1alpha1.GetEncoder(), amqpv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_amqp_exchange",
+	},
+	{
+		Group:    "amqp.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(amqpv1alpha1.GetEncoder(), amqpv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_amqp_instance",
+	},
+	{
+		Group:    "amqp.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "queues",
+	}: {
+		JsonIt:       controllers.GetJSONItr(amqpv1alpha1.GetEncoder(), amqpv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_amqp_queue",
+	},
+	{
+		Group:    "amqp.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "virtualhosts",
+	}: {
+		JsonIt:       controllers.GetJSONItr(amqpv1alpha1.GetEncoder(), amqpv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_amqp_virtual_host",
+	},
+	{
+		Group:    "apigateway.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "apis",
+	}: {
+		JsonIt:       controllers.GetJSONItr(apigatewayv1alpha1.GetEncoder(), apigatewayv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_api_gateway_api",
+	},
+	{
+		Group:    "apigateway.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "apps",
+	}: {
+		JsonIt:       controllers.GetJSONItr(apigatewayv1alpha1.GetEncoder(), apigatewayv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_api_gateway_app",
+	},
+	{
+		Group:    "apigateway.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "appattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(apigatewayv1alpha1.GetEncoder(), apigatewayv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_api_gateway_app_attachment",
+	},
+	{
+		Group:    "apigateway.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "groups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(apigatewayv1alpha1.GetEncoder(), apigatewayv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_api_gateway_group",
+	},
+	{
+		Group:    "apigateway.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "vpcaccesses",
+	}: {
+		JsonIt:       controllers.GetJSONItr(apigatewayv1alpha1.GetEncoder(), apigatewayv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_api_gateway_vpc_access",
+	},
+	{
+		Group:    "arms.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "alertcontacts",
+	}: {
+		JsonIt:       controllers.GetJSONItr(armsv1alpha1.GetEncoder(), armsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_arms_alert_contact",
+	},
+	{
+		Group:    "arms.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "alertcontactgroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(armsv1alpha1.GetEncoder(), armsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_arms_alert_contact_group",
+	},
+	{
+		Group:    "arms.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "dispatchrules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(armsv1alpha1.GetEncoder(), armsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_arms_dispatch_rule",
+	},
+	{
+		Group:    "arms.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "prometheusalertrules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(armsv1alpha1.GetEncoder(), armsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_arms_prometheus_alert_rule",
+	},
+	{
+		Group:    "auto.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "provisioninggroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(autov1alpha1.GetEncoder(), autov1alpha1.GetDecoder()),
+		ResourceType: "alicloud_auto_provisioning_group",
+	},
+	{
+		Group:    "bastionhost.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "hosts",
+	}: {
+		JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_bastionhost_host",
+	},
+	{
+		Group:    "bastionhost.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "hostaccounts",
+	}: {
+		JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_bastionhost_host_account",
+	},
+	{
+		Group:    "bastionhost.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "hostaccountuserattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_bastionhost_host_account_user_attachment",
+	},
+	{
+		Group:    "bastionhost.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "hostaccountusergroupattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_bastionhost_host_account_user_group_attachment",
+	},
+	{
+		Group:    "bastionhost.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "hostattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_bastionhost_host_attachment",
+	},
+	{
+		Group:    "bastionhost.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "hostgroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_bastionhost_host_group",
+	},
+	{
+		Group:    "bastionhost.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "hostgroupaccountuserattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_bastionhost_host_group_account_user_attachment",
+	},
+	{
+		Group:    "bastionhost.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "hostgroupaccountusergroupattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_bastionhost_host_group_account_user_group_attachment",
+	},
+	{
+		Group:    "bastionhost.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_bastionhost_instance",
+	},
+	{
+		Group:    "bastionhost.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "users",
+	}: {
+		JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_bastionhost_user",
+	},
+	{
+		Group:    "bastionhost.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "userattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_bastionhost_user_attachment",
+	},
+	{
+		Group:    "bastionhost.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "usergroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(bastionhostv1alpha1.GetEncoder(), bastionhostv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_bastionhost_user_group",
+	},
+	{
+		Group:    "brain.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "industrialpidloops",
+	}: {
+		JsonIt:       controllers.GetJSONItr(brainv1alpha1.GetEncoder(), brainv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_brain_industrial_pid_loop",
+	},
+	{
+		Group:    "brain.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "industrialpidorganizations",
+	}: {
+		JsonIt:       controllers.GetJSONItr(brainv1alpha1.GetEncoder(), brainv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_brain_industrial_pid_organization",
+	},
+	{
+		Group:    "brain.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "industrialpidprojects",
+	}: {
+		JsonIt:       controllers.GetJSONItr(brainv1alpha1.GetEncoder(), brainv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_brain_industrial_pid_project",
+	},
+	{
+		Group:    "cas.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "certificates",
+	}: {
+		JsonIt:       controllers.GetJSONItr(casv1alpha1.GetEncoder(), casv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cas_certificate",
+	},
+	{
+		Group:    "cassandra.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "backupplans",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cassandrav1alpha1.GetEncoder(), cassandrav1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cassandra_backup_plan",
+	},
+	{
+		Group:    "cassandra.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "clusters",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cassandrav1alpha1.GetEncoder(), cassandrav1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cassandra_cluster",
+	},
+	{
+		Group:    "cassandra.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "datacenters",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cassandrav1alpha1.GetEncoder(), cassandrav1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cassandra_data_center",
+	},
+	{
+		Group:    "cddc.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "dedicatedhostgroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cddcv1alpha1.GetEncoder(), cddcv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cddc_dedicated_host_group",
+	},
+	{
+		Group:    "cdn.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "domains",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cdnv1alpha1.GetEncoder(), cdnv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cdn_domain",
+	},
+	{
+		Group:    "cdn.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "domainconfigs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cdnv1alpha1.GetEncoder(), cdnv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cdn_domain_config",
+	},
+	{
+		Group:    "cdn.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "domainnews",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cdnv1alpha1.GetEncoder(), cdnv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cdn_domain_new",
+	},
+	{
+		Group:    "cdn.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "realtimelogdeliveries",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cdnv1alpha1.GetEncoder(), cdnv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cdn_real_time_log_delivery",
+	},
+	{
+		Group:    "cen.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "bandwidthlimits",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cen_bandwidth_limit",
+	},
+	{
+		Group:    "cen.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "bandwidthpackages",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cen_bandwidth_package",
+	},
+	{
+		Group:    "cen.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "bandwidthpackageattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cen_bandwidth_package_attachment",
+	},
+	{
+		Group:    "cen.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "flowlogs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cen_flowlog",
+	},
+	{
+		Group:    "cen.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cen_instance",
+	},
+	{
+		Group:    "cen.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instanceattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cen_instance_attachment",
+	},
+	{
+		Group:    "cen.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instancegrants",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cen_instance_grant",
+	},
+	{
+		Group:    "cen.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "privatezones",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cen_private_zone",
+	},
+	{
+		Group:    "cen.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "routeentries",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cen_route_entry",
+	},
+	{
+		Group:    "cen.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "routemaps",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cen_route_map",
+	},
+	{
+		Group:    "cen.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "routeservices",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cen_route_service",
+	},
+	{
+		Group:    "cen.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "transitrouters",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cen_transit_router",
+	},
+	{
+		Group:    "cen.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "transitrouterpeerattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cen_transit_router_peer_attachment",
+	},
+	{
+		Group:    "cen.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "transitrouterrouteentries",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cen_transit_router_route_entry",
+	},
+	{
+		Group:    "cen.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "transitrouterroutetables",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cen_transit_router_route_table",
+	},
+	{
+		Group:    "cen.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "transitrouterroutetableassociations",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cen_transit_router_route_table_association",
+	},
+	{
+		Group:    "cen.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "transitrouterroutetablepropagations",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cen_transit_router_route_table_propagation",
+	},
+	{
+		Group:    "cen.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "transitroutervbrattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cen_transit_router_vbr_attachment",
+	},
+	{
+		Group:    "cen.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "transitroutervpcattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cen_transit_router_vpc_attachment",
+	},
+	{
+		Group:    "cen.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "vbrhealthchecks",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cenv1alpha1.GetEncoder(), cenv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cen_vbr_health_check",
+	},
+	{
+		Group:    "click.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "houseaccounts",
+	}: {
+		JsonIt:       controllers.GetJSONItr(clickv1alpha1.GetEncoder(), clickv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_click_house_account",
+	},
+	{
+		Group:    "click.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "housedbclusters",
+	}: {
+		JsonIt:       controllers.GetJSONItr(clickv1alpha1.GetEncoder(), clickv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_click_house_db_cluster",
+	},
+	{
+		Group:    "cloud.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "connectnetworks",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cloud_connect_network",
+	},
+	{
+		Group:    "cloud.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "connectnetworkattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cloud_connect_network_attachment",
+	},
+	{
+		Group:    "cloud.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "connectnetworkgrants",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cloud_connect_network_grant",
+	},
+	{
+		Group:    "cloud.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "firewallcontrolpolicies",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cloud_firewall_control_policy",
+	},
+	{
+		Group:    "cloud.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "firewallcontrolpolicyorders",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cloud_firewall_control_policy_order",
+	},
+	{
+		Group:    "cloud.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "firewallinstances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cloud_firewall_instance",
+	},
+	{
+		Group:    "cloud.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "ssoaccessconfigurations",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cloud_sso_access_configuration",
+	},
+	{
+		Group:    "cloud.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "ssodirectories",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cloud_sso_directory",
+	},
+	{
+		Group:    "cloud.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "ssogroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cloud_sso_group",
+	},
+	{
+		Group:    "cloud.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "ssoscimservercredentials",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cloud_sso_scim_server_credential",
+	},
+	{
+		Group:    "cloud.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "ssousers",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cloud_sso_user",
+	},
+	{
+		Group:    "cloud.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "storagegatewaygateways",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cloud_storage_gateway_gateway",
+	},
+	{
+		Group:    "cloud.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "storagegatewaystoragebundles",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cloudv1alpha1.GetEncoder(), cloudv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cloud_storage_gateway_storage_bundle",
+	},
+	{
+		Group:    "cloudauth.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "faceconfigs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cloudauthv1alpha1.GetEncoder(), cloudauthv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cloudauth_face_config",
+	},
+	{
+		Group:    "cms.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "alarms",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cmsv1alpha1.GetEncoder(), cmsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cms_alarm",
+	},
+	{
+		Group:    "cms.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "alarmcontacts",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cmsv1alpha1.GetEncoder(), cmsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cms_alarm_contact",
+	},
+	{
+		Group:    "cms.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "alarmcontactgroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cmsv1alpha1.GetEncoder(), cmsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cms_alarm_contact_group",
+	},
+	{
+		Group:    "cms.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "groupmetricrules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cmsv1alpha1.GetEncoder(), cmsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cms_group_metric_rule",
+	},
+	{
+		Group:    "cms.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "metricruletemplates",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cmsv1alpha1.GetEncoder(), cmsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cms_metric_rule_template",
+	},
+	{
+		Group:    "cms.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "monitorgroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cmsv1alpha1.GetEncoder(), cmsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cms_monitor_group",
+	},
+	{
+		Group:    "cms.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "monitorgroupinstances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cmsv1alpha1.GetEncoder(), cmsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cms_monitor_group_instances",
+	},
+	{
+		Group:    "cms.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "sitemonitors",
+	}: {
+		JsonIt:       controllers.GetJSONItr(cmsv1alpha1.GetEncoder(), cmsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cms_site_monitor",
+	},
+	{
+		Group:    "common.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "bandwidthpackages",
+	}: {
+		JsonIt:       controllers.GetJSONItr(commonv1alpha1.GetEncoder(), commonv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_common_bandwidth_package",
+	},
+	{
+		Group:    "common.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "bandwidthpackageattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(commonv1alpha1.GetEncoder(), commonv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_common_bandwidth_package_attachment",
+	},
+	{
+		Group:    "config.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "aggregatecompliancepacks",
+	}: {
+		JsonIt:       controllers.GetJSONItr(configv1alpha1.GetEncoder(), configv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_config_aggregate_compliance_pack",
+	},
+	{
+		Group:    "config.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "aggregateconfigrules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(configv1alpha1.GetEncoder(), configv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_config_aggregate_config_rule",
+	},
+	{
+		Group:    "config.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "aggregators",
+	}: {
+		JsonIt:       controllers.GetJSONItr(configv1alpha1.GetEncoder(), configv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_config_aggregator",
+	},
+	{
+		Group:    "config.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "compliancepacks",
+	}: {
+		JsonIt:       controllers.GetJSONItr(configv1alpha1.GetEncoder(), configv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_config_compliance_pack",
+	},
+	{
+		Group:    "config.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "configurationrecorders",
+	}: {
+		JsonIt:       controllers.GetJSONItr(configv1alpha1.GetEncoder(), configv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_config_configuration_recorder",
+	},
+	{
+		Group:    "config.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "deliverychannels",
+	}: {
+		JsonIt:       controllers.GetJSONItr(configv1alpha1.GetEncoder(), configv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_config_delivery_channel",
+	},
+	{
+		Group:    "config.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "rules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(configv1alpha1.GetEncoder(), configv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_config_rule",
+	},
+	{
+		Group:    "container.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "clusters",
+	}: {
+		JsonIt:       controllers.GetJSONItr(containerv1alpha1.GetEncoder(), containerv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_container_cluster",
+	},
+	{
+		Group:    "copy.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "images",
+	}: {
+		JsonIt:       controllers.GetJSONItr(copyv1alpha1.GetEncoder(), copyv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_copy_image",
+	},
+	{
+		Group:    "cr.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "eeinstances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(crv1alpha1.GetEncoder(), crv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cr_ee_instance",
+	},
+	{
+		Group:    "cr.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "eenamespaces",
+	}: {
+		JsonIt:       controllers.GetJSONItr(crv1alpha1.GetEncoder(), crv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cr_ee_namespace",
+	},
+	{
+		Group:    "cr.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "eerepoes",
+	}: {
+		JsonIt:       controllers.GetJSONItr(crv1alpha1.GetEncoder(), crv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cr_ee_repo",
+	},
+	{
+		Group:    "cr.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "eesyncrules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(crv1alpha1.GetEncoder(), crv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cr_ee_sync_rule",
+	},
+	{
+		Group:    "cr.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "endpointaclpolicies",
+	}: {
+		JsonIt:       controllers.GetJSONItr(crv1alpha1.GetEncoder(), crv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cr_endpoint_acl_policy",
+	},
+	{
+		Group:    "cr.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "namespaces",
+	}: {
+		JsonIt:       controllers.GetJSONItr(crv1alpha1.GetEncoder(), crv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cr_namespace",
+	},
+	{
+		Group:    "cr.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "repoes",
+	}: {
+		JsonIt:       controllers.GetJSONItr(crv1alpha1.GetEncoder(), crv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cr_repo",
+	},
+	{
+		Group:    "cs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "applications",
+	}: {
+		JsonIt:       controllers.GetJSONItr(csv1alpha1.GetEncoder(), csv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cs_application",
+	},
+	{
+		Group:    "cs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "autoscalingconfigs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(csv1alpha1.GetEncoder(), csv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cs_autoscaling_config",
+	},
+	{
+		Group:    "cs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "edgekubernetes",
+	}: {
+		JsonIt:       controllers.GetJSONItr(csv1alpha1.GetEncoder(), csv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cs_edge_kubernetes",
+	},
+	{
+		Group:    "cs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "kubernetes",
+	}: {
+		JsonIt:       controllers.GetJSONItr(csv1alpha1.GetEncoder(), csv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cs_kubernetes",
+	},
+	{
+		Group:    "cs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "kubernetesautoscalers",
+	}: {
+		JsonIt:       controllers.GetJSONItr(csv1alpha1.GetEncoder(), csv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cs_kubernetes_autoscaler",
+	},
+	{
+		Group:    "cs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "kubernetesnodepools",
+	}: {
+		JsonIt:       controllers.GetJSONItr(csv1alpha1.GetEncoder(), csv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cs_kubernetes_node_pool",
+	},
+	{
+		Group:    "cs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "kubernetespermissions",
+	}: {
+		JsonIt:       controllers.GetJSONItr(csv1alpha1.GetEncoder(), csv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cs_kubernetes_permissions",
+	},
+	{
+		Group:    "cs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "managedkubernetes",
+	}: {
+		JsonIt:       controllers.GetJSONItr(csv1alpha1.GetEncoder(), csv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cs_managed_kubernetes",
+	},
+	{
+		Group:    "cs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "serverlesskubernetes",
+	}: {
+		JsonIt:       controllers.GetJSONItr(csv1alpha1.GetEncoder(), csv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cs_serverless_kubernetes",
+	},
+	{
+		Group:    "cs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "swarms",
+	}: {
+		JsonIt:       controllers.GetJSONItr(csv1alpha1.GetEncoder(), csv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_cs_swarm",
+	},
+	{
+		Group:    "data.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "worksfolders",
+	}: {
+		JsonIt:       controllers.GetJSONItr(datav1alpha1.GetEncoder(), datav1alpha1.GetDecoder()),
+		ResourceType: "alicloud_data_works_folder",
+	},
+	{
+		Group:    "database.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "gatewaygateways",
+	}: {
+		JsonIt:       controllers.GetJSONItr(databasev1alpha1.GetEncoder(), databasev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_database_gateway_gateway",
+	},
+	{
+		Group:    "datahub.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "projects",
+	}: {
+		JsonIt:       controllers.GetJSONItr(datahubv1alpha1.GetEncoder(), datahubv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_datahub_project",
+	},
+	{
+		Group:    "datahub.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "subscriptions",
+	}: {
+		JsonIt:       controllers.GetJSONItr(datahubv1alpha1.GetEncoder(), datahubv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_datahub_subscription",
+	},
+	{
+		Group:    "datahub.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "topics",
+	}: {
+		JsonIt:       controllers.GetJSONItr(datahubv1alpha1.GetEncoder(), datahubv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_datahub_topic",
+	},
+	{
+		Group:    "db.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "accounts",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dbv1alpha1.GetEncoder(), dbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_db_account",
+	},
+	{
+		Group:    "db.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "accountprivileges",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dbv1alpha1.GetEncoder(), dbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_db_account_privilege",
+	},
+	{
+		Group:    "db.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "backuppolicies",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dbv1alpha1.GetEncoder(), dbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_db_backup_policy",
+	},
+	{
+		Group:    "db.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "connections",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dbv1alpha1.GetEncoder(), dbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_db_connection",
+	},
+	{
+		Group:    "db.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "databases",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dbv1alpha1.GetEncoder(), dbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_db_database",
+	},
+	{
+		Group:    "db.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dbv1alpha1.GetEncoder(), dbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_db_instance",
+	},
+	{
+		Group:    "db.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "readwritesplittingconnections",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dbv1alpha1.GetEncoder(), dbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_db_read_write_splitting_connection",
+	},
+	{
+		Group:    "db.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "readonlyinstances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dbv1alpha1.GetEncoder(), dbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_db_readonly_instance",
+	},
+	{
+		Group:    "dbfs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dbfsv1alpha1.GetEncoder(), dbfsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_dbfs_instance",
+	},
+	{
+		Group:    "dcdn.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "domains",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dcdnv1alpha1.GetEncoder(), dcdnv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_dcdn_domain",
+	},
+	{
+		Group:    "dcdn.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "domainconfigs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dcdnv1alpha1.GetEncoder(), dcdnv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_dcdn_domain_config",
+	},
+	{
+		Group:    "ddosbgp.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ddosbgpv1alpha1.GetEncoder(), ddosbgpv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ddosbgp_instance",
+	},
+	{
+		Group:    "ddoscoo.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "domainresources",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ddoscoov1alpha1.GetEncoder(), ddoscoov1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ddoscoo_domain_resource",
+	},
+	{
+		Group:    "ddoscoo.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ddoscoov1alpha1.GetEncoder(), ddoscoov1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ddoscoo_instance",
+	},
+	{
+		Group:    "ddoscoo.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "ports",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ddoscoov1alpha1.GetEncoder(), ddoscoov1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ddoscoo_port",
+	},
+	{
+		Group:    "ddoscoo.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "schedulerrules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ddoscoov1alpha1.GetEncoder(), ddoscoov1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ddoscoo_scheduler_rule",
+	},
+	{
+		Group:    "dfs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "accessgroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dfsv1alpha1.GetEncoder(), dfsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_dfs_access_group",
+	},
+	{
+		Group:    "dfs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "accessrules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dfsv1alpha1.GetEncoder(), dfsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_dfs_access_rule",
+	},
+	{
+		Group:    "dfs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "filesystems",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dfsv1alpha1.GetEncoder(), dfsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_dfs_file_system",
+	},
+	{
+		Group:    "dfs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "mountpoints",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dfsv1alpha1.GetEncoder(), dfsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_dfs_mount_point",
+	},
+	{
+		Group:    "direct.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "maildomains",
+	}: {
+		JsonIt:       controllers.GetJSONItr(directv1alpha1.GetEncoder(), directv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_direct_mail_domain",
+	},
+	{
+		Group:    "direct.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "mailmailaddresses",
+	}: {
+		JsonIt:       controllers.GetJSONItr(directv1alpha1.GetEncoder(), directv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_direct_mail_mail_address",
+	},
+	{
+		Group:    "direct.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "mailreceivers",
+	}: {
+		JsonIt:       controllers.GetJSONItr(directv1alpha1.GetEncoder(), directv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_direct_mail_receivers",
+	},
+	{
+		Group:    "disk.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "disks",
+	}: {
+		JsonIt:       controllers.GetJSONItr(diskv1alpha1.GetEncoder(), diskv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_disk",
+	},
+	{
+		Group:    "disk.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "attachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(diskv1alpha1.GetEncoder(), diskv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_disk_attachment",
+	},
+	{
+		Group:    "dms.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "enterpriseinstances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dmsv1alpha1.GetEncoder(), dmsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_dms_enterprise_instance",
+	},
+	{
+		Group:    "dms.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "enterpriseusers",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dmsv1alpha1.GetEncoder(), dmsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_dms_enterprise_user",
+	},
+	{
+		Group:    "dns.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "dns",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dnsv1alpha1.GetEncoder(), dnsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_dns",
+	},
+	{
+		Group:    "dns.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "domains",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dnsv1alpha1.GetEncoder(), dnsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_dns_domain",
+	},
+	{
+		Group:    "dns.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "domainattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dnsv1alpha1.GetEncoder(), dnsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_dns_domain_attachment",
+	},
+	{
+		Group:    "dns.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "groups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dnsv1alpha1.GetEncoder(), dnsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_dns_group",
+	},
+	{
+		Group:    "dns.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dnsv1alpha1.GetEncoder(), dnsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_dns_instance",
+	},
+	{
+		Group:    "dns.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "records",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dnsv1alpha1.GetEncoder(), dnsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_dns_record",
+	},
+	{
+		Group:    "drds.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(drdsv1alpha1.GetEncoder(), drdsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_drds_instance",
+	},
+	{
+		Group:    "dts.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "jobmonitorrules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dtsv1alpha1.GetEncoder(), dtsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_dts_job_monitor_rule",
+	},
+	{
+		Group:    "dts.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "subscriptionjobs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dtsv1alpha1.GetEncoder(), dtsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_dts_subscription_job",
+	},
+	{
+		Group:    "dts.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "synchronizationinstances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dtsv1alpha1.GetEncoder(), dtsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_dts_synchronization_instance",
+	},
+	{
+		Group:    "dts.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "synchronizationjobs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(dtsv1alpha1.GetEncoder(), dtsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_dts_synchronization_job",
+	},
+	{
+		Group:    "eais.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(eaisv1alpha1.GetEncoder(), eaisv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_eais_instance",
+	},
+	{
+		Group:    "ecd.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "policygroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ecdv1alpha1.GetEncoder(), ecdv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ecd_policy_group",
+	},
+	{
+		Group:    "ecd.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "simpleofficesites",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ecdv1alpha1.GetEncoder(), ecdv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ecd_simple_office_site",
+	},
+	{
+		Group:    "eci.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "containergroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(eciv1alpha1.GetEncoder(), eciv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_eci_container_group",
+	},
+	{
+		Group:    "eci.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "imagecaches",
+	}: {
+		JsonIt:       controllers.GetJSONItr(eciv1alpha1.GetEncoder(), eciv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_eci_image_cache",
+	},
+	{
+		Group:    "eci.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "openapiimagecaches",
+	}: {
+		JsonIt:       controllers.GetJSONItr(eciv1alpha1.GetEncoder(), eciv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_eci_openapi_image_cache",
+	},
+	{
+		Group:    "ecp.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "keypairs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ecpv1alpha1.GetEncoder(), ecpv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ecp_key_pair",
+	},
+	{
+		Group:    "ecs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "autosnapshotpolicies",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ecs_auto_snapshot_policy",
+	},
+	{
+		Group:    "ecs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "autosnapshotpolicyattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ecs_auto_snapshot_policy_attachment",
+	},
+	{
+		Group:    "ecs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "commands",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ecs_command",
+	},
+	{
+		Group:    "ecs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "dedicatedhosts",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ecs_dedicated_host",
+	},
+	{
+		Group:    "ecs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "deploymentsets",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ecs_deployment_set",
+	},
+	{
+		Group:    "ecs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "disks",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ecs_disk",
+	},
+	{
+		Group:    "ecs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "diskattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ecs_disk_attachment",
+	},
+	{
+		Group:    "ecs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "hpcclusters",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ecs_hpc_cluster",
+	},
+	{
+		Group:    "ecs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "keypairs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ecs_key_pair",
+	},
+	{
+		Group:    "ecs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "keypairattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ecs_key_pair_attachment",
+	},
+	{
+		Group:    "ecs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "launchtemplates",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ecs_launch_template",
+	},
+	{
+		Group:    "ecs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "networkinterfaces",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ecs_network_interface",
+	},
+	{
+		Group:    "ecs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "networkinterfaceattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ecs_network_interface_attachment",
+	},
+	{
+		Group:    "ecs.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "snapshots",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ecsv1alpha1.GetEncoder(), ecsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ecs_snapshot",
+	},
+	{
+		Group:    "edas.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "applications",
+	}: {
+		JsonIt:       controllers.GetJSONItr(edasv1alpha1.GetEncoder(), edasv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_edas_application",
+	},
+	{
+		Group:    "edas.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "applicationdeployments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(edasv1alpha1.GetEncoder(), edasv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_edas_application_deployment",
+	},
+	{
+		Group:    "edas.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "applicationscales",
+	}: {
+		JsonIt:       controllers.GetJSONItr(edasv1alpha1.GetEncoder(), edasv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_edas_application_scale",
+	},
+	{
+		Group:    "edas.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "clusters",
+	}: {
+		JsonIt:       controllers.GetJSONItr(edasv1alpha1.GetEncoder(), edasv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_edas_cluster",
+	},
+	{
+		Group:    "edas.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "deploygroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(edasv1alpha1.GetEncoder(), edasv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_edas_deploy_group",
+	},
+	{
+		Group:    "edas.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instanceclusterattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(edasv1alpha1.GetEncoder(), edasv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_edas_instance_cluster_attachment",
+	},
+	{
+		Group:    "edas.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "k8sapplications",
+	}: {
+		JsonIt:       controllers.GetJSONItr(edasv1alpha1.GetEncoder(), edasv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_edas_k8s_application",
+	},
+	{
+		Group:    "edas.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "k8sclusters",
+	}: {
+		JsonIt:       controllers.GetJSONItr(edasv1alpha1.GetEncoder(), edasv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_edas_k8s_cluster",
+	},
+	{
+		Group:    "edas.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "slbattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(edasv1alpha1.GetEncoder(), edasv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_edas_slb_attachment",
+	},
+	{
+		Group:    "ehpc.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "jobtemplates",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ehpcv1alpha1.GetEncoder(), ehpcv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ehpc_job_template",
+	},
+	{
+		Group:    "eip.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "eips",
+	}: {
+		JsonIt:       controllers.GetJSONItr(eipv1alpha1.GetEncoder(), eipv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_eip",
+	},
+	{
+		Group:    "eip.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "addresses",
+	}: {
+		JsonIt:       controllers.GetJSONItr(eipv1alpha1.GetEncoder(), eipv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_eip_address",
+	},
+	{
+		Group:    "eip.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "associations",
+	}: {
+		JsonIt:       controllers.GetJSONItr(eipv1alpha1.GetEncoder(), eipv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_eip_association",
+	},
+	{
+		Group:    "eipanycast.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "anycasteipaddresses",
+	}: {
+		JsonIt:       controllers.GetJSONItr(eipanycastv1alpha1.GetEncoder(), eipanycastv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_eipanycast_anycast_eip_address",
+	},
+	{
+		Group:    "eipanycast.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "anycasteipaddressattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(eipanycastv1alpha1.GetEncoder(), eipanycastv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_eipanycast_anycast_eip_address_attachment",
+	},
+	{
+		Group:    "elasticsearch.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(elasticsearchv1alpha1.GetEncoder(), elasticsearchv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_elasticsearch_instance",
+	},
+	{
+		Group:    "emr.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "clusters",
+	}: {
+		JsonIt:       controllers.GetJSONItr(emrv1alpha1.GetEncoder(), emrv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_emr_cluster",
+	},
+	{
+		Group:    "ens.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "keypairs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ensv1alpha1.GetEncoder(), ensv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ens_key_pair",
+	},
+	{
+		Group:    "ess.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "alarms",
+	}: {
+		JsonIt:       controllers.GetJSONItr(essv1alpha1.GetEncoder(), essv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ess_alarm",
+	},
+	{
+		Group:    "ess.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "attachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(essv1alpha1.GetEncoder(), essv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ess_attachment",
+	},
+	{
+		Group:    "ess.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "lifecyclehooks",
+	}: {
+		JsonIt:       controllers.GetJSONItr(essv1alpha1.GetEncoder(), essv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ess_lifecycle_hook",
+	},
+	{
+		Group:    "ess.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "notifications",
+	}: {
+		JsonIt:       controllers.GetJSONItr(essv1alpha1.GetEncoder(), essv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ess_notification",
+	},
+	{
+		Group:    "ess.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "scalingconfigurations",
+	}: {
+		JsonIt:       controllers.GetJSONItr(essv1alpha1.GetEncoder(), essv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ess_scaling_configuration",
+	},
+	{
+		Group:    "ess.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "scalinggroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(essv1alpha1.GetEncoder(), essv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ess_scaling_group",
+	},
+	{
+		Group:    "ess.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "scalingrules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(essv1alpha1.GetEncoder(), essv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ess_scaling_rule",
+	},
+	{
+		Group:    "ess.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "scalinggroupvservergroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(essv1alpha1.GetEncoder(), essv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ess_scalinggroup_vserver_groups",
+	},
+	{
+		Group:    "ess.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "schedules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(essv1alpha1.GetEncoder(), essv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ess_schedule",
+	},
+	{
+		Group:    "ess.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "scheduledtasks",
+	}: {
+		JsonIt:       controllers.GetJSONItr(essv1alpha1.GetEncoder(), essv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ess_scheduled_task",
+	},
+	{
+		Group:    "event.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "bridgeeventbus",
+	}: {
+		JsonIt:       controllers.GetJSONItr(eventv1alpha1.GetEncoder(), eventv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_event_bridge_event_bus",
+	},
+	{
+		Group:    "event.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "bridgeeventsources",
+	}: {
+		JsonIt:       controllers.GetJSONItr(eventv1alpha1.GetEncoder(), eventv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_event_bridge_event_source",
+	},
+	{
+		Group:    "event.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "bridgerules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(eventv1alpha1.GetEncoder(), eventv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_event_bridge_rule",
+	},
+	{
+		Group:    "event.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "bridgeslrs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(eventv1alpha1.GetEncoder(), eventv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_event_bridge_slr",
+	},
+	{
+		Group:    "express.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "connectphysicalconnections",
+	}: {
+		JsonIt:       controllers.GetJSONItr(expressv1alpha1.GetEncoder(), expressv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_express_connect_physical_connection",
+	},
+	{
+		Group:    "express.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "connectvirtualborderrouters",
+	}: {
+		JsonIt:       controllers.GetJSONItr(expressv1alpha1.GetEncoder(), expressv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_express_connect_virtual_border_router",
+	},
+	{
+		Group:    "fc.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "aliases",
+	}: {
+		JsonIt:       controllers.GetJSONItr(fcv1alpha1.GetEncoder(), fcv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_fc_alias",
+	},
+	{
+		Group:    "fc.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "customdomains",
+	}: {
+		JsonIt:       controllers.GetJSONItr(fcv1alpha1.GetEncoder(), fcv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_fc_custom_domain",
+	},
+	{
+		Group:    "fc.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "functions",
+	}: {
+		JsonIt:       controllers.GetJSONItr(fcv1alpha1.GetEncoder(), fcv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_fc_function",
+	},
+	{
+		Group:    "fc.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "functionasyncinvokeconfigs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(fcv1alpha1.GetEncoder(), fcv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_fc_function_async_invoke_config",
+	},
+	{
+		Group:    "fc.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "services",
+	}: {
+		JsonIt:       controllers.GetJSONItr(fcv1alpha1.GetEncoder(), fcv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_fc_service",
+	},
+	{
+		Group:    "fc.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "triggers",
+	}: {
+		JsonIt:       controllers.GetJSONItr(fcv1alpha1.GetEncoder(), fcv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_fc_trigger",
+	},
+	{
+		Group:    "fnf.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "flows",
+	}: {
+		JsonIt:       controllers.GetJSONItr(fnfv1alpha1.GetEncoder(), fnfv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_fnf_flow",
+	},
+	{
+		Group:    "fnf.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "schedules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(fnfv1alpha1.GetEncoder(), fnfv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_fnf_schedule",
+	},
+	{
+		Group:    "forward.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "entries",
+	}: {
+		JsonIt:       controllers.GetJSONItr(forwardv1alpha1.GetEncoder(), forwardv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_forward_entry",
+	},
+	{
+		Group:    "ga.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "accelerators",
+	}: {
+		JsonIt:       controllers.GetJSONItr(gav1alpha1.GetEncoder(), gav1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ga_accelerator",
+	},
+	{
+		Group:    "ga.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "bandwidthpackages",
+	}: {
+		JsonIt:       controllers.GetJSONItr(gav1alpha1.GetEncoder(), gav1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ga_bandwidth_package",
+	},
+	{
+		Group:    "ga.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "bandwidthpackageattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(gav1alpha1.GetEncoder(), gav1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ga_bandwidth_package_attachment",
+	},
+	{
+		Group:    "ga.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "endpointgroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(gav1alpha1.GetEncoder(), gav1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ga_endpoint_group",
+	},
+	{
+		Group:    "ga.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "forwardingrules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(gav1alpha1.GetEncoder(), gav1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ga_forwarding_rule",
+	},
+	{
+		Group:    "ga.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "ipsets",
+	}: {
+		JsonIt:       controllers.GetJSONItr(gav1alpha1.GetEncoder(), gav1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ga_ip_set",
+	},
+	{
+		Group:    "ga.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "listeners",
+	}: {
+		JsonIt:       controllers.GetJSONItr(gav1alpha1.GetEncoder(), gav1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ga_listener",
+	},
+	{
+		Group:    "gpdb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "connections",
+	}: {
+		JsonIt:       controllers.GetJSONItr(gpdbv1alpha1.GetEncoder(), gpdbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_gpdb_connection",
+	},
+	{
+		Group:    "gpdb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "elasticinstances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(gpdbv1alpha1.GetEncoder(), gpdbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_gpdb_elastic_instance",
+	},
+	{
+		Group:    "gpdb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(gpdbv1alpha1.GetEncoder(), gpdbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_gpdb_instance",
+	},
+	{
+		Group:    "graph.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "databasedbinstances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(graphv1alpha1.GetEncoder(), graphv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_graph_database_db_instance",
+	},
+	{
+		Group:    "havip.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "havips",
+	}: {
+		JsonIt:       controllers.GetJSONItr(havipv1alpha1.GetEncoder(), havipv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_havip",
+	},
+	{
+		Group:    "havip.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "attachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(havipv1alpha1.GetEncoder(), havipv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_havip_attachment",
+	},
+	{
+		Group:    "hbase.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(hbasev1alpha1.GetEncoder(), hbasev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_hbase_instance",
+	},
+	{
+		Group:    "hbr.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "ecsbackupclients",
+	}: {
+		JsonIt:       controllers.GetJSONItr(hbrv1alpha1.GetEncoder(), hbrv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_hbr_ecs_backup_client",
+	},
+	{
+		Group:    "hbr.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "ecsbackupplans",
+	}: {
+		JsonIt:       controllers.GetJSONItr(hbrv1alpha1.GetEncoder(), hbrv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_hbr_ecs_backup_plan",
+	},
+	{
+		Group:    "hbr.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "nasbackupplans",
+	}: {
+		JsonIt:       controllers.GetJSONItr(hbrv1alpha1.GetEncoder(), hbrv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_hbr_nas_backup_plan",
+	},
+	{
+		Group:    "hbr.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "ossbackupplans",
+	}: {
+		JsonIt:       controllers.GetJSONItr(hbrv1alpha1.GetEncoder(), hbrv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_hbr_oss_backup_plan",
+	},
+	{
+		Group:    "hbr.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "restorejobs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(hbrv1alpha1.GetEncoder(), hbrv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_hbr_restore_job",
+	},
+	{
+		Group:    "hbr.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "vaults",
+	}: {
+		JsonIt:       controllers.GetJSONItr(hbrv1alpha1.GetEncoder(), hbrv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_hbr_vault",
+	},
+	{
+		Group:    "image.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "images",
+	}: {
+		JsonIt:       controllers.GetJSONItr(imagev1alpha1.GetEncoder(), imagev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_image",
+	},
+	{
+		Group:    "image.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "copies",
+	}: {
+		JsonIt:       controllers.GetJSONItr(imagev1alpha1.GetEncoder(), imagev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_image_copy",
+	},
+	{
+		Group:    "image.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "exports",
+	}: {
+		JsonIt:       controllers.GetJSONItr(imagev1alpha1.GetEncoder(), imagev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_image_export",
+	},
+	{
+		Group:    "image.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "imports",
+	}: {
+		JsonIt:       controllers.GetJSONItr(imagev1alpha1.GetEncoder(), imagev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_image_import",
+	},
+	{
+		Group:    "image.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "sharepermissions",
+	}: {
+		JsonIt:       controllers.GetJSONItr(imagev1alpha1.GetEncoder(), imagev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_image_share_permission",
+	},
+	{
+		Group:    "imm.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "projects",
+	}: {
+		JsonIt:       controllers.GetJSONItr(immv1alpha1.GetEncoder(), immv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_imm_project",
+	},
+	{
+		Group:    "imp.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "apptemplates",
+	}: {
+		JsonIt:       controllers.GetJSONItr(impv1alpha1.GetEncoder(), impv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_imp_app_template",
+	},
+	{
+		Group:    "instance.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(instancev1alpha1.GetEncoder(), instancev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_instance",
+	},
+	{
+		Group:    "iot.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "devicegroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(iotv1alpha1.GetEncoder(), iotv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_iot_device_group",
+	},
+	{
+		Group:    "key.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "pairs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(keyv1alpha1.GetEncoder(), keyv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_key_pair",
+	},
+	{
+		Group:    "key.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "pairattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(keyv1alpha1.GetEncoder(), keyv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_key_pair_attachment",
+	},
+	{
+		Group:    "kms.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "aliases",
+	}: {
+		JsonIt:       controllers.GetJSONItr(kmsv1alpha1.GetEncoder(), kmsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_kms_alias",
+	},
+	{
+		Group:    "kms.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "ciphertexts",
+	}: {
+		JsonIt:       controllers.GetJSONItr(kmsv1alpha1.GetEncoder(), kmsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_kms_ciphertext",
+	},
+	{
+		Group:    "kms.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "keys",
+	}: {
+		JsonIt:       controllers.GetJSONItr(kmsv1alpha1.GetEncoder(), kmsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_kms_key",
+	},
+	{
+		Group:    "kms.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "keyversions",
+	}: {
+		JsonIt:       controllers.GetJSONItr(kmsv1alpha1.GetEncoder(), kmsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_kms_key_version",
+	},
+	{
+		Group:    "kms.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "secrets",
+	}: {
+		JsonIt:       controllers.GetJSONItr(kmsv1alpha1.GetEncoder(), kmsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_kms_secret",
+	},
+	{
+		Group:    "kvstore.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "accounts",
+	}: {
+		JsonIt:       controllers.GetJSONItr(kvstorev1alpha1.GetEncoder(), kvstorev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_kvstore_account",
+	},
+	{
+		Group:    "kvstore.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "auditlogconfigs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(kvstorev1alpha1.GetEncoder(), kvstorev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_kvstore_audit_log_config",
+	},
+	{
+		Group:    "kvstore.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "backuppolicies",
+	}: {
+		JsonIt:       controllers.GetJSONItr(kvstorev1alpha1.GetEncoder(), kvstorev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_kvstore_backup_policy",
+	},
+	{
+		Group:    "kvstore.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "connections",
+	}: {
+		JsonIt:       controllers.GetJSONItr(kvstorev1alpha1.GetEncoder(), kvstorev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_kvstore_connection",
+	},
+	{
+		Group:    "kvstore.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(kvstorev1alpha1.GetEncoder(), kvstorev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_kvstore_instance",
+	},
+	{
+		Group:    "launch.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "templates",
+	}: {
+		JsonIt:       controllers.GetJSONItr(launchv1alpha1.GetEncoder(), launchv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_launch_template",
+	},
+	{
+		Group:    "lindorm.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(lindormv1alpha1.GetEncoder(), lindormv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_lindorm_instance",
+	},
+	{
+		Group:    "log.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "alerts",
+	}: {
+		JsonIt:       controllers.GetJSONItr(logv1alpha1.GetEncoder(), logv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_log_alert",
+	},
+	{
+		Group:    "log.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "audits",
+	}: {
+		JsonIt:       controllers.GetJSONItr(logv1alpha1.GetEncoder(), logv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_log_audit",
+	},
+	{
+		Group:    "log.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "dashboards",
+	}: {
+		JsonIt:       controllers.GetJSONItr(logv1alpha1.GetEncoder(), logv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_log_dashboard",
+	},
+	{
+		Group:    "log.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "etls",
+	}: {
+		JsonIt:       controllers.GetJSONItr(logv1alpha1.GetEncoder(), logv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_log_etl",
+	},
+	{
+		Group:    "log.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "machinegroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(logv1alpha1.GetEncoder(), logv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_log_machine_group",
+	},
+	{
+		Group:    "log.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "ossshippers",
+	}: {
+		JsonIt:       controllers.GetJSONItr(logv1alpha1.GetEncoder(), logv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_log_oss_shipper",
+	},
+	{
+		Group:    "log.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "projects",
+	}: {
+		JsonIt:       controllers.GetJSONItr(logv1alpha1.GetEncoder(), logv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_log_project",
+	},
+	{
+		Group:    "log.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "stores",
+	}: {
+		JsonIt:       controllers.GetJSONItr(logv1alpha1.GetEncoder(), logv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_log_store",
+	},
+	{
+		Group:    "log.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "storeindices",
+	}: {
+		JsonIt:       controllers.GetJSONItr(logv1alpha1.GetEncoder(), logv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_log_store_index",
+	},
+	{
+		Group:    "logtail.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "attachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(logtailv1alpha1.GetEncoder(), logtailv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_logtail_attachment",
+	},
+	{
+		Group:    "logtail.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "configs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(logtailv1alpha1.GetEncoder(), logtailv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_logtail_config",
+	},
+	{
+		Group:    "market.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "orders",
+	}: {
+		JsonIt:       controllers.GetJSONItr(marketv1alpha1.GetEncoder(), marketv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_market_order",
+	},
+	{
+		Group:    "maxcompute.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "projects",
+	}: {
+		JsonIt:       controllers.GetJSONItr(maxcomputev1alpha1.GetEncoder(), maxcomputev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_maxcompute_project",
+	},
+	{
+		Group:    "mhub.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "apps",
+	}: {
+		JsonIt:       controllers.GetJSONItr(mhubv1alpha1.GetEncoder(), mhubv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_mhub_app",
+	},
+	{
+		Group:    "mhub.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "products",
+	}: {
+		JsonIt:       controllers.GetJSONItr(mhubv1alpha1.GetEncoder(), mhubv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_mhub_product",
+	},
+	{
+		Group:    "mns.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "queues",
+	}: {
+		JsonIt:       controllers.GetJSONItr(mnsv1alpha1.GetEncoder(), mnsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_mns_queue",
+	},
+	{
+		Group:    "mns.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "topics",
+	}: {
+		JsonIt:       controllers.GetJSONItr(mnsv1alpha1.GetEncoder(), mnsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_mns_topic",
+	},
+	{
+		Group:    "mns.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "topicsubscriptions",
+	}: {
+		JsonIt:       controllers.GetJSONItr(mnsv1alpha1.GetEncoder(), mnsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_mns_topic_subscription",
+	},
+	{
+		Group:    "mongodb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(mongodbv1alpha1.GetEncoder(), mongodbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_mongodb_instance",
+	},
+	{
+		Group:    "mongodb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "shardinginstances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(mongodbv1alpha1.GetEncoder(), mongodbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_mongodb_sharding_instance",
+	},
+	{
+		Group:    "msc.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "subcontacts",
+	}: {
+		JsonIt:       controllers.GetJSONItr(mscv1alpha1.GetEncoder(), mscv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_msc_sub_contact",
+	},
+	{
+		Group:    "msc.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "subsubscriptions",
+	}: {
+		JsonIt:       controllers.GetJSONItr(mscv1alpha1.GetEncoder(), mscv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_msc_sub_subscription",
+	},
+	{
+		Group:    "mse.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "clusters",
+	}: {
+		JsonIt:       controllers.GetJSONItr(msev1alpha1.GetEncoder(), msev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_mse_cluster",
+	},
+	{
+		Group:    "nas.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "accessgroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(nasv1alpha1.GetEncoder(), nasv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_nas_access_group",
+	},
+	{
+		Group:    "nas.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "accessrules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(nasv1alpha1.GetEncoder(), nasv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_nas_access_rule",
+	},
+	{
+		Group:    "nas.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "filesystems",
+	}: {
+		JsonIt:       controllers.GetJSONItr(nasv1alpha1.GetEncoder(), nasv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_nas_file_system",
+	},
+	{
+		Group:    "nas.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "mounttargets",
+	}: {
+		JsonIt:       controllers.GetJSONItr(nasv1alpha1.GetEncoder(), nasv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_nas_mount_target",
+	},
+	{
+		Group:    "nat.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "gateways",
+	}: {
+		JsonIt:       controllers.GetJSONItr(natv1alpha1.GetEncoder(), natv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_nat_gateway",
+	},
+	{
+		Group:    "network.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "acls",
+	}: {
+		JsonIt:       controllers.GetJSONItr(networkv1alpha1.GetEncoder(), networkv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_network_acl",
+	},
+	{
+		Group:    "network.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "aclattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(networkv1alpha1.GetEncoder(), networkv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_network_acl_attachment",
+	},
+	{
+		Group:    "network.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "aclentries",
+	}: {
+		JsonIt:       controllers.GetJSONItr(networkv1alpha1.GetEncoder(), networkv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_network_acl_entries",
+	},
+	{
+		Group:    "network.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "interfaces",
+	}: {
+		JsonIt:       controllers.GetJSONItr(networkv1alpha1.GetEncoder(), networkv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_network_interface",
+	},
+	{
+		Group:    "network.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "interfaceattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(networkv1alpha1.GetEncoder(), networkv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_network_interface_attachment",
+	},
+	{
+		Group:    "ons.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "groups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(onsv1alpha1.GetEncoder(), onsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ons_group",
+	},
+	{
+		Group:    "ons.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(onsv1alpha1.GetEncoder(), onsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ons_instance",
+	},
+	{
+		Group:    "ons.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "topics",
+	}: {
+		JsonIt:       controllers.GetJSONItr(onsv1alpha1.GetEncoder(), onsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ons_topic",
+	},
+	{
+		Group:    "oos.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "executions",
+	}: {
+		JsonIt:       controllers.GetJSONItr(oosv1alpha1.GetEncoder(), oosv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_oos_execution",
+	},
+	{
+		Group:    "oos.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "templates",
+	}: {
+		JsonIt:       controllers.GetJSONItr(oosv1alpha1.GetEncoder(), oosv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_oos_template",
+	},
+	{
+		Group:    "open.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "searchappgroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(openv1alpha1.GetEncoder(), openv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_open_search_app_group",
+	},
+	{
+		Group:    "oss.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "buckets",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ossv1alpha1.GetEncoder(), ossv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_oss_bucket",
+	},
+	{
+		Group:    "oss.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "bucketobjects",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ossv1alpha1.GetEncoder(), ossv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_oss_bucket_object",
+	},
+	{
+		Group:    "ots.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(otsv1alpha1.GetEncoder(), otsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ots_instance",
+	},
+	{
+		Group:    "ots.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instanceattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(otsv1alpha1.GetEncoder(), otsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ots_instance_attachment",
+	},
+	{
+		Group:    "ots.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "tables",
+	}: {
+		JsonIt:       controllers.GetJSONItr(otsv1alpha1.GetEncoder(), otsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ots_table",
+	},
+	{
+		Group:    "polardb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "accounts",
+	}: {
+		JsonIt:       controllers.GetJSONItr(polardbv1alpha1.GetEncoder(), polardbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_polardb_account",
+	},
+	{
+		Group:    "polardb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "accountprivileges",
+	}: {
+		JsonIt:       controllers.GetJSONItr(polardbv1alpha1.GetEncoder(), polardbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_polardb_account_privilege",
+	},
+	{
+		Group:    "polardb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "backuppolicies",
+	}: {
+		JsonIt:       controllers.GetJSONItr(polardbv1alpha1.GetEncoder(), polardbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_polardb_backup_policy",
+	},
+	{
+		Group:    "polardb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "clusters",
+	}: {
+		JsonIt:       controllers.GetJSONItr(polardbv1alpha1.GetEncoder(), polardbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_polardb_cluster",
+	},
+	{
+		Group:    "polardb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "databases",
+	}: {
+		JsonIt:       controllers.GetJSONItr(polardbv1alpha1.GetEncoder(), polardbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_polardb_database",
+	},
+	{
+		Group:    "polardb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "endpoints",
+	}: {
+		JsonIt:       controllers.GetJSONItr(polardbv1alpha1.GetEncoder(), polardbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_polardb_endpoint",
+	},
+	{
+		Group:    "polardb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "endpointaddresses",
+	}: {
+		JsonIt:       controllers.GetJSONItr(polardbv1alpha1.GetEncoder(), polardbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_polardb_endpoint_address",
+	},
+	{
+		Group:    "privatelink.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "vpcendpoints",
+	}: {
+		JsonIt:       controllers.GetJSONItr(privatelinkv1alpha1.GetEncoder(), privatelinkv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_privatelink_vpc_endpoint",
+	},
+	{
+		Group:    "privatelink.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "vpcendpointconnections",
+	}: {
+		JsonIt:       controllers.GetJSONItr(privatelinkv1alpha1.GetEncoder(), privatelinkv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_privatelink_vpc_endpoint_connection",
+	},
+	{
+		Group:    "privatelink.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "vpcendpointservices",
+	}: {
+		JsonIt:       controllers.GetJSONItr(privatelinkv1alpha1.GetEncoder(), privatelinkv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_privatelink_vpc_endpoint_service",
+	},
+	{
+		Group:    "privatelink.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "vpcendpointserviceresources",
+	}: {
+		JsonIt:       controllers.GetJSONItr(privatelinkv1alpha1.GetEncoder(), privatelinkv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_privatelink_vpc_endpoint_service_resource",
+	},
+	{
+		Group:    "privatelink.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "vpcendpointserviceusers",
+	}: {
+		JsonIt:       controllers.GetJSONItr(privatelinkv1alpha1.GetEncoder(), privatelinkv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_privatelink_vpc_endpoint_service_user",
+	},
+	{
+		Group:    "privatelink.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "vpcendpointzones",
+	}: {
+		JsonIt:       controllers.GetJSONItr(privatelinkv1alpha1.GetEncoder(), privatelinkv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_privatelink_vpc_endpoint_zone",
+	},
+	{
+		Group:    "pvtz.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "uservpcauthorizations",
+	}: {
+		JsonIt:       controllers.GetJSONItr(pvtzv1alpha1.GetEncoder(), pvtzv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_pvtz_user_vpc_authorization",
+	},
+	{
+		Group:    "pvtz.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "zones",
+	}: {
+		JsonIt:       controllers.GetJSONItr(pvtzv1alpha1.GetEncoder(), pvtzv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_pvtz_zone",
+	},
+	{
+		Group:    "pvtz.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "zoneattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(pvtzv1alpha1.GetEncoder(), pvtzv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_pvtz_zone_attachment",
+	},
+	{
+		Group:    "pvtz.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "zonerecords",
+	}: {
+		JsonIt:       controllers.GetJSONItr(pvtzv1alpha1.GetEncoder(), pvtzv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_pvtz_zone_record",
+	},
+	{
+		Group:    "quick.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "biusers",
+	}: {
+		JsonIt:       controllers.GetJSONItr(quickv1alpha1.GetEncoder(), quickv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_quick_bi_user",
+	},
+	{
+		Group:    "quotas.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "applicationinfoes",
+	}: {
+		JsonIt:       controllers.GetJSONItr(quotasv1alpha1.GetEncoder(), quotasv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_quotas_application_info",
+	},
+	{
+		Group:    "quotas.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "quotaalarms",
+	}: {
+		JsonIt:       controllers.GetJSONItr(quotasv1alpha1.GetEncoder(), quotasv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_quotas_quota_alarm",
+	},
+	{
+		Group:    "quotas.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "quotaapplications",
+	}: {
+		JsonIt:       controllers.GetJSONItr(quotasv1alpha1.GetEncoder(), quotasv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_quotas_quota_application",
+	},
+	{
+		Group:    "ram.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "accesskeys",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ram_access_key",
+	},
+	{
+		Group:    "ram.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "accountalias",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ram_account_alias",
+	},
+	{
+		Group:    "ram.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "accountpasswordpolicies",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ram_account_password_policy",
+	},
+	{
+		Group:    "ram.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "aliases",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ram_alias",
+	},
+	{
+		Group:    "ram.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "groups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ram_group",
+	},
+	{
+		Group:    "ram.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "groupmemberships",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ram_group_membership",
+	},
+	{
+		Group:    "ram.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "grouppolicyattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ram_group_policy_attachment",
+	},
+	{
+		Group:    "ram.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "loginprofiles",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ram_login_profile",
+	},
+	{
+		Group:    "ram.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "policies",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ram_policy",
+	},
+	{
+		Group:    "ram.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "roles",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ram_role",
+	},
+	{
+		Group:    "ram.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "roleattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ram_role_attachment",
+	},
+	{
+		Group:    "ram.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "rolepolicyattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ram_role_policy_attachment",
+	},
+	{
+		Group:    "ram.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "samlproviders",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ram_saml_provider",
+	},
+	{
+		Group:    "ram.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "users",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ram_user",
+	},
+	{
+		Group:    "ram.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "userpolicyattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(ramv1alpha1.GetEncoder(), ramv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ram_user_policy_attachment",
+	},
+	{
+		Group:    "rdc.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "organizations",
+	}: {
+		JsonIt:       controllers.GetJSONItr(rdcv1alpha1.GetEncoder(), rdcv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_rdc_organization",
+	},
+	{
+		Group:    "rds.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "accounts",
+	}: {
+		JsonIt:       controllers.GetJSONItr(rdsv1alpha1.GetEncoder(), rdsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_rds_account",
+	},
+	{
+		Group:    "rds.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "parametergroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(rdsv1alpha1.GetEncoder(), rdsv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_rds_parameter_group",
+	},
+	{
+		Group:    "reserved.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(reservedv1alpha1.GetEncoder(), reservedv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_reserved_instance",
+	},
+	{
+		Group:    "resource.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "manageraccounts",
+	}: {
+		JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_resource_manager_account",
+	},
+	{
+		Group:    "resource.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "managercontrolpolicies",
+	}: {
+		JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_resource_manager_control_policy",
+	},
+	{
+		Group:    "resource.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "managercontrolpolicyattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_resource_manager_control_policy_attachment",
+	},
+	{
+		Group:    "resource.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "managerfolders",
+	}: {
+		JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_resource_manager_folder",
+	},
+	{
+		Group:    "resource.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "managerhandshakes",
+	}: {
+		JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_resource_manager_handshake",
+	},
+	{
+		Group:    "resource.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "managerpolicies",
+	}: {
+		JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_resource_manager_policy",
+	},
+	{
+		Group:    "resource.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "managerpolicyattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_resource_manager_policy_attachment",
+	},
+	{
+		Group:    "resource.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "managerpolicyversions",
+	}: {
+		JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_resource_manager_policy_version",
+	},
+	{
+		Group:    "resource.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "managerresourcedirectories",
+	}: {
+		JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_resource_manager_resource_directory",
+	},
+	{
+		Group:    "resource.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "managerresourcegroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_resource_manager_resource_group",
+	},
+	{
+		Group:    "resource.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "managerresourceshares",
+	}: {
+		JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_resource_manager_resource_share",
+	},
+	{
+		Group:    "resource.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "managerroles",
+	}: {
+		JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_resource_manager_role",
+	},
+	{
+		Group:    "resource.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "managersharedresources",
+	}: {
+		JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_resource_manager_shared_resource",
+	},
+	{
+		Group:    "resource.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "managersharedtargets",
+	}: {
+		JsonIt:       controllers.GetJSONItr(resourcev1alpha1.GetEncoder(), resourcev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_resource_manager_shared_target",
+	},
+	{
+		Group:    "ros.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "changesets",
+	}: {
+		JsonIt:       controllers.GetJSONItr(rosv1alpha1.GetEncoder(), rosv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ros_change_set",
+	},
+	{
+		Group:    "ros.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "stacks",
+	}: {
+		JsonIt:       controllers.GetJSONItr(rosv1alpha1.GetEncoder(), rosv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ros_stack",
+	},
+	{
+		Group:    "ros.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "stackgroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(rosv1alpha1.GetEncoder(), rosv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ros_stack_group",
+	},
+	{
+		Group:    "ros.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "templates",
+	}: {
+		JsonIt:       controllers.GetJSONItr(rosv1alpha1.GetEncoder(), rosv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ros_template",
+	},
+	{
+		Group:    "route.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "entries",
+	}: {
+		JsonIt:       controllers.GetJSONItr(routev1alpha1.GetEncoder(), routev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_route_entry",
+	},
+	{
+		Group:    "route.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "tables",
+	}: {
+		JsonIt:       controllers.GetJSONItr(routev1alpha1.GetEncoder(), routev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_route_table",
+	},
+	{
+		Group:    "route.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "tableattachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(routev1alpha1.GetEncoder(), routev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_route_table_attachment",
+	},
+	{
+		Group:    "router.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "interfaces",
+	}: {
+		JsonIt:       controllers.GetJSONItr(routerv1alpha1.GetEncoder(), routerv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_router_interface",
+	},
+	{
+		Group:    "router.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "interfaceconnections",
+	}: {
+		JsonIt:       controllers.GetJSONItr(routerv1alpha1.GetEncoder(), routerv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_router_interface_connection",
+	},
+	{
+		Group:    "sae.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "applications",
+	}: {
+		JsonIt:       controllers.GetJSONItr(saev1alpha1.GetEncoder(), saev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_sae_application",
+	},
+	{
+		Group:    "sae.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "configmaps",
+	}: {
+		JsonIt:       controllers.GetJSONItr(saev1alpha1.GetEncoder(), saev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_sae_config_map",
+	},
+	{
+		Group:    "sae.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "ingresses",
+	}: {
+		JsonIt:       controllers.GetJSONItr(saev1alpha1.GetEncoder(), saev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_sae_ingress",
+	},
+	{
+		Group:    "sae.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "namespaces",
+	}: {
+		JsonIt:       controllers.GetJSONItr(saev1alpha1.GetEncoder(), saev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_sae_namespace",
+	},
+	{
+		Group:    "sag.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "acls",
+	}: {
+		JsonIt:       controllers.GetJSONItr(sagv1alpha1.GetEncoder(), sagv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_sag_acl",
+	},
+	{
+		Group:    "sag.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "aclrules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(sagv1alpha1.GetEncoder(), sagv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_sag_acl_rule",
+	},
+	{
+		Group:    "sag.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "clientusers",
+	}: {
+		JsonIt:       controllers.GetJSONItr(sagv1alpha1.GetEncoder(), sagv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_sag_client_user",
+	},
+	{
+		Group:    "sag.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "dnatentries",
+	}: {
+		JsonIt:       controllers.GetJSONItr(sagv1alpha1.GetEncoder(), sagv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_sag_dnat_entry",
+	},
+	{
+		Group:    "sag.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "qos",
+	}: {
+		JsonIt:       controllers.GetJSONItr(sagv1alpha1.GetEncoder(), sagv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_sag_qos",
+	},
+	{
+		Group:    "sag.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "qoscars",
+	}: {
+		JsonIt:       controllers.GetJSONItr(sagv1alpha1.GetEncoder(), sagv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_sag_qos_car",
+	},
+	{
+		Group:    "sag.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "qospolicies",
+	}: {
+		JsonIt:       controllers.GetJSONItr(sagv1alpha1.GetEncoder(), sagv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_sag_qos_policy",
+	},
+	{
+		Group:    "sag.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "snatentries",
+	}: {
+		JsonIt:       controllers.GetJSONItr(sagv1alpha1.GetEncoder(), sagv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_sag_snat_entry",
+	},
+	{
+		Group:    "scdn.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "domains",
+	}: {
+		JsonIt:       controllers.GetJSONItr(scdnv1alpha1.GetEncoder(), scdnv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_scdn_domain",
+	},
+	{
+		Group:    "scdn.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "domainconfigs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(scdnv1alpha1.GetEncoder(), scdnv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_scdn_domain_config",
+	},
+	{
+		Group:    "sddp.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "configs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(sddpv1alpha1.GetEncoder(), sddpv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_sddp_config",
+	},
+	{
+		Group:    "sddp.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(sddpv1alpha1.GetEncoder(), sddpv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_sddp_instance",
+	},
+	{
+		Group:    "sddp.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "rules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(sddpv1alpha1.GetEncoder(), sddpv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_sddp_rule",
+	},
+	{
+		Group:    "security.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "centergroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(securityv1alpha1.GetEncoder(), securityv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_security_center_group",
+	},
+	{
+		Group:    "security.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "groups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(securityv1alpha1.GetEncoder(), securityv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_security_group",
+	},
+	{
+		Group:    "security.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "grouprules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(securityv1alpha1.GetEncoder(), securityv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_security_group_rule",
+	},
+	{
+		Group:    "service.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "meshservicemeshes",
+	}: {
+		JsonIt:       controllers.GetJSONItr(servicev1alpha1.GetEncoder(), servicev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_service_mesh_service_mesh",
+	},
+	{
+		Group:    "simple.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "applicationserverinstances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(simplev1alpha1.GetEncoder(), simplev1alpha1.GetDecoder()),
+		ResourceType: "alicloud_simple_application_server_instance",
+	},
+	{
+		Group:    "slb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "slbs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_slb",
+	},
+	{
+		Group:    "slb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "acls",
+	}: {
+		JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_slb_acl",
+	},
+	{
+		Group:    "slb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "attachments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_slb_attachment",
+	},
+	{
+		Group:    "slb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "backendservers",
+	}: {
+		JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_slb_backend_server",
+	},
+	{
+		Group:    "slb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "cacertificates",
+	}: {
+		JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_slb_ca_certificate",
+	},
+	{
+		Group:    "slb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "domainextensions",
+	}: {
+		JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_slb_domain_extension",
+	},
+	{
+		Group:    "slb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "listeners",
+	}: {
+		JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_slb_listener",
+	},
+	{
+		Group:    "slb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "loadbalancers",
+	}: {
+		JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_slb_load_balancer",
+	},
+	{
+		Group:    "slb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "masterslaveservergroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_slb_master_slave_server_group",
+	},
+	{
+		Group:    "slb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "rules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_slb_rule",
+	},
+	{
+		Group:    "slb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "servercertificates",
+	}: {
+		JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_slb_server_certificate",
+	},
+	{
+		Group:    "slb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "servergroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_slb_server_group",
+	},
+	{
+		Group:    "slb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "tlscipherpolicies",
+	}: {
+		JsonIt:       controllers.GetJSONItr(slbv1alpha1.GetEncoder(), slbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_slb_tls_cipher_policy",
+	},
+	{
+		Group:    "snapshot.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "snapshots",
+	}: {
+		JsonIt:       controllers.GetJSONItr(snapshotv1alpha1.GetEncoder(), snapshotv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_snapshot",
+	},
+	{
+		Group:    "snapshot.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "policies",
+	}: {
+		JsonIt:       controllers.GetJSONItr(snapshotv1alpha1.GetEncoder(), snapshotv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_snapshot_policy",
+	},
+	{
+		Group:    "snat.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "entries",
+	}: {
+		JsonIt:       controllers.GetJSONItr(snatv1alpha1.GetEncoder(), snatv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_snat_entry",
+	},
+	{
+		Group:    "ssl.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "certificatesservicecertificates",
+	}: {
+		JsonIt:       controllers.GetJSONItr(sslv1alpha1.GetEncoder(), sslv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ssl_certificates_service_certificate",
+	},
+	{
+		Group:    "ssl.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "vpnclientcerts",
+	}: {
+		JsonIt:       controllers.GetJSONItr(sslv1alpha1.GetEncoder(), sslv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ssl_vpn_client_cert",
+	},
+	{
+		Group:    "ssl.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "vpnservers",
+	}: {
+		JsonIt:       controllers.GetJSONItr(sslv1alpha1.GetEncoder(), sslv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_ssl_vpn_server",
+	},
+	{
+		Group:    "subnet.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "subnets",
+	}: {
+		JsonIt:       controllers.GetJSONItr(subnetv1alpha1.GetEncoder(), subnetv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_subnet",
+	},
+	{
+		Group:    "tsdb.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(tsdbv1alpha1.GetEncoder(), tsdbv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_tsdb_instance",
+	},
+	{
+		Group:    "video.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "surveillancesystemgroups",
+	}: {
+		JsonIt:       controllers.GetJSONItr(videov1alpha1.GetEncoder(), videov1alpha1.GetDecoder()),
+		ResourceType: "alicloud_video_surveillance_system_group",
+	},
+	{
+		Group:    "vod.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "domains",
+	}: {
+		JsonIt:       controllers.GetJSONItr(vodv1alpha1.GetEncoder(), vodv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_vod_domain",
+	},
+	{
+		Group:    "vpc.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "vpcs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(vpcv1alpha1.GetEncoder(), vpcv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_vpc",
+	},
+	{
+		Group:    "vpc.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "dhcpoptionssets",
+	}: {
+		JsonIt:       controllers.GetJSONItr(vpcv1alpha1.GetEncoder(), vpcv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_vpc_dhcp_options_set",
+	},
+	{
+		Group:    "vpc.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "flowlogs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(vpcv1alpha1.GetEncoder(), vpcv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_vpc_flow_log",
+	},
+	{
+		Group:    "vpc.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "natips",
+	}: {
+		JsonIt:       controllers.GetJSONItr(vpcv1alpha1.GetEncoder(), vpcv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_vpc_nat_ip",
+	},
+	{
+		Group:    "vpc.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "natipcidrs",
+	}: {
+		JsonIt:       controllers.GetJSONItr(vpcv1alpha1.GetEncoder(), vpcv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_vpc_nat_ip_cidr",
+	},
+	{
+		Group:    "vpc.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "trafficmirrorfilters",
+	}: {
+		JsonIt:       controllers.GetJSONItr(vpcv1alpha1.GetEncoder(), vpcv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_vpc_traffic_mirror_filter",
+	},
+	{
+		Group:    "vpc.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "trafficmirrorfilteregressrules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(vpcv1alpha1.GetEncoder(), vpcv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_vpc_traffic_mirror_filter_egress_rule",
+	},
+	{
+		Group:    "vpn.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "connections",
+	}: {
+		JsonIt:       controllers.GetJSONItr(vpnv1alpha1.GetEncoder(), vpnv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_vpn_connection",
+	},
+	{
+		Group:    "vpn.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "customergateways",
+	}: {
+		JsonIt:       controllers.GetJSONItr(vpnv1alpha1.GetEncoder(), vpnv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_vpn_customer_gateway",
+	},
+	{
+		Group:    "vpn.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "gateways",
+	}: {
+		JsonIt:       controllers.GetJSONItr(vpnv1alpha1.GetEncoder(), vpnv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_vpn_gateway",
+	},
+	{
+		Group:    "vpn.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "routeentries",
+	}: {
+		JsonIt:       controllers.GetJSONItr(vpnv1alpha1.GetEncoder(), vpnv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_vpn_route_entry",
+	},
+	{
+		Group:    "vswitch.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "vswitches",
+	}: {
+		JsonIt:       controllers.GetJSONItr(vswitchv1alpha1.GetEncoder(), vswitchv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_vswitch",
+	},
+	{
+		Group:    "waf.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "certificates",
+	}: {
+		JsonIt:       controllers.GetJSONItr(wafv1alpha1.GetEncoder(), wafv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_waf_certificate",
+	},
+	{
+		Group:    "waf.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "domains",
+	}: {
+		JsonIt:       controllers.GetJSONItr(wafv1alpha1.GetEncoder(), wafv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_waf_domain",
+	},
+	{
+		Group:    "waf.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "instances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(wafv1alpha1.GetEncoder(), wafv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_waf_instance",
+	},
+	{
+		Group:    "yundun.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "bastionhostinstances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(yundunv1alpha1.GetEncoder(), yundunv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_yundun_bastionhost_instance",
+	},
+	{
+		Group:    "yundun.alicloud.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "dbauditinstances",
+	}: {
+		JsonIt:       controllers.GetJSONItr(yundunv1alpha1.GetEncoder(), yundunv1alpha1.GetDecoder()),
+		ResourceType: "alicloud_yundun_dbaudit_instance",
+	},
+}
 
 func getJsonItAndResType(gvr schema.GroupVersionResource) Data {
 	return allJsonIt[gvr]
