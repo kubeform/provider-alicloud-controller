@@ -20,12 +20,10 @@ package cloud
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/go-logr/logr"
 	tfschema "github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	auditlib "go.bytebuilders.dev/audit/lib"
-	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -37,9 +35,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/event"
-	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
-	"sigs.k8s.io/controller-runtime/pkg/source"
 )
 
 // SsoUserReconciler reconciles a SsoUser object
@@ -104,39 +100,5 @@ func (r *SsoUserReconciler) SetupWithManager(ctx context.Context, mgr ctrl.Manag
 			}
 			return true
 		})).
-		Watches(
-			&source.Kind{Type: &v1.Secret{}},
-			handler.EnqueueRequestsFromMapFunc(r.SensitiveSecretWatch(ctx)),
-		).
 		Complete(r)
-}
-
-func (r *SsoUserReconciler) SensitiveSecretWatch(ctx context.Context) handler.MapFunc {
-	log := ctrl.LoggerFrom(ctx)
-	return func(o client.Object) []ctrl.Request {
-		result := []ctrl.Request{}
-
-		sensSec, ok := o.(*v1.Secret)
-		if !ok {
-			log.Error(fmt.Errorf("expected a Secret but go a %T", o), "failed to get secret for SsoUser")
-			return nil
-		}
-
-		secName := sensSec.Name
-		secNamespace := sensSec.Namespace
-
-		resourceList := &cloudv1alpha1.SsoUserList{}
-		if err := r.List(ctx, resourceList, client.InNamespace(secNamespace)); err != nil {
-			log.Error(err, "failed to list SsoUser")
-			return nil
-		}
-
-		for _, res := range resourceList.Items {
-			if res.Spec.SecretRef.Name == secName {
-				name := client.ObjectKey{Namespace: res.Namespace, Name: res.Name}
-				result = append(result, ctrl.Request{NamespacedName: name})
-			}
-		}
-		return result
-	}
 }
