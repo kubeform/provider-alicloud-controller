@@ -1473,7 +1473,7 @@ kmodules.xyz/resource-metrics/api
 ## explicit
 kubeform.dev/apimachinery/api/v1alpha1
 kubeform.dev/apimachinery/pkg/util
-# kubeform.dev/provider-alicloud-api v0.4.1-0.20220308122623-191702416e2c
+# kubeform.dev/provider-alicloud-api v0.4.1-0.20220317041843-e9cee3acc941
 ## explicit
 kubeform.dev/provider-alicloud-api/api/provider
 kubeform.dev/provider-alicloud-api/apis/actiontrail
