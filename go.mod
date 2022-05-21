@@ -14,11 +14,11 @@ require (
 	github.com/json-iterator/go v1.1.12
 	github.com/spf13/cobra v1.1.3
 	github.com/zclconf/go-cty v1.9.1
-	go.bytebuilders.dev/audit v0.0.11
-	go.bytebuilders.dev/license-verifier v0.9.3
-	go.bytebuilders.dev/license-verifier/kubernetes v0.9.2
-	gomodules.xyz/logs v0.0.4
-	gomodules.xyz/x v0.0.8
+	go.bytebuilders.dev/audit v0.0.20
+	go.bytebuilders.dev/license-verifier v0.9.7
+	go.bytebuilders.dev/license-verifier/kubernetes v0.9.7
+	gomodules.xyz/logs v0.0.6
+	gomodules.xyz/x v0.0.14
 	k8s.io/api v0.21.1
 	k8s.io/apiextensions-apiserver v0.21.1
 	k8s.io/apimachinery v0.21.1
